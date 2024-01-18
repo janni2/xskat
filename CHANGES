@@ -1,0 +1,92 @@
+Changes in 4.0 (25 May 2004):
+ - Computer plays less predictable
+ - Passes the game a lot less often
+ - Can play the final winning trick
+ - Selectable playing strength
+ - Deals a Good Hand with -pk or F6,F6,F6
+ - LAN game can be started interactively
+ - Player/computer names changeable
+ - More card images
+ - Replay and Hand? forms improved
+ - Man page accessible from inside the game
+
+Changes in 3.4 (29 Oct 2000):
+ - Ramsch variation: Skat goes to loser
+ - Computer can suggest what to put into the Skat
+ - More verbose user interface
+ - Trick card placement configurable
+ - German man page
+ - Improved computer players
+
+Changes in 3.3 (25 Mar 2000):
+ - Environment variable LANG is respected
+ - Games won/lost are counted
+ - IRC mode improved
+ - Configurable keyboard control
+ - Improved computer players
+
+Changes in 3.2 (20 Sep 1999):
+ - Keyboard controllable interface
+ - Better color allocation on non-True-Color displays
+ - German cards with brown acorns
+ - Original Skat is shown after game
+ - Replay is still possible after viewing the log
+ - Improved computer players
+
+Changes in 3.1 (22 Jun 1999):
+ - German cards and nicer images
+ - New official rules:
+ -  Lost Hand games count double
+ -  Grand Ouvert multiplier is 24
+ - Telnet bug patch or workaround (see README.IRC)
+ - Language and card suit interactively changeable
+ - Shortcut configurable
+ - Improved computer players
+
+Changes in 3.0 (03 Dec 1998):
+ - Playing via Internet Relay Chat supported
+ - Computer can suggest a card to play
+ - Shortcut possible in all games
+ - 3D look
+
+Changes in 2.3 (09 Sep 1998):
+ - More variations: Spitze, Revolution, Klopfen, Schenken
+ - Shortcut possible when Null is safe
+ - Configurable dealing speed
+ - Computer can say Kontra and Re
+ -  knows when to play Null ouvert
+ - Other minor computer play improvements
+
+Changes in 2.2 (05 Mar 1998):
+ - Bock- and Ramschrounds implemented
+ - Interactively changeable options are saved
+ - Enhanced replay function
+ - Null and Ramsch improved
+
+Changes in 2.1 (15 Dec 1997):
+ - Kontra and Re
+ - Schieberamsch implemented
+ - Immediate replay in single player mode
+ - Trick delay changeable during the game
+ - Improved computer players
+
+Changes in 2.0 (08 Sep 1997):
+ - It's possible to play Ramsch
+ - Configurable delay after each trick
+ - ~/ is allowed in filenames
+
+Changes in 1.7 (20 May 1997):
+ - Improved computer players
+ - Selectable computer strategy
+ - Large cards for large displays
+ - Configurable menu mouse button
+ - Optional tournament scoring
+ - Formatted and unformatted logs
+ - Proportional fonts work
+ - Redefinable card colors
+ - Computer player only mode
+
+Earlier versions:
+ - First release: 1.6 (19 Feb 1996)
+ - First X11 port: 1.0 (13 Aug 1995)
+ - First release for Atari: ST-SKAT (1988)
