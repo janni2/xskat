@@ -1,13 +1,22 @@
-#!/bin/sh
+# To build xskat:
 
-# Create Makefile from Imakefile
-./configure
+1. Ensure you have CMake installed on your system.
+   (e.g., sudo apt-get install cmake on Debian/Ubuntu)
 
-# Compile the program
-make
+2. Create a build directory and navigate into it:
+   mkdir build
+   cd build
+
+3. Run CMake to configure the project:
+   cmake ..
+
+4. Compile the program:
+   make
 
 # Start the program
 ./xskat
 
-# Final install (as root)
-make install install.man
+# To install the program (optional, may require root privileges):
+# After building, you can typically run:
+# sudo make install
+# (This will install xskat and its man page if defined in CMakeLists.txt)

@@ -1,5 +1,0 @@
-#!/bin/sh
-#
-# Create Makefile from Imakefile
-#
-xmkmf -a
