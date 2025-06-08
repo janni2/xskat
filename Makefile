@@ -25,7 +25,6 @@ DEFL   = -DDEFAULT_LANGUAGE=\"english\"
 
 DEFI    = -DDEFAULT_IRC_SERVER=\"irc.fu-berlin.de\"
 
-SHELL   = /bin/sh
 OBJECTS	= skat.o ramsch.o null.o bitmaps.o xio.o xdial.o irc.o text.o
 
 xskat: $(OBJECTS)
@@ -33,13 +32,6 @@ xskat: $(OBJECTS)
 
 clean:
 	rm -f $(OBJECTS) xskat
-
-ckdef:
-	@echo Checking defs.h;\
-	sed -n "1,/######/p" defs.h > defs;\
-	cat *.c|sed  -n 's/^\([a-zA-Z].*\)(.*)/\1();/p' >> defs;\
-	diff defs defs.h || mv defs defs.h;\
-	rm -f defs
 
 text.o: text.c text.h defs.h
 	$(CC) $(CFLAGS) $(DEFL) -c $< -o $@
