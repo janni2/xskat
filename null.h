@@ -31,4 +31,24 @@
 EXTERN int wirftabfb[4], hattefb[4], aussplfb[4], nochinfb[4];
 EXTERN int naussplfb[3];
 
+extern void init_null();
+extern void testnull();
+extern int kleiner_w();
+extern int kleiner();
+extern int hat();
+extern int n_anwert();
+extern int n_anspiel();
+extern int n_abwert();
+extern int n_abwerfen();
+extern int minmax();
+extern int minmaxfb();
+extern int drunter();
+extern int drunterdrue();
+extern void m_nsp();
+extern void m_nns();
+extern void null_stich();
+extern void null_sort();
+extern int null_dicht();
+extern void revolutiondist();
+
 #endif /* NULL_H */

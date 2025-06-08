@@ -38,12 +38,12 @@
 #include <X11/Xutil.h>
 #include <X11/cursorfont.h>
 #include <X11/Xatom.h>
-#include "defs.h"
 #include "skat.h"
 #include "bitmaps.h"
 #include "xio.h"
 #include "irc.h"
 #include "text.h"
+#include "xdial.h"
 
 void change_gc(sn, fg, gcp) int sn;
 unsigned long fg;

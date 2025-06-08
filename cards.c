@@ -1,4 +1,9 @@
 
+#include "skat.h"
+#include "xio.h"
+#include "text.h"
+#include "bitmaps.h"
+
 /*
     xskat - a card game for 1 to 3 players.
     Copyright (C) 2004  Gunter Gerhardt

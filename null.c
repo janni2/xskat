@@ -20,8 +20,8 @@
 
 #define NULL_C
 
-#include "defs.h"
 #include "skat.h"
+#include "xio.h"
 #include "null.h"
 
 void init_null()
