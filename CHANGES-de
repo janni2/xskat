@@ -1,92 +1,92 @@
-Änderungen in 4.0 (25 Mai 2004):
+Ã„nderungen in 4.0 (25 Mai 2004):
  - Computer spielt weniger voraussagbar
  - Passt viel seltener das Spiel ein
  - Kann finalen Gewinnstich spielen
- - Spielstärke wählbar
+ - SpielstÃ¤rke wÃ¤hlbar
  - Gibt ein Gutes Blatt mit -pk oder F6,F6,F6
  - LAN-Spiel interaktiv startbar
- - Spieler/Computernamen änderbar
+ - Spieler/Computernamen Ã¤nderbar
  - Weitere Kartenbilder
  - Wiederholen- und Hand?-Dialog verbessert
  - Handbuch aus dem Spiel heraus aufrufbar
 
-Änderungen in 3.4 (29 Okt 2000):
+Ã„nderungen in 3.4 (29 Okt 2000):
  - Ramsch-Variante: Skat geht an Verlierer
- - Computer kann zu drückende Karten vorschlagen
- - Gesprächigere Benutzeroberfläche
- - Platzierung der Stich-Karten wählbar
+ - Computer kann zu drÃ¼ckende Karten vorschlagen
+ - GesprÃ¤chigere BenutzeroberflÃ¤che
+ - Platzierung der Stich-Karten wÃ¤hlbar
  - Deutsches Benutzerhandbuch
  - Verbesserte Computer-Spieler
 
-Änderungen in 3.3 (25 Mär 2000):
+Ã„nderungen in 3.3 (25 MÃ¤r 2000):
  - Umgebungsvariable LANG wird beachtet
- - Gewonnene/verlorene Spiele werden gezählt
+ - Gewonnene/verlorene Spiele werden gezÃ¤hlt
  - IRC-Modus verbessert
  - Konfigurierbare Tastatur-Steuerung
  - Verbesserte Computer-Spieler
 
-Änderungen in 3.2 (20 Sep 1999):
- - Steuerung per Tastatur möglich
- - Bessere Farbverwaltung bei wenigen verfügbaren Farben
+Ã„nderungen in 3.2 (20 Sep 1999):
+ - Steuerung per Tastatur mÃ¶glich
+ - Bessere Farbverwaltung bei wenigen verfÃ¼gbaren Farben
  - Deutsches Blatt mit braunen Eicheln
- - Ursprünglicher Skat wird nach dem Spiel gezeigt
- - Wiederholung bleibt nach Betrachten des Protokolls möglich
+ - UrsprÃ¼nglicher Skat wird nach dem Spiel gezeigt
+ - Wiederholung bleibt nach Betrachten des Protokolls mÃ¶glich
  - Verbesserte Computer-Spieler
 
-Änderungen in 3.1 (22 Jun 1999):
- - Deutsches Blatt und schönere Kartenbilder
+Ã„nderungen in 3.1 (22 Jun 1999):
+ - Deutsches Blatt und schÃ¶nere Kartenbilder
  - Neue offizielle Regeln:
- -  Verlorener Hand zählt doppelt
+ -  Verlorener Hand zÃ¤hlt doppelt
  -  Grand Ouvert Multiplikator ist 24
  - Abhilfe bei Telnet-Fehler (siehe README.IRC-de)
- - Sprache und Blatt interaktiv änderbar
- - Abkürzung konfigurierbar
+ - Sprache und Blatt interaktiv Ã¤nderbar
+ - AbkÃ¼rzung konfigurierbar
  - Verbesserte Computer-Spieler
 
-Änderungen in 3.0 (03 Dez 1998):
- - Spiel über Internet Relay Chat wird unterstützt
+Ã„nderungen in 3.0 (03 Dez 1998):
+ - Spiel Ã¼ber Internet Relay Chat wird unterstÃ¼tzt
  - Computer kann eine Karte vorschlagen
- - Abkürzung in allen Spielen möglich
+ - AbkÃ¼rzung in allen Spielen mÃ¶glich
  - 3D Darstellung
 
-Änderungen in 2.3 (09 Sep 1998):
+Ã„nderungen in 2.3 (09 Sep 1998):
  - Mehr Variationen: Spitze, Revolution, Klopfen, Schenken
- - Abkürzung möglich, wenn Null sicher ist
+ - AbkÃ¼rzung mÃ¶glich, wenn Null sicher ist
  - Konfigurierbare Geschwindigkeit beim Geben
  - Computer kann Kontra und Re sagen
  -  und selber Null ouvert spielen
  - Andere kleinere Verbesserungen des Computer-Spiels
 
-Änderungen in 2.2 (05 Mär 1998):
+Ã„nderungen in 2.2 (05 MÃ¤r 1998):
  - Bock- und Ramschrunden implementiert
- - Interaktiv änderbare Optionen werden gespeichert
+ - Interaktiv Ã¤nderbare Optionen werden gespeichert
  - Erweiterte Wiederholfunktion
  - Null und Ramsch verbessert
 
-Änderungen in 2.1 (15 Dez 1997):
+Ã„nderungen in 2.1 (15 Dez 1997):
  - Kontra und Re
  - Schieberamsch implementiert
  - Sofortige Spielwiederholung im Einzelspieler-Modus
  - Dauer der Stichaufnahme im Spiel einstellbar
  - Verbesserte Computer-Spieler
 
-Änderungen in 2.0 (08 Sep 1997):
- - Es ist möglich, Ramsch zu spielen
- - Konfigurierbare Verzögerung nach jedem Stich
+Ã„nderungen in 2.0 (08 Sep 1997):
+ - Es ist mÃ¶glich, Ramsch zu spielen
+ - Konfigurierbare VerzÃ¶gerung nach jedem Stich
  - ~/ ist in Dateinamen erlaubt
 
-Änderungen in 1.7 (20 Mai 1997):
+Ã„nderungen in 1.7 (20 Mai 1997):
  - Verbesserte Computer-Spieler
- - Wählbare Computer-Strategie
- - Große Karten für große Bildschirme
- - Konfigurierbare Menü-Taste
- - Optionale Turnier-Punktzählung
+ - WÃ¤hlbare Computer-Strategie
+ - GroÃŸe Karten fÃ¼r groÃŸe Bildschirme
+ - Konfigurierbare MenÃ¼-Taste
+ - Optionale Turnier-PunktzÃ¤hlung
  - Formatierte und unformatierte Protokolle
- - Proportionale Zeichensätze funktionieren
+ - Proportionale ZeichensÃ¤tze funktionieren
  - Farben der Karten umdefinierbar
  - Nur-Computer-Modus
 
-Frühere Versionen:
- - Erstveröffentlichung: 1.6 (19 Feb 1996)
+FrÃ¼here Versionen:
+ - ErstverÃ¶ffentlichung: 1.6 (19 Feb 1996)
  - Erste X11-Portierung: 1.0 (13 Aug 1995)
- - Erstveröffentlichung für Atari: ST-SKAT (1988)
+ - ErstverÃ¶ffentlichung fÃ¼r Atari: ST-SKAT (1988)

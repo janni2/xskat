@@ -28,7 +28,7 @@
 #define EXTERN extern
 #endif
 
-EXTERN int wirftabfb[4],hattefb[4],aussplfb[4],nochinfb[4];
+EXTERN int wirftabfb[4], hattefb[4], aussplfb[4], nochinfb[4];
 EXTERN int naussplfb[3];
 
 #endif /* NULL_H */

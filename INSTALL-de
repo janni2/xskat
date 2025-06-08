@@ -3,11 +3,11 @@
 # Erzeuge Makefile aus Imakefile
 ./configure
 
-# Übersetze das Programm
+# Ãœbersetze das Programm
 make
 
 # Starte das Programm
 ./xskat
 
-# Endgültige Installation (als root)
+# EndgÃ¼ltige Installation (als root)
 make install install.man
