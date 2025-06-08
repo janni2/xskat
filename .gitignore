@@ -56,3 +56,22 @@ dkms.conf
 
 # Binary
 xskat
+
+# CMake build files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CTestTestfile.cmake
+Makefile
+compile_commands.json
+
+# Common build output directory
+build/
+**/build/
+*build/
+
+# OS-specific or editor-specific files (optional but good practice)
+.DS_Store
+*.swp
+*~
+*.bak
