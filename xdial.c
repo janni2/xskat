@@ -2518,9 +2518,9 @@ int ger_toupper(c)
 int c;
 {
   switch (c) {
-  case 'ä':return 'Ä';
-  case 'ö':return 'Ö';
-  case 'ü':return 'Ü';
+  case 'Ã¤':return 'Ã„';
+  case 'Ã¶':return 'Ã–';
+  case 'Ã¼':return 'Ãœ';
   default:return toupper(c);
   }
 }

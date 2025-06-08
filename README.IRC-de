@@ -7,15 +7,15 @@ XSkat-IRC und telnet
 ====================
 
 Einige Versionen von telnet haben einen Fehler, der verhindert,
-daß Eingaben von einer Pipe richtig gelesen werden.
+daÃŸ Eingaben von einer Pipe richtig gelesen werden.
 Beliebige Zeichen werden in Steuerzeichen umgesetzt (z.B.: 'd' -> 'Ctrl-C').
-Dies liegt daran, daß der Aufruf tcgetattr,
+Dies liegt daran, daÃŸ der Aufruf tcgetattr,
 der die Steuerzeichen des Terminals ermitteln soll,
- - fehlschlägt, wenn stdin kein TTY ist (was OK ist)
- - trotzdem die Rückgabewerte modifiziert (was nicht erwartet wurde)
+ - fehlschlÃ¤gt, wenn stdin kein TTY ist (was OK ist)
+ - trotzdem die RÃ¼ckgabewerte modifiziert (was nicht erwartet wurde)
 
-Wer Probleme beim XSkat-Spiel über IRC hat,
-kann telnet ändern oder die unten gezeigte Ersatzlösung ausprobieren.
+Wer Probleme beim XSkat-Spiel Ã¼ber IRC hat,
+kann telnet Ã¤ndern oder die unten gezeigte ErsatzlÃ¶sung ausprobieren.
 
 
 Korrektur des BSD-basierten Linux-telnet
@@ -36,10 +36,10 @@ Korrektur des BSD-basierten Linux-telnet
      termFlushChar = CONTROL('O');
 
 
-Ersatzlösung
+ErsatzlÃ¶sung
 ============
 
-In die Datei ~/.telnetrc kann der folgende Abschnitt eingefügt werden:
+In die Datei ~/.telnetrc kann der folgende Abschnitt eingefÃ¼gt werden:
 
 irc.fu-berlin.de
  display
@@ -62,7 +62,7 @@ irc.fu-berlin.de
  set forw2 off
  set ayt ^T
 
-Die führenden Leerzeichen sind wichtig!
+Die fÃ¼hrenden Leerzeichen sind wichtig!
 Die IRC-Server-Zeile ist entsprechend anzupassen.
 Das display-Kommando kann weggelassen werden.
 Es zeigt lediglich, ob telnet das Problem hat.
