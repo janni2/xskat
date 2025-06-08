@@ -48,7 +48,7 @@ int s;
   return s>=numsp;
 }
 
-VOID swap(i,j)
+void swap(i,j)
 int *i,*j;
 {
   int h;
@@ -58,7 +58,7 @@ int *i,*j;
   *j=h;
 }
 
-VOID setrnd(s,v)
+void setrnd(s,v)
 long *s,v;
 {
   *s=v<<1?v:-1;
@@ -82,7 +82,7 @@ int m;
   return rndval(&seed[1],m);
 }
 
-VOID synerr(f,s)
+void synerr(f,s)
 FILE *f;
 char *s;
 {
@@ -254,7 +254,7 @@ int gutesblatt()
 	  (bb>2 && as>1)) && bs;
 }
 
-VOID mischen()
+void mischen()
 {
   int i,j;
   static int savecards[32];
@@ -335,7 +335,7 @@ int c1,c2,n;
   }
 }
 
-VOID sort(sn)
+void sort(sn)
 int sn;
 {
   int i,j,f=sn*10;
@@ -404,7 +404,7 @@ int sn;
   sortw[3]=3;
 }
 
-VOID calc_rw(s)
+void calc_rw(s)
 int s;
 {
   int i,c,f,tr,bb,as,ze,dk,stg;
@@ -490,7 +490,7 @@ int s;
   }
 }
 
-VOID do_geben()
+void do_geben()
 {
   int sn,i;
   static int f;
@@ -574,7 +574,7 @@ VOID do_geben()
   }
 }
 
-VOID do_sagen(s,w)
+void do_sagen(s,w)
 int s,w;
 {
   char str[4];
@@ -592,7 +592,7 @@ int s,w;
   sagte18[s]=1;
 }
 
-VOID do_passen(s)
+void do_passen(s)
 int s;
 {
   b_text(s,&textarr[TX_PASSE]);
@@ -602,7 +602,7 @@ int s;
   rem_box(s);
 }
 
-VOID do_akzept(s)
+void do_akzept(s)
 int s;
 {
   tx_typ tt;
@@ -619,7 +619,7 @@ int s;
   sagte18[s]=1;
 }
 
-VOID do_msagen(sn,w)
+void do_msagen(sn,w)
 int sn,w;
 {
   char str[4];
@@ -630,7 +630,7 @@ int sn,w;
   do_msaho(sn,str);
 }
 
-VOID do_mhoeren(sn)
+void do_mhoeren(sn)
 int sn;
 {
   if (lastmsaho[sn]==1) return;
@@ -638,7 +638,7 @@ int sn;
   do_msaho(sn,textarr[TX_JA].t[lang[sn]]);
 }
 
-VOID do_entsch()
+void do_entsch()
 {
   int rw;
 
@@ -704,7 +704,7 @@ VOID do_entsch()
   }
 }
 
-VOID do_reizen()
+void do_reizen()
 {
   while (phase==REIZEN &&
 	 ((iscomp(sager) && saho) || (iscomp(hoerer) && !saho))) {
@@ -716,7 +716,7 @@ VOID do_reizen()
   }
 }
 
-VOID drueck(f,n,p)
+void drueck(f,n,p)
 int f,n,*p;
 {
   int i,j;
@@ -742,7 +742,7 @@ int f,n,*p;
   }
 }
 
-VOID truempfe()
+void truempfe()
 {
   int i,c;
 
@@ -842,7 +842,7 @@ int bb,b[4],vh;
   return fl+bb>4 && b[3] && !(bb+as==5 && !ze && !ko);
 }
 
-VOID calc_inhand(sn)
+void calc_inhand(sn)
 int sn;
 {
   int i,c;
@@ -926,7 +926,7 @@ int testhand()
   inhand[i][SIEBEN] || inhand[i][ACHT] || inhand[i][NEUN]\
 )
 
-VOID calc_drueck()
+void calc_drueck()
 {
   int i,j,c,f,bb,n,sp,tr,x;
   int b[4],t[4],p[4],o[4];
@@ -1071,7 +1071,7 @@ VOID calc_drueck()
   }
 }
 
-VOID nextgame()
+void nextgame()
 {
   if (numgames) {
     phase=GEBEN;
@@ -1085,7 +1085,7 @@ VOID nextgame()
   }
 }
 
-VOID save_skat(i)
+void save_skat(i)
 int i;
 {
   if (lower(cards[31],cards[30],0)) {
@@ -1132,7 +1132,7 @@ int check_bockevents()
   return e;
 }
 
-VOID update_list()
+void update_list()
 {
   int i;
 
@@ -1148,12 +1148,12 @@ VOID update_list()
   splist[splstp].d=trumpf==5 && stsum==120 && spgew;
   splist[splstp].e=spwert;
   splist[splstp].g=spgew;
-  memcpy((VOID *)prevsum,(VOID *)sum,sizeof(sum));
+  memcpy((void *)prevsum,(void *)sum,sizeof(sum));
   modsum(sum,cgewoverl,splstp,(int *)0,(int *)0,(int *)0,(int *)0);
   splstp++;
 }
 
-VOID do_grandhand(sn)
+void do_grandhand(sn)
 int sn;
 {
   handsp=1;
@@ -1163,7 +1163,7 @@ int sn;
   do_handspiel();
 }
 
-VOID set_prot()
+void set_prot()
 {
   prot2.stichgem=stich-1;
   prot2.spieler=spieler;
@@ -1186,7 +1186,7 @@ VOID set_prot()
   prot2.schenken=schenkstufe;
 }
 
-VOID do_handspiel()
+void do_handspiel()
 {
   int i,sn;
 
@@ -1236,7 +1236,7 @@ VOID do_handspiel()
   else do_handok();
 }
 
-VOID do_druecken()
+void do_druecken()
 {
   draw_skat(spieler);
   if (hintcard[0]==-1) {
@@ -1257,7 +1257,7 @@ VOID do_druecken()
   gedr=handsp=0;
 }
 
-VOID do_handok()
+void do_handok()
 {
   if (iscomp(spieler) || handsp) {
     home_skat();
@@ -1269,7 +1269,7 @@ VOID do_handok()
   else do_ansagen();
 }
 
-VOID do_ansagen()
+void do_ansagen()
 {
   int i,c,bb;
 
@@ -1300,7 +1300,7 @@ VOID do_ansagen()
   }
 }
 
-VOID karobube()
+void karobube()
 {
   int s,i,n,k,c;
 
@@ -1338,7 +1338,7 @@ int karobubespielen()
   return 0;
 }
 
-VOID do_angesagt()
+void do_angesagt()
 {
   if (!iscomp(spieler)) {
     remmark(1);
@@ -1354,7 +1354,7 @@ VOID do_angesagt()
   else spielphase();
 }
 
-VOID spielphase()
+void spielphase()
 {
   int sn,c,i;
 
@@ -1408,7 +1408,7 @@ int c1,c2;
   return 1;
 }
 
-VOID calc_result()
+void calc_result()
 {
   int i,c,f;
   int b[4],s[8];
@@ -1488,7 +1488,7 @@ VOID calc_result()
   if (bockspiele && !ramschspiele) spwert*=2;
 }
 
-VOID get_next()
+void get_next()
 {
   int s;
 
@@ -1531,7 +1531,7 @@ VOID get_next()
   }
 }
 
-VOID save_list()
+void save_list()
 {
   FILE *f;
   int i;
@@ -1556,7 +1556,7 @@ VOID save_list()
   fclose(f);
 }
 
-VOID setsum(clr)
+void setsum(clr)
 int clr;
 {
   int i,j;
@@ -1579,7 +1579,7 @@ int clr;
   }
 }
 
-VOID modsum(sm,gv,p,as,ae,ar,ad)
+void modsum(sm,gv,p,as,ae,ar,ad)
 int sm[3][3],gv[3][2],p,*as,*ae,*ar,*ad;
 {
   int s,e,r,d;
@@ -1625,7 +1625,7 @@ int sm[3][3],gv[3][2],p,*as,*ae,*ar,*ad;
   if (ad) *ad=d;
 }
 
-VOID read_opt_srpk(f)
+void read_opt_srpk(f)
 FILE *f;
 {
   int i,v,va[3];
@@ -1660,7 +1660,7 @@ FILE *f;
   }
 }
 
-VOID read_opt()
+void read_opt()
 {
   FILE *f;
   int v,va[3],i;
@@ -1836,7 +1836,7 @@ VOID read_opt()
   fclose(f);
 }
 
-VOID save_opt()
+void save_opt()
 {
   FILE *f;
 
@@ -1882,7 +1882,7 @@ VOID save_opt()
   fclose(f);
 }
 
-VOID read_list()
+void read_list()
 {
   FILE *f;
   int c,i,j;
@@ -1945,7 +1945,7 @@ VOID read_list()
   fclose(f);
 }
 
-VOID fill_st()
+void fill_st()
 {
   int i,j,s,c,sc;
 
@@ -1982,7 +1982,7 @@ int maxnimm()
   return m;
 }
 
-VOID next_stich()
+void next_stich()
 {
   int nd;
 
@@ -2007,7 +2007,7 @@ VOID next_stich()
   }
 }
 
-VOID finishgame()
+void finishgame()
 {
   int i,s;
 
@@ -2044,7 +2044,7 @@ VOID finishgame()
   nextgame();
 }
 
-VOID do_next()
+void do_next()
 {
   int sn;
 
@@ -2062,7 +2062,7 @@ VOID do_next()
   else vmh++;
 }
 
-VOID calc_poss(s)
+void calc_poss(s)
 int s;
 {
   int i,j,k,f1,w1,f2,w2;
@@ -2092,7 +2092,7 @@ int s;
   }
 }
 
-VOID c_high(f,h)
+void c_high(f,h)
 int f;
 int *h;
 {
@@ -2116,7 +2116,7 @@ int *h;
   }
 }
 
-VOID calc_high(f,s)
+void calc_high(f,s)
 int f,s;
 {
   int i,gespsav[32];
@@ -2321,7 +2321,7 @@ int p,h,n;
   return j!=0;
 }
 
-VOID schmieren()
+void schmieren()
 {
   int i,j,wi,wj,ci,cj,aw[4];
 
@@ -2532,7 +2532,7 @@ int hochausspielen()
   return 0;
 }
 
-VOID schenke()
+void schenke()
 {
   int i,j,ci,cj,wi,wj,iw,jw,ih[4],ze[4],ko[4],da[4],ne[4];
 
@@ -2635,7 +2635,7 @@ int fabwerfen()
   return 0;
 }
 
-VOID abwerfen()
+void abwerfen()
 {
   int i,j,ci,cj,wi,wj,mi,wio,wjo,h;
   int gsp[4],ze[4],as[4],ih[4];
@@ -2843,7 +2843,7 @@ int f;
   return 1;
 }
 
-VOID nichtspitze()
+void nichtspitze()
 {
   int sp,i;
 
@@ -2920,33 +2920,33 @@ int restbeimir()
   return 1;
 }
 
-VOID m_bvsp()
+void m_bvsp()
 {
   if (ueberdoerfer()) return;
   if (!trumpfausspielen()) schenke();
 }
 
-VOID m_bmsp()
+void m_bmsp()
 {
   if (fabwerfen()) return;
   if (!uebernehmen(0,1,1)) schenke();
 }
 
-VOID m_bhsp()
+void m_bhsp()
 {
   if (gewinnstich(1)) return;
   if (fabwerfen()) return;
   if (!uebernehmen(!higher(stcd[0],stcd[1]),1,0)) schenke();
 }
 
-VOID m_bvns()
+void m_bvns()
 {
   if (spitzefangen()) return;
   if (spieler==left(ausspl) && karobubespielen()) return;
   if (!hochausspielen()) abwerfen();
 }
 
-VOID m_bmns()
+void m_bmns()
 {
   if (spitzefangen()) return;
   if (karobubespielen()) return;
@@ -2961,7 +2961,7 @@ VOID m_bmns()
   else abwerfen();
 }
 
-VOID m_bhns()
+void m_bhns()
 {
   if (gewinnstich(0)) return;
   if (spitzefangen()) return;
@@ -2975,7 +2975,7 @@ VOID m_bhns()
   }
 }
 
-VOID m_bsp()
+void m_bsp()
 {
   playcd=0;
   nichtspitze();
@@ -2984,7 +2984,7 @@ VOID m_bsp()
   else m_bhsp();
 }
 
-VOID m_bns()
+void m_bns()
 {
   playcd=0;
   if (!vmh) m_bvns();
@@ -2992,7 +2992,7 @@ VOID m_bns()
   else m_bhns();
 }
 
-VOID make_best(s)
+void make_best(s)
 int s;
 {
   if (possc==1) playcd=0;
@@ -3009,7 +3009,7 @@ int s;
   }
 }
 
-VOID adjfb(s,v)
+void adjfb(s,v)
 int s,v;
 {
   int i,c,n;
@@ -3030,7 +3030,7 @@ int s,v;
   }
 }
 
-VOID do_spielen()
+void do_spielen()
 {
   int s,i;
   static int sp,lvmh;
@@ -3078,7 +3078,7 @@ VOID do_spielen()
   }
 }
 
-VOID computer()
+void computer()
 {
   if (quit) return;
   if (phase==GEBEN) do_geben();
@@ -3086,7 +3086,7 @@ VOID computer()
   do_spielen();
 }
 
-VOID play()
+void play()
 {
   if (!resumebock || !playbock) {
     bockspiele=bockinc=ramschspiele=0;

@@ -45,7 +45,7 @@
 #include "irc.h"
 #include "text.h"
 
-VOID change_gc(sn,fg,gcp)
+void change_gc(sn,fg,gcp)
 int sn;
 unsigned long fg;
 GC *gcp;
@@ -56,7 +56,7 @@ GC *gcp;
   XChangeGC(dpy[sn],gcp[sn],GCForeground,&gcv);
 }
 
-VOID change_gcbg(sn,bg,gcp)
+void change_gcbg(sn,bg,gcp)
 int sn;
 unsigned long bg;
 GC *gcp;
@@ -67,7 +67,7 @@ GC *gcp;
   XChangeGC(dpy[sn],gcp[sn],GCBackground,&gcv);
 }
 
-VOID change_gcxor(sn,fg)
+void change_gcxor(sn,fg)
 int sn;
 unsigned long fg;
 {
@@ -87,7 +87,7 @@ char *s;
   return h[0]=='0'?0:h[0]=='1'?1:!strcmp(h,"true");
 }
 
-VOID v_gtextnc(sn,n,c,x,y,w,t)
+void v_gtextnc(sn,n,c,x,y,w,t)
 int sn,n,c,x,y,w;
 char *t;
 {
@@ -106,21 +106,21 @@ char *t;
   }
 }
 
-VOID v_gtextc(sn,c,x,y,w,t)
+void v_gtextc(sn,c,x,y,w,t)
 int sn,c,x,y,w;
 char *t;
 {
   v_gtextnc(sn,1,c,x,y,w,t);
 }
 
-VOID v_gtext(sn,x,y,w,t)
+void v_gtext(sn,x,y,w,t)
 int sn,x,y,w;
 char *t;
 {
   v_gtextc(sn,0,x,y,w,t);
 }
 
-VOID clr_text(sn,x,y)
+void clr_text(sn,x,y)
 int sn,x,y;
 {
   x+=4;
@@ -133,7 +133,7 @@ int sn,x,y;
   change_gc(sn,fgpix[sn],gc);
 }
 
-VOID b_text(s,str)
+void b_text(s,str)
 int s;
 tx_typ *str;
 {
@@ -148,7 +148,7 @@ tx_typ *str;
   }
 }
 
-VOID do_msaho(sn,str)
+void do_msaho(sn,str)
 int sn;
 char *str;
 {
@@ -159,7 +159,7 @@ char *str;
 	   textarr[TX_PASSE].t[lang[sn]]);
 }
 
-VOID draw_skat(sn)
+void draw_skat(sn)
 int sn;
 {
   putcard(sn,cards[30],desk[sn].skatx,desk[sn].skaty);
@@ -168,7 +168,7 @@ int sn;
   skatopen=1;
 }
 
-VOID home_skat()
+void home_skat()
 {
   int sn=spieler;
 
@@ -179,7 +179,7 @@ VOID home_skat()
   spitzeopen=1;
 }
 
-VOID nimm_stich()
+void nimm_stich()
 {
   int sn=ausspl,i;
 
@@ -189,7 +189,7 @@ VOID nimm_stich()
   stichopen=0;
 }
 
-VOID drop_card(i,s)
+void drop_card(i,s)
 int i,s;
 {
   int sn,sna[3],x1[3],y1[3],x2[3],y2[3];
@@ -325,7 +325,7 @@ XColor *xcol;
   return defpix;
 }
 
-VOID calc_desk(sn)
+void calc_desk(sn)
 int sn;
 {
   desk[sn].x=0;
@@ -362,7 +362,7 @@ int sn;
 }
 
 
-VOID extractnam(sn,str)
+void extractnam(sn,str)
 int sn;
 char *str;
 {
@@ -373,7 +373,7 @@ char *str;
   }
 }
 
-VOID extractnamln(sn,str,ln)
+void extractnamln(sn,str,ln)
 int sn;
 char *str;
 int ln;
@@ -394,7 +394,7 @@ int ln;
   }
 }
 
-VOID usage()
+void usage()
 {
   fprintf(stderr,"\
 xskat [-display|-d display] [-geometry|-g geometry] [-font|-fn font]\n\
@@ -423,7 +423,7 @@ After starting the game a mouse click or ESC/F1 will bring up a menu.\n\
 ");
 }
 
-VOID invopt(opt)
+void invopt(opt)
 char *opt;
 {
   fprintf(stderr,"Invalid option %s\n",opt);
@@ -431,13 +431,13 @@ char *opt;
   exitus(1);
 }
 
-VOID nomem()
+void nomem()
 {
   fprintf(stderr,"Out of memory\n");
   exitus(1);
 }
 
-VOID finish(sn,ex)
+void finish(sn,ex)
 int sn,ex;
 {
   int s;
@@ -468,7 +468,7 @@ Display *d;
   return 0;
 }
 
-VOID exitus(n)
+void exitus(n)
 int n;
 {
   if (irc_telnetpid) {
@@ -477,7 +477,7 @@ int n;
   exit(n);
 }
 
-VOID startirc(f)
+void startirc(f)
 int f;
 {
   char *argv[100];
@@ -536,7 +536,7 @@ char *prog_name,**pfn,*res,*suf;
   return r;
 }
 
-VOID logit()
+void logit()
 {
 #ifdef LOGDIR
   FILE *f;
@@ -580,7 +580,7 @@ unsigned char *thegif;
   return c&msk;
 }
 
-VOID decompgif(thedata,thepic,themap,cmapsize)
+void decompgif(thedata,thepic,themap,cmapsize)
 unsigned char *thedata,*thepic,**themap;
 int *cmapsize;
 {
@@ -636,7 +636,7 @@ int *cmapsize;
   }
 }
 
-VOID drawimg(sn,c,f,w,x,y)
+void drawimg(sn,c,f,w,x,y)
 int sn,c,f,w,x,y;
 {
   long i,j,k;
@@ -858,7 +858,7 @@ int sn,c,f,w,x,y;
   }
 }
 
-VOID create_card(sn,c)
+void create_card(sn,c)
 int sn,c;
 {
   int i,j,p,x,y,x1,y1,x2,y2,x3,y3,f,pf,upf,w,ww,hh;
@@ -1002,7 +1002,7 @@ int sn,c;
   change_gcxor(sn,fgpix[sn]);
 }
 
-VOID xinitwin(sn,argc,argv)
+void xinitwin(sn,argc,argv)
 int sn,argc;
 char **argv;
 {
@@ -1114,7 +1114,7 @@ char **argv;
   }
 }
 
-VOID xinitplayers()
+void xinitplayers()
 {
   int sn;
 
@@ -1132,7 +1132,7 @@ VOID xinitplayers()
     w3dpix[sn]=w3dpix[0];
     b3dpix[sn]=b3dpix[0];
     gfx3d[sn]=gfx3d[0];
-    memcpy((VOID *)color[sn],(VOID *)color[0],sizeof(color[0]));
+    memcpy((void *)color[sn],(void *)color[0],sizeof(color[0]));
     title[sn]=title[0];
     dfont[sn]=dfont[0];
     charw[sn]=charw[0];
@@ -1166,7 +1166,7 @@ int x,*r;
   return i-(r[i]-x>x-r[i-1]);
 }
 
-VOID find_cardcol(bm,r,col)
+void find_cardcol(bm,r,col)
 unsigned char *bm;
 int *r,col[6][6][6];
 {
@@ -1181,7 +1181,7 @@ int *r,col[6][6][6];
   }
 }
 
-VOID card_colors(sn)
+void card_colors(sn)
 int sn;
 {
   int c,i,j,k,ncol;
@@ -1254,7 +1254,7 @@ int sn;
   }
 }
 
-VOID xinitres(sn)
+void xinitres(sn)
 int sn;
 {
   static char stgs[]="s1";
@@ -1281,8 +1281,8 @@ int sn;
     extractnam(sn,getenv("LOGNAME"));
     strcpy(usrname[0],spnames[0][0][0]);
     strcpy(usrname[1],spnames[0][1][0]);
-    memcpy((VOID *)color[1],(VOID *)color[0],sizeof(color[0]));
-    memcpy((VOID *)color[2],(VOID *)color[0],sizeof(color[0]));
+    memcpy((void *)color[1],(void *)color[0],sizeof(color[0]));
+    memcpy((void *)color[2],(void *)color[0],sizeof(color[0]));
   }
   if (!(dpy[sn]=XOpenDisplay(disp_name[sn]))) {
     fprintf(stderr,"Can't open display %s\n",XDisplayName(disp_name[sn]));
@@ -1659,7 +1659,7 @@ int sn;
   }
 }
 
-VOID xstoreres()
+void xstoreres()
 {
   char buf[256];
   XColor xcol;
@@ -1796,7 +1796,7 @@ VOID xstoreres()
   fprintf(stderr,"xhost not found\n");
 }
 
-VOID read_cards()
+void read_cards()
 {
   FILE *f;
   int b,cd,cdst,bufidx,buflen=200000;
@@ -1840,7 +1840,7 @@ VOID read_cards()
   fclose(f);
 }
 
-VOID set_conames()
+void set_conames()
 {
   int ln,sn;
   char buf[40];
@@ -1909,7 +1909,7 @@ VOID set_conames()
   }
 }
 
-VOID xinit(argc,argv)
+void xinit(argc,argv)
 int argc;
 char *argv[];
 {
@@ -2387,7 +2387,7 @@ char *argv[];
   if (!irc_play) save_opt();
 }
 
-VOID waitt(t,f)
+void waitt(t,f)
 int t,f;
 {
   struct timeval timeout;
@@ -2413,25 +2413,25 @@ int t,f;
   if (f>1) refresh();
 }
 
-VOID stdwait()
+void stdwait()
 {
   waitt(700,2);
 }
 
-VOID backgr(sn,x,y,w,h)
+void backgr(sn,x,y,w,h)
 int sn,x,y,w,h;
 {
   XFillRectangle(dpy[sn],bck[sn],gcbck[sn],x,y,w,h);
   XFillRectangle(dpy[sn],win[sn],gcbck[sn],x,y,w,h);
 }
 
-VOID putdesk(sn,x,y)
+void putdesk(sn,x,y)
 int sn,x,y;
 {
   backgr(sn,x,y,desk[sn].cardw,desk[sn].cardh);
 }
 
-VOID drawcard(sn,c,x,y)
+void drawcard(sn,c,x,y)
 int sn,c,x,y;
 {
   XCopyArea(dpy[sn],cardpx[sn][c+1],win[sn],gc[sn],0,0,
@@ -2441,20 +2441,20 @@ int sn,c,x,y;
 }
 
 
-VOID putcard(sn,i,x,y)
+void putcard(sn,i,x,y)
 int sn,i,x,y;
 {
   if (i<0) putdesk(sn,x,y);
   else drawcard(sn,i,x,y);
 }
 
-VOID putback(sn,x,y)
+void putback(sn,x,y)
 int sn,x,y;
 {
   drawcard(sn,-1,x,y);
 }
 
-VOID hint_line(sn,c,gcp)
+void hint_line(sn,c,gcp)
 int sn,c;
 GC *gcp;
 {
@@ -2470,7 +2470,7 @@ GC *gcp;
   XDrawLine(dpy[sn],bck[sn],gcp[sn],xyarr[0],xyarr[1],xyarr[2],xyarr[3]);
 }
 
-VOID show_hint(sn,c,d)
+void show_hint(sn,c,d)
 int sn,c,d;
 {
   static int lm[3][2];
@@ -2489,7 +2489,7 @@ int sn,c,d;
   }
 }
 
-VOID putamark(sn,s)
+void putamark(sn,s)
 int sn,s;
 {
   int a,b,xp1,xp2,yp,xyarr[4];
@@ -2524,7 +2524,7 @@ int sn,s;
   change_gc(sn,fgpix[sn],gc);
 }
 
-VOID putmark(s)
+void putmark(s)
 int s;
 {
   int sn;
@@ -2534,7 +2534,7 @@ int s;
   }
 }
 
-VOID remmark(f)
+void remmark(f)
 int f;
 {
   int sn;
@@ -2546,7 +2546,7 @@ int f;
   }
 }
 
-VOID movecard(nn,sn,x1,y1,x2,y2)
+void movecard(nn,sn,x1,y1,x2,y2)
 int nn,sn[],x1[],y1[],x2[],y2[];
 {
   int dx[3],dy[3],i,j,n=8;
@@ -2571,7 +2571,7 @@ int nn,sn[],x1[],y1[],x2[],y2[];
   refresh();
 }
 
-VOID homecard(s,n,m)
+void homecard(s,n,m)
 int s,n,m;
 {
   int sn,sna[3],x1[3],y1[3],x2[3],y2[3];
@@ -2591,7 +2591,7 @@ int s,n,m;
   if (!umdrueck) movecard(numsp,sna,x1,y1,x2,y2);
 }
 
-VOID givecard(s,n)
+void givecard(s,n)
 int s,n;
 {
   int sn,sna[3],x1[3],y1[3],x2[3],y2[3];
@@ -2637,7 +2637,7 @@ int s,n;
   if (!fastdeal) waitt(300,2);
 }
 
-VOID initscr(sn,sor)
+void initscr(sn,sor)
 int sn,sor;
 {
   int i,x,y,c0,c1;
@@ -2711,7 +2711,7 @@ int sn,sor;
   }
 }
 
-VOID spielendscr()
+void spielendscr()
 {
   int sn,s,i,d,x,y1,y2,sav[3];
 
@@ -2753,7 +2753,7 @@ VOID spielendscr()
   di_weiter(1);
 }
 
-VOID revolutionsort(sp)
+void revolutionsort(sp)
 int sp;
 {
   int sn,s,i,x,y1,y2,sav[3];
@@ -2786,7 +2786,7 @@ int sp;
   }
 }
 
-VOID revolutionscr()
+void revolutionscr()
 {
   int sn,mi,x,y,f;
 
@@ -2821,7 +2821,7 @@ VOID revolutionscr()
   phase=REVOLUTION;
 }
 
-VOID clr_desk(nsp)
+void clr_desk(nsp)
 int nsp;
 {
   int sn;
@@ -2845,7 +2845,7 @@ int nsp;
   }
 }
 
-VOID draw_box(sn,x,y,w)
+void draw_box(sn,x,y,w)
 int sn,x,y,w;
 {
   int xy[4];
@@ -2875,7 +2875,7 @@ int sn,x,y,w;
   change_gc(sn,fgpix[sn],gc);
 }
 
-VOID put_box(s)
+void put_box(s)
 int s;
 {
   int sn;
@@ -2893,7 +2893,7 @@ int s;
   }
 }
 
-VOID rem_box(s)
+void rem_box(s)
 int s;
 {
   int sn;
@@ -2915,7 +2915,7 @@ int s;
   }
 }
 
-VOID inv_box(s,c,rev)
+void inv_box(s,c,rev)
 int s,c,rev;
 {
   int sn,x,y,w,h;
@@ -2942,7 +2942,7 @@ int s,c,rev;
   }
 }
 
-VOID put_fbox(sn,t)
+void put_fbox(sn,t)
 int sn,t;
 {
   draw_box(sn,desk[sn].pboxx+24*desk[sn].f/desk[sn].q,desk[sn].pboxy,
@@ -2952,14 +2952,14 @@ int sn,t;
 	   textarr[t].t[lang[sn]]);
 }
 
-VOID rem_fbox(sn)
+void rem_fbox(sn)
 int sn;
 {
   backgr(sn,desk[sn].pboxx+24*desk[sn].f/desk[sn].q,desk[sn].pboxy-5,
 	 80*desk[sn].f/desk[sn].q,28*desk[sn].f/desk[sn].q);
 }
 
-VOID inv_fbox(sn,rev)
+void inv_fbox(sn,rev)
 int sn,rev;
 {
   int x,y,w,h;
@@ -3254,7 +3254,7 @@ int sn,x,y,opt,send;
   return ok;
 }
 
-VOID setcurs(f)
+void setcurs(f)
 int f;
 {
   int x,y,w,sn,snn,newsn=-1;

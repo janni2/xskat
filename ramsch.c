@@ -24,7 +24,7 @@
 #include "skat.h"
 #include "ramsch.h"
 
-VOID start_ramsch()
+void start_ramsch()
 {
   vmh=0;
   spieler=geber;
@@ -34,7 +34,7 @@ VOID start_ramsch()
   phase=SPIELEN;
 }
 
-VOID init_ramsch()
+void init_ramsch()
 {
   int sn;
 
@@ -222,7 +222,7 @@ int fb,*pc,*le;
   return 1;
 }
 
-VOID moeglklein()
+void moeglklein()
 {
   int pc,fb,fp,mgb,mgp;
 
@@ -264,7 +264,7 @@ VOID moeglklein()
   }
 }
 
-VOID nimm_bube()
+void nimm_bube()
 {
   int pc;
 
@@ -281,7 +281,7 @@ VOID nimm_bube()
   }
 }
 
-VOID moegldrunter(sc)
+void moegldrunter(sc)
 int sc;
 {
   int pc,f,fb,pcl,le,fr,w1,w2,wc;
@@ -384,7 +384,7 @@ int ggdurchmarsch()
   return 1;
 }
 
-VOID m_bvr()
+void m_bvr()
 {
   int fb,pc,le,lef,f;
 
@@ -414,21 +414,21 @@ VOID m_bvr()
   }
 }
 
-VOID m_bmr()
+void m_bmr()
 {
   if (ggdurchmarsch()) return;
   if (zweibuben()) return;
   moegldrunter(stcd[0]);
 }
 
-VOID m_bhr()
+void m_bhr()
 {
   if (ggdurchmarsch()) return;
   if (zweibuben()) return;
   moegldrunter(higher(stcd[0],stcd[1])?stcd[0]:stcd[1]);
 }
 
-VOID m_bramsch()
+void m_bramsch()
 {
   playcd=0;
   if (!vmh) m_bvr();
@@ -591,7 +591,7 @@ int sn;
   return 0;
 }
 
-VOID ramsch_stich()
+void ramsch_stich()
 {
   rstsum[ausspl]+=cardw[stcd[0]&7]+cardw[stcd[1]&7]+cardw[stcd[2]&7];
   rstich[ausspl]=1;
@@ -606,7 +606,7 @@ VOID ramsch_stich()
   }
 }
 
-VOID ramsch_result()
+void ramsch_result()
 {
   int maxn,i;
 

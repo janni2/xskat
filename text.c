@@ -336,7 +336,7 @@ static struct {
   {eng_text,{"englisch","english"},{"en",0}}
 };
 
-VOID init_text()
+void init_text()
 {
   int i,j;
 

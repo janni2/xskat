@@ -24,7 +24,7 @@
 #include "skat.h"
 #include "null.h"
 
-VOID init_null()
+void init_null()
 {
   int i;
 
@@ -36,7 +36,7 @@ VOID init_null()
   }
 }
 
-VOID testnull(sn)
+void testnull(sn)
 int sn;
 {
   int i,f,c;
@@ -224,7 +224,7 @@ int drunterdrue()
   return drunter(0);
 }
 
-VOID m_nsp()
+void m_nsp()
 {
   int ufb;
 
@@ -247,7 +247,7 @@ VOID m_nsp()
   else playcd=drunter(vmh==2?!higher(stcd[0],stcd[1]):0);
 }
 
-VOID m_nns(s)
+void m_nns(s)
 int s;
 {
   int sga;
@@ -274,7 +274,7 @@ int s;
   }
 }
 
-VOID null_stich()
+void null_stich()
 {
   int i,fb1,fb2;
 
@@ -297,7 +297,7 @@ VOID null_stich()
   }
 }
 
-VOID null_sort(arr,cnt)
+void null_sort(arr,cnt)
 int *arr,cnt;
 {
   int i,swp;
@@ -369,7 +369,7 @@ int sn,hnd,*cd,*ufb,*mfb,*sfb;
   return 1;
 }
 
-VOID revolutiondist()
+void revolutiondist()
 {
   int i,j,k,p,c,sn,mi,fb,ufb,cnt;
   int cd[4][8],cdc[4],mfb[4],ct[3],sfb[4];

@@ -84,14 +84,14 @@
 
 #define INIT_DI(d)\
 {\
-  memcpy((VOID *)d[1],(VOID *)d[0],sizeof(d[0]));\
-  memcpy((VOID *)d[2],(VOID *)d[0],sizeof(d[0]));\
+  memcpy((void *)d[1],(void *)d[0],sizeof(d[0]));\
+  memcpy((void *)d[2],(void *)d[0],sizeof(d[0]));\
   init_di(d[0]);\
   init_di(d[1]);\
   init_di(d[2]);\
 }
 
-VOID info_reiz()
+void info_reiz()
 {
   int ln,sn;
   static char txt[NUM_LANG][40];
@@ -118,7 +118,7 @@ int sn,tr;
     TX_SCHELLEN+tr:TX_NULL+tr+1;
 }
 
-VOID info_spiel()
+void info_spiel()
 {
   int bl,ln,sn;
   static char txt[2][3][NUM_LANG][40];
@@ -137,7 +137,7 @@ VOID info_spiel()
   }
 }
 
-VOID info_stich(p,c)
+void info_stich(p,c)
 int p,c;
 {
   int bl,ln,sn;
@@ -158,7 +158,7 @@ int p,c;
   }
 }
 
-VOID clear_info()
+void clear_info()
 {
   int sn;
 
@@ -171,7 +171,7 @@ VOID clear_info()
   }
 }
 
-VOID set_names(ob,idx)
+void set_names(ob,idx)
 OBJECT *ob;
 int idx;
 {
@@ -196,7 +196,7 @@ OBJECT *ob;
   return 0;
 }
 
-VOID init_di(ob)
+void init_di(ob)
 OBJECT *ob;
 {
   int i;
@@ -208,7 +208,7 @@ OBJECT *ob;
   }
 }
 
-VOID init_dials()
+void init_dials()
 {
   INIT_DI(diende);
   INIT_DI(diterm);
@@ -259,7 +259,7 @@ VOID init_dials()
   init_di(diirc);
 }
 
-VOID prverz(sn)
+void prverz(sn)
 int sn;
 {
   int ln,n;
@@ -285,7 +285,7 @@ int i;
     (ob[0].next&OB_DISABLED && !(ob[i].spec&OB_EXIT));
 }
 
-VOID cleanip(sn)
+void cleanip(sn)
 int sn;
 {
   int i;
@@ -302,7 +302,7 @@ int sn;
   }
 }
 
-VOID cleanirchost(sn)
+void cleanirchost(sn)
 int sn;
 {
   int i;
@@ -318,7 +318,7 @@ int sn;
   }
 }
 
-VOID cleanname(sn)
+void cleanname(sn)
 int sn;
 {
   int i;
@@ -330,7 +330,7 @@ int sn;
   }
 }
 
-VOID hndl_btevent(sn,bt)
+void hndl_btevent(sn,bt)
 int sn,bt;
 {
   int i,j,c,ag,s1,s2,al,stg[2],sav,bb;
@@ -1059,7 +1059,7 @@ int sn,bt;
   }
 }
 
-VOID button_press(sn,bt,ob)
+void button_press(sn,bt,ob)
 int sn,bt;
 OBJECT *ob;
 {
@@ -1082,7 +1082,7 @@ OBJECT *ob;
   hndl_btevent(sn,bt);
 }
 
-VOID draw_wedge(w,bp,sn,f,x,y,s)
+void draw_wedge(w,bp,sn,f,x,y,s)
 Drawable w;
 unsigned long bp;
 int sn,f,x,y,s;
@@ -1113,7 +1113,7 @@ int sn,f,x,y,s;
   change_gc(sn,fgpix[sn],gc);
 }
 
-VOID draw_actbtn(sn,f)
+void draw_actbtn(sn,f)
 int sn,f;
 {
   OBJECT *ob;
@@ -1136,7 +1136,7 @@ int sn,f;
   }
 }
 
-VOID draw_selpos(sn,f)
+void draw_selpos(sn,f)
 int sn,f;
 {
   unsigned long bp;
@@ -1166,7 +1166,7 @@ int sn,f;
   }
 }
 
-VOID new_selpos(sn,dir)
+void new_selpos(sn,dir)
 int sn,dir;
 {
   draw_selpos(sn,0);
@@ -1174,7 +1174,7 @@ int sn,dir;
   draw_selpos(sn,1);
 }
 
-VOID new_actbtn(sn,dir)
+void new_actbtn(sn,dir)
 int sn,dir;
 {
   OBJECT *ob;
@@ -1215,7 +1215,7 @@ int sn,dir;
   draw_actbtn(sn,1);
 }
 
-VOID set_selpos(sn)
+void set_selpos(sn)
 int sn;
 {
   int i,j,k,n;
@@ -1348,14 +1348,14 @@ int sn;
   ph[sn]=phase;
 }
 
-VOID del_selpos(sn)
+void del_selpos(sn)
 int sn;
 {
   draw_selpos(sn,0);
   selpos[sn].num=0;
 }
 
-VOID manpage(subj)
+void manpage(subj)
 char *subj;
 {
   if (!fork()) {
@@ -1365,7 +1365,7 @@ char *subj;
   }
 }
 
-VOID polldisps()
+void polldisps()
 {
   static int tim;
   Display *d;
@@ -1404,7 +1404,7 @@ VOID polldisps()
   di_warteauf(0,1,s[0],s[1]);
 }
 
-VOID hndl_events()
+void hndl_events()
 {
   int sn,b,x,y,i,opt,bt;
   XEvent event;
@@ -1566,7 +1566,7 @@ VOID hndl_events()
   }
 }
 
-VOID getob_xywhbd(sn,ob,i,x,y,w,h,bp)
+void getob_xywhbd(sn,ob,i,x,y,w,h,bp)
 int sn;
 OBJECT *ob;
 int i,*x,*y,*w,*h,*bp;
@@ -1583,7 +1583,7 @@ int i,*x,*y,*w,*h,*bp;
   *bp=bd;
 }
 
-VOID create_dial(sn,x,y,dy,ob)
+void create_dial(sn,x,y,dy,ob)
 int sn;
 int x,y,dy;
 OBJECT *ob;
@@ -1615,7 +1615,7 @@ OBJECT *ob;
   XMapWindow(dpy[sn],rt);
 }
 
-VOID findlastex(sn)
+void findlastex(sn)
 int sn;
 {
   int i;
@@ -1632,7 +1632,7 @@ int sn;
   }
 }
 
-VOID create_di(sn,ob)
+void create_di(sn,ob)
 int sn;
 OBJECT *ob;
 {
@@ -1647,7 +1647,7 @@ OBJECT *ob;
   del_selpos(sn);
 }
 
-VOID create_diopt(sn,ob)
+void create_diopt(sn,ob)
 int sn;
 OBJECT *ob;
 {
@@ -1662,21 +1662,21 @@ OBJECT *ob;
   del_selpos(sn);
 }
 
-VOID remove_dial(sn,ob)
+void remove_dial(sn,ob)
 int sn;
 OBJECT *ob;
 {
   XDestroyWindow(dpy[sn],ob[0].win);
 }
 
-VOID remove_di(sn)
+void remove_di(sn)
 int sn;
 {
   remove_dial(sn,actdial[sn]);
   actdial[sn]=0;
 }
 
-VOID draw_3d(w,b,sn,x1,y1,x2,y2,rev)
+void draw_3d(w,b,sn,x1,y1,x2,y2,rev)
 Window w;
 Pixmap b;
 int sn,x1,y1,x2,y2,rev;
@@ -1702,7 +1702,7 @@ int sn,x1,y1,x2,y2,rev;
   change_gc(sn,fgpix[sn],gc);
 }
 
-VOID draw_dial(sn,i,ob)
+void draw_dial(sn,i,ob)
 int sn,i;
 OBJECT *ob;
 {
@@ -1781,13 +1781,13 @@ OBJECT *ob;
   draw_actbtn(sn,1);
 }
 
-VOID draw_di(sn,idx)
+void draw_di(sn,idx)
 int sn,idx;
 {
   draw_dial(sn,idx,actdial[sn]);
 }
 
-VOID refresh()
+void refresh()
 {
   int sn,i;
   XEvent event;
@@ -1827,7 +1827,7 @@ VOID refresh()
   }
 }
 
-VOID prspnam(txt,sn,ln)
+void prspnam(txt,sn,ln)
 char *txt;
 int sn,ln;
 {
@@ -1838,7 +1838,7 @@ int sn,ln;
   }
 }
 
-VOID di_info(sn,th)
+void di_info(sn,th)
 int sn,th;
 {
   int s,x,y,w;
@@ -1920,7 +1920,7 @@ int sn,th;
   }
 }
 
-VOID di_hand()
+void di_hand()
 {
   int ln;
   static char txt[NUM_LANG][33];
@@ -1934,7 +1934,7 @@ VOID di_hand()
   create_di(spieler,dihand);
 }
 
-VOID next_grandhand(sn)
+void next_grandhand(sn)
 int sn;
 {
   sn=left(sn);
@@ -1947,7 +1947,7 @@ int sn;
   }
 }
 
-VOID di_grandhand(sn)
+void di_grandhand(sn)
 int sn;
 {
   if (iscomp(sn)) {
@@ -1961,7 +1961,7 @@ int sn;
   }
 }
 
-VOID di_term(sn,s)
+void di_term(sn,s)
 int sn,s;
 {
   int ln;
@@ -1977,21 +1977,21 @@ int sn,s;
   create_di(sn,diterm[sn]);
 }
 
-VOID di_ende(sn)
+void di_ende(sn)
 int sn;
 {
   create_di(sn,diende[sn]);
   actbtn[sn]--;
 }
 
-VOID di_loesch(sn)
+void di_loesch(sn)
 int sn;
 {
   create_di(sn,diloesch);
   actbtn[sn]--;
 }
 
-VOID di_ansage()
+void di_ansage()
 {
   int ln,sn,i,ktr;
   static char txt[3][NUM_LANG][30];
@@ -2066,7 +2066,7 @@ VOID di_ansage()
   else do_angesagt();
 }
 
-VOID di_kontra(sn)
+void di_kontra(sn)
 int sn;
 {
   ktrply=sn;
@@ -2082,7 +2082,7 @@ int sn;
   }
 }
 
-VOID di_rekontra(sn)
+void di_rekontra(sn)
 int sn;
 {
   int ln;
@@ -2104,7 +2104,7 @@ int sn;
   }
 }
 
-VOID di_konre(sn)
+void di_konre(sn)
 int sn;
 {
   int ln;
@@ -2124,7 +2124,7 @@ int sn;
   create_di(sn,dikonre[sn]);
 }
 
-VOID di_ktrnext(sn,f)
+void di_ktrnext(sn,f)
 int sn,f;
 {
   if (kontrastufe==1) {
@@ -2165,7 +2165,7 @@ int sn,f;
   }
 }
 
-VOID di_dicht()
+void di_dicht()
 {
   int sn;
 
@@ -2198,7 +2198,7 @@ VOID di_dicht()
   phase=SPIELEN;
 }
 
-VOID di_weiter(ini)
+void di_weiter(ini)
 int ini;
 {
   int x,y,sn;
@@ -2228,7 +2228,7 @@ int ini;
   }
 }
 
-VOID di_wiederweiter(sn)
+void di_wiederweiter(sn)
 int sn;
 {
   int x,y;
@@ -2243,14 +2243,14 @@ int sn;
   del_selpos(sn);
 }
 
-VOID di_klopfen(sn)
+void di_klopfen(sn)
 int sn;
 {
   create_di(sn,diklopfen);
   actbtn[sn]--;
 }
 
-VOID di_schenken(sn)
+void di_schenken(sn)
 int sn;
 {
   int msp;
@@ -2271,7 +2271,7 @@ int sn;
   }
 }
 
-VOID di_geschenkt()
+void di_geschenkt()
 {
   if (iscomp(spieler)) {
     finishgame();
@@ -2284,7 +2284,7 @@ VOID di_geschenkt()
   }
 }
 
-VOID di_wiederschenken(sn,f)
+void di_wiederschenken(sn,f)
 int sn,f;
 {
   int msp;
@@ -2296,7 +2296,7 @@ int sn,f;
   schenkply=sn;
 }
 
-VOID di_nichtschenken(sn)
+void di_nichtschenken(sn)
 int sn;
 {
   sn=left(sn)==spieler?left(spieler):left(sn);
@@ -2309,7 +2309,7 @@ int sn;
   }
 }
 
-VOID di_schieben()
+void di_schieben()
 {
   int sn;
 
@@ -2372,13 +2372,13 @@ int f,kl;
   return 0;
 }
 
-VOID di_buben()
+void di_buben()
 {
   dibuben[2].str=&textarr[blatt[spieler]>=2?TX_UNTER_NICHT:TX_BUBEN_NICHT];
   create_di(spieler,dibuben);
 }
 
-VOID di_spiel()
+void di_spiel()
 {
   int ln,i,j,a[4];
   static char txt[NUM_LANG][33];
@@ -2411,7 +2411,7 @@ VOID di_spiel()
   actbtn[spieler]=12;
 }
 
-VOID list_fun(sn)
+void list_fun(sn)
 int sn;
 {
   int i,j,k,s,e,r,d,curr[3][3],cgv[3][2],cp,ln;
@@ -2467,13 +2467,13 @@ int sn;
   }
 }
 
-VOID di_delliste()
+void di_delliste()
 {
   if (irc_play) di_liste(irc_pos,1);
   else if (numsp>1) di_liste(0,1);
 }
 
-VOID di_liste(sn,ini)
+void di_liste(sn,ini)
 int sn,ini;
 {
   int ln;
@@ -2525,7 +2525,7 @@ int c;
   }
 }
 
-VOID pformat(f,spec,txt,fil)
+void pformat(f,spec,txt,fil)
 FILE *f;
 int spec;
 char *txt;
@@ -2556,7 +2556,7 @@ int fil;
   if (fil) while (i-->0) fputc(' ',f);
 }
 
-VOID prot_fun(sn,f)
+void prot_fun(sn,f)
 int sn;
 FILE *f;
 {
@@ -2632,7 +2632,7 @@ FILE *f;
   }
 }
 
-VOID im_skat(sn,ln,s,i)
+void im_skat(sn,ln,s,i)
 int sn,ln;
 char *s;
 int i;
@@ -2646,7 +2646,7 @@ int i;
   strcat(s,textarr[(blatt[sn]>=2?TX_AD:TX_A)+(prot1.skat[i][1]&7)].t[ln]);
 }
 
-VOID di_proto(sn,ini,log)
+void di_proto(sn,ini,log)
 int sn,ini,log;
 {
   static char txt[3][NUM_LANG][40],aug[3][NUM_LANG][20];
@@ -2891,7 +2891,7 @@ int sn,ini,log;
   }
 }
 
-VOID di_resultdi(sn)
+void di_resultdi(sn)
 int sn;
 {
   create_di(sn,diresult);
@@ -2909,7 +2909,7 @@ int sn;
   }
 }
 
-VOID di_result(be)
+void di_result(be)
 int be;
 {
   int ln,sn,i,x,y,sx,sy;
@@ -3075,7 +3075,7 @@ int be;
   }
 }
 
-VOID di_delres(sn)
+void di_delres(sn)
 int sn;
 {
   if (resdial[sn]) {
@@ -3084,7 +3084,7 @@ int sn;
   }
 }
 
-VOID di_options(sn)
+void di_options(sn)
 int sn;
 {
   int i,f,ln;
@@ -3143,7 +3143,7 @@ int sn;
   dioptions[sn][9-sort2[sn]].spec|=OB_SELECTED;
 }
 
-VOID di_copyr(sn)
+void di_copyr(sn)
 int sn;
 {
   if (!sn && !dlhintseen) dlhintseen=2;
@@ -3155,7 +3155,7 @@ int sn;
   }
 }
 
-VOID di_grafik(sn)
+void di_grafik(sn)
 int sn;
 {
   static tx_typ tt[2];
@@ -3188,7 +3188,7 @@ int sn;
   digrafik[sn][8+lang[sn]].spec|=OB_SELECTED;
 }
 
-VOID di_strateg(sn)
+void di_strateg(sn)
 int sn;
 {
   static tx_typ tt[3][4];
@@ -3244,7 +3244,7 @@ int sn;
   distrateg[sn][hints[sn]+16].spec|=OB_SELECTED;
 }
 
-VOID di_varianten(sn)
+void di_varianten(sn)
 int sn;
 {
   divarianten[sn][0].next=irc_play?OB_DISABLED:OB_NONE;
@@ -3259,7 +3259,7 @@ int sn;
   divarianten[sn][28+oldrules].spec|=OB_SELECTED;
 }
 
-VOID di_ramschopts(sn)
+void di_ramschopts(sn)
 int sn;
 {
   diramschopts[sn][0].next=irc_play?OB_DISABLED:OB_NONE;
@@ -3268,7 +3268,7 @@ int sn;
   diramschopts[sn][6+rskatloser].spec|=OB_SELECTED;
 }
 
-VOID di_bockevents(sn)
+void di_bockevents(sn)
 int sn;
 {
   int i,j;
@@ -3283,7 +3283,7 @@ int sn;
   dibockevents[sn][11+resumebock].spec|=OB_SELECTED;
 }
 
-VOID di_geschwindigkeit(sn)
+void di_geschwindigkeit(sn)
 int sn;
 {
   static char txt[3][NUM_LANG][20];
@@ -3312,19 +3312,19 @@ int sn;
   digeschwindigkeit[sn][14+abkuerz[sn]].spec|=OB_SELECTED;
 }
 
-VOID di_mehrspieler(sn)
+void di_mehrspieler(sn)
 int sn;
 {
   create_diopt(sn,dimehrspieler);
 }
 
-VOID di_lanspiel(sn)
+void di_lanspiel(sn)
 int sn;
 {
   create_di(sn,dilanspiel);
 }
 
-VOID di_eigenertisch(sn)
+void di_eigenertisch(sn)
 int sn;
 {
   static tx_typ tt1,tt2;
@@ -3342,7 +3342,7 @@ int sn;
   dieigenertisch[9-laninvite[1]].spec|=OB_SELECTED;
 }
 
-VOID di_anderertisch(sn)
+void di_anderertisch(sn)
 int sn;
 {
   static tx_typ tt0;
@@ -3355,7 +3355,7 @@ int sn;
   create_di(sn,dianderertisch);
 }
 
-VOID di_warteauf(sn,u,s2,s3)
+void di_warteauf(sn,u,s2,s3)
 int sn,u,s2,s3;
 {
   static tx_typ tt2,tt3;
@@ -3385,7 +3385,7 @@ int sn,u,s2,s3;
   create_di(sn,diwarteauf);
 }
 
-VOID di_irc(sn)
+void di_irc(sn)
 int sn;
 {
   static tx_typ tt;
@@ -3398,7 +3398,7 @@ int sn;
   create_di(sn,diirc);
 }
 
-VOID di_eingabe(sn)
+void di_eingabe(sn)
 int sn;
 {
   static char txt[5][2];
@@ -3419,7 +3419,7 @@ int sn;
   digui[sn][17+trickl2r[sn]].spec|=OB_SELECTED;
 }
 
-VOID di_wieder(sn,f)
+void di_wieder(sn,f)
 int sn,f;
 {
   if (f) {
@@ -3433,7 +3433,7 @@ int sn,f;
   diwieder[9+vorhandwn].spec|=OB_SELECTED;
 }
 
-VOID di_input(sn,ti,di,buf,len)
+void di_input(sn,ti,di,buf,len)
 int sn,ti,di;
 char *buf;
 int len;
