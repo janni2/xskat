@@ -352,4 +352,14 @@ EXTERN char spnames[4][2][NUM_LANG][10];
 EXTERN char conames[2][2][40];
 EXTERN char usrname[2][40];
 
+extern void init_text();
+extern char *idxlang();
+extern int langidx();
+extern void info_reiz();
+extern int trumpf_idx();
+extern void info_spiel();
+extern void info_stich();
+extern void clear_info();
+extern void set_names();
+
 #endif /* TEXT_H */

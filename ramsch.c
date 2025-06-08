@@ -20,8 +20,8 @@
 
 #define RAMSCH_C
 
-#include "defs.h"
 #include "skat.h"
+#include "xio.h"
 #include "ramsch.h"
 
 void start_ramsch()

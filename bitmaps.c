@@ -21,6 +21,8 @@
 #define BITMAPS_C
 
 #include "bitmaps.h"
+#include "skat.h"
+#include "xio.h"
 
 #define static
 #include "icon.xbm"

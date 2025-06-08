@@ -28,7 +28,6 @@
 #include <X11/Xlib.h>
 #include <X11/X.h>
 #include <X11/keysym.h>
-#include "defs.h"
 #include "skat.h"
 #include "ramsch.h"
 #include "xio.h"

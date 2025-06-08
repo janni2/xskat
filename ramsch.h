@@ -47,4 +47,22 @@ EXTERN int ggdmw[8]
 EXTERN int rstsum[3], rstich[3];
 EXTERN int ggdurchm[3];
 
+extern void start_ramsch();
+extern void init_ramsch();
+extern int zweibuben();
+extern int bubeanspielen();
+extern int sicher();
+extern void moeglklein();
+extern void nimm_bube();
+extern void moegldrunter();
+extern int ggdurchmarsch();
+extern void m_bvr();
+extern void m_bmr();
+extern void m_bhr();
+extern void m_bramsch();
+extern int unsich_fb();
+extern int comp_sramsch();
+extern void ramsch_stich();
+extern void ramsch_result();
+
 #endif /* RAMSCH_H */

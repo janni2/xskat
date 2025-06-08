@@ -24,7 +24,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-#include "defs.h"
+#include "skat.h"
+#include "xio.h"
 #include "text.h"
 
 #define VERSION " X S K A T   4.0 "

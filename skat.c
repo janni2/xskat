@@ -26,9 +26,13 @@
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
-#include "defs.h"
 #include "skat.h"
+#include "xio.h"
+#include "ramsch.h"
+#include "null.h"
 #include "text.h"
+#include "irc.h"
+#include "xdial.h"
 
 int left(s)
 int s;

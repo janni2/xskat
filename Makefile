@@ -33,15 +33,15 @@ xskat: $(OBJECTS)
 clean:
 	rm -f $(OBJECTS) xskat
 
-text.o: text.c text.h defs.h
+text.o: text.c text.h
 	$(CC) $(CFLAGS) $(DEFL) -c $< -o $@
 
-irc.o: irc.c irc.h defs.h skat.h xio.h xdial.h text.h
+irc.o: irc.c irc.h skat.h xio.h xdial.h text.h
 	$(CC) $(CFLAGS) $(DEFI) -c $< -o $@
 
-skat.o: skat.h defs.h text.h
-null.o: null.h defs.h skat.h
-ramsch.o: ramsch.h defs.h skat.h
-xio.o: xio.h defs.h skat.h bitmaps.h irc.h text.h
-xdial.o: xdial.h defs.h xio.h skat.h ramsch.h irc.h text.h
+skat.o: skat.h text.h
+null.o: null.h skat.h
+ramsch.o: ramsch.h skat.h
+xio.o: xio.h skat.h bitmaps.h irc.h text.h
+xdial.o: xdial.h xio.h skat.h ramsch.h irc.h text.h
 bitmaps.o: bitmaps.h symbs.xbm symbl.xbm icon.xbm cards.c

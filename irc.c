@@ -27,7 +27,6 @@
 #include <signal.h>
 #include <fcntl.h>
 #include <sys/types.h>
-#include "defs.h"
 #include "skat.h"
 #include "xio.h"
 #include "xdial.h"

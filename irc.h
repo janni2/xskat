@@ -69,4 +69,63 @@ EXTERN char irc_defaulthost[]
     = DEFAULT_IRC_SERVER
 #endif
     ;
+
+extern void irc_log();
+extern void irc_out();
+extern void irc_print();
+extern void irc_printnl();
+extern char *irc_getline();
+extern int irc_xinput();
+extern int irc_match();
+extern void irc_sendnick();
+extern void irc_pr_ss();
+extern void irc_pr_bs();
+extern void irc_pr_sd();
+extern void irc_pr_ramsch();
+extern void irc_pr_sramsch();
+extern void irc_pr_rskatloser();
+extern void irc_pr_kontra();
+extern void irc_pr_bock();
+extern void irc_pr_resumebock();
+extern void irc_pr_spitze();
+extern void irc_pr_revolution();
+extern void irc_pr_klopfen();
+extern void irc_pr_schenken();
+extern void irc_pr_oldrules();
+extern void irc_pr_bockevents();
+extern void irc_pr_alist();
+extern void irc_pr_start();
+extern void irc_pr_s1();
+extern void irc_sendrules();
+extern void irc_incidx();
+extern void irc_sync();
+extern void irc_sendsync();
+extern void irc_checksync();
+extern void irc_alarm();
+extern void irc_talk();
+extern char *irc_copyname();
+extern int irc_senderok();
+extern void irc_histsave();
+extern void irc_sendbtev();
+extern void irc_sendxyev();
+extern void irc_sendsort();
+extern void irc_sendschenken();
+extern void irc_sendloeschen();
+extern void irc_addcmd();
+extern int irc_getcmd();
+extern void irc_checkhist();
+extern void irc_getrules();
+extern void irc_getserverconf();
+extern void irc_putserverconf();
+extern void irc_putclientconf();
+extern void irc_setpos();
+extern void irc_getclientconf();
+extern void irc_changenick();
+extern void irc_checknick();
+extern void irc_nickchanged();
+extern void irc_msg();
+extern void irc_parse();
+extern void irc_connect();
+extern void irc_init();
+
 #endif /* IRC_H */

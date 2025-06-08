@@ -34,10 +34,3 @@ ComplexProgramTarget(xskat)
 
 /* If you don't need the German man page, delete the next line */
 InstallManPage(xskat-de,$(MANDIR))
-
-ckdef:
-	@echo Checking defs.h;\
-	sed -n "1,/######/p" defs.h > defs;\
-	cat *.c|sed  -n 's/^\([a-zA-Z].*\)(.*)/\1();/p' >> defs;\
-	diff defs defs.h || mv defs defs.h;\
-	rm -f defs
