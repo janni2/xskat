@@ -1,4 +1,3 @@
-
 /*
     xskat - a card game for 1 to 3 players.
     Copyright (C) 2000  Gunter Gerhardt
@@ -18,11 +17,17 @@
          and z is an arbitrary suffix.
 */
 
-#define RAMSCH_C
-
 #include "skat.h"
 #include "xio.h"
 #include "ramsch.h"
+#include "xdial.h" // Added to resolve implicit declarations
+
+// Definitions for variables previously in ramsch.h with EXTERN
+int rswert[8] = {0, 0, 4, 5, 0, 3, 2, 1};
+int ggdmw[8] = {7, 6, 5, 0, 4, 1, 2, 3};
+int rstsum[3] = {0};
+int rstich[3] = {0};
+int ggdurchm[3] = {0};
 
 void start_ramsch()
 {

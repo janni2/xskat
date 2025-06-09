@@ -25,63 +25,57 @@
 #include <X11/Xutil.h>
 #include "text.h"
 
-#undef EXTERN
-#ifdef XIO_C
-#define EXTERN
-#else
-#define EXTERN extern
-#endif
+extern tx_typ tspnames[3][2];
+extern int charw[3], charh[3];
+extern int lost[3];
+extern Display *dpy[3];
+extern Colormap cmap[3];
+extern Window win[3];
+extern unsigned long bpix[3], wpix[3], fgpix[3], bgpix[3], btpix[3];
+extern unsigned long b3dpix[3], w3dpix[3], mkpix[3];
+extern int gfx3d[3];
+extern GC gc[3], gcbck[3], gcxor[3];
+extern XFontStruct *dfont[3];
+extern int ggcards;
+extern Pixmap bck[3];
+extern Pixmap symbs[3];
+extern Pixmap cardpx[3][33];
+extern Cursor cursor[3][2];
+extern int actbtn[3];
+extern int skatopen, stichopen, spitzeopen, backopen[3];
+extern int ktrply, sptzmrk, schenkply;
+extern int revolsort, tauschcard, tauschdone, tauschply;
+extern long ticker;
+extern char *prog_name;
+extern char *disp_name[3];
+extern char *font_name;
+extern char *title[3];
+extern char *fg_col;
+extern char *bg_col;
+extern char *b3d_col;
+extern char *w3d_col;
+extern char *mk_col;
+extern char *bt_col;
+extern char *ccol[4];
+extern int nopre;
+extern int bwcol;
+extern int downup;
+extern int altseq;
+extern int geom_f[3], geom_x[3], geom_y[3];
+extern int colerr;
+extern XSizeHints szhints[3];
+extern XWMHints wmhints;
 
-EXTERN tx_typ tspnames[3][2];
-EXTERN int charw[3], charh[3];
-EXTERN int lost[3];
-EXTERN Display *dpy[3];
-EXTERN Colormap cmap[3];
-EXTERN Window win[3];
-EXTERN unsigned long bpix[3], wpix[3], fgpix[3], bgpix[3], btpix[3];
-EXTERN unsigned long b3dpix[3], w3dpix[3], mkpix[3];
-EXTERN int gfx3d[3];
-EXTERN GC gc[3], gcbck[3], gcxor[3];
-EXTERN XFontStruct *dfont[3];
-EXTERN int ggcards;
-EXTERN Pixmap bck[3];
-EXTERN Pixmap symbs[3];
-EXTERN Pixmap cardpx[3][33];
-EXTERN Cursor cursor[3][2];
-EXTERN int actbtn[3];
-EXTERN int skatopen, stichopen, spitzeopen, backopen[3];
-EXTERN int ktrply, sptzmrk, schenkply;
-EXTERN int revolsort, tauschcard, tauschdone, tauschply;
-EXTERN long ticker;
-EXTERN char *prog_name;
-EXTERN char *disp_name[3];
-EXTERN char *font_name;
-EXTERN char *title[3];
-EXTERN char *fg_col;
-EXTERN char *bg_col;
-EXTERN char *b3d_col;
-EXTERN char *w3d_col;
-EXTERN char *mk_col;
-EXTERN char *bt_col;
-EXTERN char *ccol[4];
-EXTERN int nopre;
-EXTERN int bwcol;
-EXTERN int downup;
-EXTERN int altseq;
-EXTERN int geom_f[3], geom_x[3], geom_y[3];
-EXTERN int colerr;
-EXTERN XSizeHints szhints[3];
-EXTERN XWMHints wmhints;
-EXTERN struct
-{
-  int num, act;
-  struct
-  {
+struct SelPosEntry {
     int x1, y1, x2, y2, f;
-  } p[21];
-} selpos[3];
-EXTERN struct
-{
+};
+struct SelPosData {
+  int num, act;
+  struct SelPosEntry p[21];
+};
+extern struct SelPosData selpos[3];
+
+struct DeskData {
   int large;
   int x, y, w, h;
   int col, plan;
@@ -93,85 +87,17 @@ EXTERN struct
   int pboxx, pboxy;
   int cardx, cardw, cardh;
   int f, q;
-} desk[3];
-EXTERN XColor color[3][256]
-#ifdef XIO_C
-    =
-        {{{0, 0xffff, 0x0000, 0x0000},
-          {0, 0xffff, 0x0000, 0x0000},
-          {0, 0x0000, 0x0000, 0x0000},
-          {0, 0x0000, 0x0000, 0x0000},
-          {0, 0xff00, 0xb400, 0x0000},
-          {0, 0x0000, 0xb400, 0x0000}}}
-#endif
-;
+};
+extern struct DeskData desk[3];
 
-EXTERN int cnts[]
-#ifdef XIO_C
-    =
-        {
-            0, 2, 22, 26, 30, 34, 52, 68, 82}
-#endif
-;
-
-EXTERN int bigs[]
-#ifdef XIO_C
-    =
-        {
-            33, 60,
-            15, 6, 51, 6, 33, 24, 15, 43, 51, 43, 15, 77, 51, 77, 33, 93, 15, 111, 51, 111,
-            7, 9, 60, 107,
-            7, 9, 60, 107,
-            7, 9, 60, 107,
-            15, 6, 51, 6, 15, 43, 51, 43, 33, 60, 15, 77, 51, 77, 15, 111, 51, 111,
-            15, 6, 51, 6, 33, 33, 15, 60, 51, 60, 33, 87, 15, 111, 51, 111,
-            15, 6, 51, 6, 33, 33, 15, 60, 51, 60, 15, 111, 51, 111}
-#endif
-;
-
-EXTERN int smls[]
-#ifdef XIO_C
-    =
-        {
-            2, 23, 77, 23, 2, 105, 77, 105}
-#endif
-;
-
-EXTERN int smlz[]
-#ifdef XIO_C
-    =
-        {
-            4, 16, 75, 16, 4, 112, 75, 112}
-#endif
-;
-
-EXTERN int smlc[]
-#ifdef XIO_C
-    =
-        {
-            6, 5, 78, 5, 6, 126, 78, 126}
-#endif
-;
-
-EXTERN int frm[2][9][2]
-#ifdef XIO_C
-    =
-        {
-            {{1, 4}, {1, 3}, {2, 2}, {3, 1}, {4, 1}, {0, 0}, {0, 0}, {0, 0}, {0, 0}},
-            {{1, 7}, {1, 6}, {1, 5}, {2, 4}, {3, 3}, {4, 2}, {5, 1}, {6, 1}, {7, 1}}}
-#endif
-;
-
-EXTERN int ramp[4][6]
-#ifdef XIO_C
-    =
-        {
-            {0, 70, 100, 150, 180, 255},
-            {0, 70, 150, 180, 255, 255},
-            {0, 70, 180, 255, 255, 255},
-            {0, 180, 255, 255, 255, 255}}
-#endif
-;
+extern XColor color[3][256];
+extern int cnts[];
+extern int bigs[];
+extern int smls[];
+extern int smlz[];
+extern int smlc[];
+extern int frm[2][9][2];
+extern int ramp[4][6];
 
 extern void change_gc();
 extern void change_gcbg();

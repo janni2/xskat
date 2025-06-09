@@ -1,4 +1,3 @@
-
 /*
     xskat - a card game for 1 to 3 players.
     Copyright (C) 2004  Gunter Gerhardt
@@ -18,8 +17,6 @@
          and z is an arbitrary suffix.
 */
 
-#define XIO_C
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -38,12 +35,158 @@
 #include <X11/Xutil.h>
 #include <X11/cursorfont.h>
 #include <X11/Xatom.h>
+
+// Order of includes is important. xio.h defines types used by others.
+#include "xio.h"
 #include "skat.h"
 #include "bitmaps.h"
-#include "xio.h"
 #include "irc.h"
 #include "text.h"
 #include "xdial.h"
+#include "ramsch.h"
+
+// Definitions for variables previously in xio.h with EXTERN
+
+// Variables with initializers (moved from xio.h)
+XColor color[3][256] = {
+    { // color[0]
+        {0, 0xffff, 0x0000, 0x0000}, {0, 0xffff, 0x0000, 0x0000}, {0, 0x0000, 0x0000, 0x0000}, {0, 0x0000, 0x0000, 0x0000}, {0, 0xff00, 0xb400, 0x0000}, {0, 0x0000, 0xb400, 0x0000}
+        // Other elements of color[0] and all of color[1], color[2] will be zero-initialized.
+    }
+};
+
+int cnts[] = {0, 2, 22, 26, 30, 34, 52, 68, 82};
+
+int bigs[] = {
+    33, 60,
+    15, 6, 51, 6, 33, 24, 15, 43, 51, 43, 15, 77, 51, 77, 33, 93, 15, 111, 51, 111,
+    7, 9, 60, 107,
+    7, 9, 60, 107,
+    7, 9, 60, 107,
+    15, 6, 51, 6, 15, 43, 51, 43, 33, 60, 15, 77, 51, 77, 15, 111, 51, 111,
+    15, 6, 51, 6, 33, 33, 15, 60, 51, 60, 33, 87, 15, 111, 51, 111,
+    15, 6, 51, 6, 33, 33, 15, 60, 51, 60, 15, 111, 51, 111
+};
+
+int smls[] = {2, 23, 77, 23, 2, 105, 77, 105};
+int smlz[] = {4, 16, 75, 16, 4, 112, 75, 112};
+int smlc[] = {6, 5, 78, 5, 6, 126, 78, 126};
+
+int frm[2][9][2] = {
+    {{1, 4}, {1, 3}, {2, 2}, {3, 1}, {4, 1}, {0, 0}, {0, 0}, {0, 0}, {0, 0}},
+    {{1, 7}, {1, 6}, {1, 5}, {2, 4}, {3, 3}, {4, 2}, {5, 1}, {6, 1}, {7, 1}}
+};
+
+int ramp[4][6] = {
+    {0, 70, 100, 150, 180, 255},
+    {0, 70, 150, 180, 255, 255},
+    {0, 70, 180, 255, 255, 255},
+    {0, 180, 255, 255, 255, 255}
+};
+
+// Other global variables (previously EXTERN)
+tx_typ tspnames[3][2];
+int charw[3] = {0}, charh[3] = {0};
+int lost[3] = {0};
+Display *dpy[3] = {NULL, NULL, NULL};
+Colormap cmap[3] = {0};
+Window win[3] = {0};
+unsigned long bpix[3] = {0}, wpix[3] = {0}, fgpix[3] = {0}, bgpix[3] = {0}, btpix[3] = {0};
+unsigned long b3dpix[3] = {0}, w3dpix[3] = {0}, mkpix[3] = {0};
+int gfx3d[3] = {0};
+GC gc[3] = {0}, gcbck[3] = {0}, gcxor[3] = {0};
+XFontStruct *dfont[3] = {NULL};
+int ggcards = 0;
+Pixmap bck[3] = {0};
+Pixmap symbs[3] = {0};
+Pixmap cardpx[3][33] = {{0}};
+Cursor cursor[3][2] = {{0}};
+int actbtn[3] = {0};
+int skatopen = 0, stichopen = 0, spitzeopen = 0, backopen[3] = {0};
+int ktrply = 0, sptzmrk = 0, schenkply = 0;
+int revolsort = 0, tauschcard = 0, tauschdone = 0, tauschply = 0;
+long ticker = 0;
+char *prog_name = NULL;
+char *disp_name[3] = {NULL};
+char *font_name = NULL;
+char *title[3] = {NULL};
+char *fg_col = NULL;
+char *bg_col = NULL;
+char *b3d_col = NULL;
+char *w3d_col = NULL;
+char *mk_col = NULL;
+char *bt_col = NULL;
+char *ccol[4] = {NULL};
+int nopre = 0;
+int bwcol = 0;
+int downup = 0;
+int altseq = 0;
+int geom_f[3] = {0}, geom_x[3] = {0}, geom_y[3] = {0};
+int colerr = 0;
+XSizeHints szhints[3] = {{0}};
+XWMHints wmhints = {0};
+struct SelPosData selpos[3] = {0};
+struct DeskData desk[3] = {0};
+
+#ifndef XK_KP_Tab
+#define XK_KP_Tab 0xFF89
+#endif
+#ifndef XK_KP_Enter
+#define XK_KP_Enter 0xFF8D
+#endif
+#ifndef XK_KP_Left
+#define XK_KP_Left 0xFF96
+#endif
+#ifndef XK_KP_Up
+#define XK_KP_Up 0xFF97
+#endif
+#ifndef XK_KP_Right
+#define XK_KP_Right 0xFF98
+#endif
+#ifndef XK_KP_Down
+#define XK_KP_Down 0xFF99
+#endif
+#ifndef XK_3270_BackTab
+#define XK_3270_BackTab 0xFD05
+#endif
+#ifndef XK_ISO_Left_Tab
+#define XK_ISO_Left_Tab 0xFE20
+#endif
+#ifndef hpXK_BackTab
+#define hpXK_BackTab 0x1000FF74
+#endif
+#ifndef hpXK_KP_BackTab
+#define hpXK_KP_BackTab 0x1000FF75
+#endif
+#ifndef osfXK_BackTab
+#define osfXK_BackTab 0x1004FF07
+#endif
+#ifndef osfXK_Left
+#define osfXK_Left 0x1004FF51
+#endif
+#ifndef osfXK_Up
+#define osfXK_Up 0x1004FF52
+#endif
+#ifndef osfXK_Right
+#define osfXK_Right 0x1004FF53
+#endif
+#ifndef osfXK_Down
+#define osfXK_Down 0x1004FF54
+#endif
+
+#define INIT_DI(d)                                    \
+  {                                                   \
+    memcpy((void *)d[1], (void *)d[0], sizeof(d[0])); \
+    memcpy((void *)d[2], (void *)d[0], sizeof(d[0])); \
+    init_di(d[0]);                                    \
+    init_di(d[1]);                                    \
+    init_di(d[2]);                                    \
+  }
+
+/* Definitions for info_reiz, trumpf_idx, info_spiel, info_stich, clear_info, set_names
+   are intentionally removed from xio.c as they are (or should be) in xdial.c
+   Their declarations should be in xdial.h or text.h, which are included.
+*/
 
 void change_gc(sn, fg, gcp) int sn;
 unsigned long fg;
@@ -2955,7 +3098,7 @@ GC *gcp;
   xyarr[2] = xyarr[0] + desk[sn].cardx - 16 * desk[sn].f / desk[sn].q + 1;
   xyarr[3] = xyarr[1];
   XDrawLine(dpy[sn], win[sn], gcp[sn], xyarr[0], xyarr[1], xyarr[2], xyarr[3]);
-  XDrawLine(dpy[sn], bck[sn], gcp[sn], xyarr[0], xyarr[1], xyarr[2], xyarr[3]);
+  XDrawLine(dpy[sn], bck[sn], gc[sn], xyarr[0], xyarr[1], xyarr[2], xyarr[3]);
 }
 
 void show_hint(sn, c, d) int sn, c, d;
