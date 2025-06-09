@@ -21,13 +21,14 @@
 #define BITMAPS_C
 
 #include "bitmaps.h"
+
 #include "skat.h"
 #include "xio.h"
 
 #define static
 #include "icon.xbm"
-#include "symbs.xbm"
 #include "symbl.xbm"
+#include "symbs.xbm"
 #undef static
 
 #include "cards.c"

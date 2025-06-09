@@ -47,8 +47,7 @@
 #define BOCK_BEI_96 128
 #define BOCK_BEI_LAST 128
 
-enum
-{
+enum {
   GEBEN,
   REIZEN,
   HANDSPIEL,
@@ -65,46 +64,36 @@ enum
 
 EXTERN int nullw[]
 #ifdef SKAT_C
-    =
-        {
-            23, 35, 46, 59, 92}
+    = {23, 35, 46, 59, 92}
 #endif
 ;
 
 EXTERN int rwert[]
 #ifdef SKAT_C
-    =
-        {
-            9, 10, 11, 12, 24}
+    = {9, 10, 11, 12, 24}
 #endif
 ;
 
 EXTERN int reizw[]
 #ifdef SKAT_C
-    =
-        {
-            18, 20, 22, 23, 24, 27, 30, 33, 35, 36, 40, 44, 45, 46, 48, 50,
-            54, 55, 59, 60, 63, 66, 70, 72, 77, 80, 81, 84, 88, 90, 96, 99,
-            100, 108, 110, 117, 120, 121, 126, 130, 132, 135, 140, 143,
-            144, 150, 153, 154, 156, 160, 162, 165, 168, 170, 171, 176,
-            180, 187, 189, 190, 192, 198, 200, 204, 207, 209, 210, 216,
-            220, 228, 240, 264, 999}
+    = {18,  20,  22,  23,  24,  27,  30,  33,  35,  36,  40,  44,  45,
+       46,  48,  50,  54,  55,  59,  60,  63,  66,  70,  72,  77,  80,
+       81,  84,  88,  90,  96,  99,  100, 108, 110, 117, 120, 121, 126,
+       130, 132, 135, 140, 143, 144, 150, 153, 154, 156, 160, 162, 165,
+       168, 170, 171, 176, 180, 187, 189, 190, 192, 198, 200, 204, 207,
+       209, 210, 216, 220, 228, 240, 264, 999}
 #endif
 ;
 
 EXTERN int cardw[]
 #ifdef SKAT_C
-    =
-        {
-            11, 10, 4, 3, 2, 0, 0, 0}
+    = {11, 10, 4, 3, 2, 0, 0, 0}
 #endif
 ;
 
 EXTERN int sortw[]
 #ifdef SKAT_C
-    =
-        {
-            0, 1, 2, 3}
+    = {0, 1, 2, 3}
 #endif
 ;
 
@@ -145,8 +134,7 @@ EXTERN int possi[10], possc, stcd[3];
 EXTERN int trumpf, handsp, stsum, astsum, gstsum, spcards[12], kannspitze;
 EXTERN int spgew, spwert, schwz, nullv, spitzeok, nspwert;
 EXTERN int schnang, schwang, ouveang, spitzeang, revolang;
-EXTERN struct
-{
+EXTERN struct {
   int s, r, d, e, g;
 } splist[360];
 EXTERN int splstp, splres;
@@ -169,9 +157,8 @@ EXTERN int laninvite[2];
 EXTERN char irc_hostname[40];
 EXTERN int irc_hostset;
 EXTERN int theargc;
-EXTERN char **theargv;
-EXTERN struct
-{
+EXTERN char** theargv;
+EXTERN struct {
   int stichgem, spieler, trumpf, gereizt, gewonn, augen, ehsso, predef, sramsch;
   int stiche[10][3], anspiel[10], gemacht[10], skat[4][2], verdopp[3];
   long savseed, gamenr;
