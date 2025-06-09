@@ -1,4 +1,3 @@
-
 /*
     xskat - a card game for 1 to 3 players.
     Copyright (C) 2000  Gunter Gerhardt
@@ -18,11 +17,16 @@
          and z is an arbitrary suffix.
 */
 
-#define NULL_C
-
 #include "skat.h"
 #include "xio.h"
 #include "null.h"
+
+// Definitions for variables previously in null.h with EXTERN
+int wirftabfb[4] = {0};
+int hattefb[4] = {0};
+int aussplfb[4] = {0};
+int nochinfb[4] = {0}; // Initialized to 8 in init_null
+int naussplfb[3] = {0};
 
 void init_null()
 {
@@ -205,8 +209,7 @@ int n_abwerfen()
   return j;
 }
 
-int minmax(f)
-int f;
+int minmax(int f)
 {
   int i, j, hi, hj;
 
@@ -221,7 +224,7 @@ int f;
   return j;
 }
 
-int minmaxfb(f, fb)
+int minmaxfb(int f, int fb)
 {
   int i, j = -1;
 
@@ -234,8 +237,7 @@ int minmaxfb(f, fb)
   return j < 0 ? 0 : j;
 }
 
-int drunter(f)
-int f;
+int drunter(int f)
 {
   int i, j;
 
