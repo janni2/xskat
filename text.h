@@ -30,13 +30,11 @@
 
 #define NUM_LANG 2
 
-typedef struct
-{
-  char *t[NUM_LANG];
+typedef struct {
+  char* t[NUM_LANG];
 } tx_typ;
 
-enum
-{
+enum {
   TX_NULL,
   TX_KARO,
   TX_HERZ,
@@ -353,7 +351,7 @@ EXTERN char conames[2][2][40];
 EXTERN char usrname[2][40];
 
 extern void init_text();
-extern char *idxlang();
+extern char* idxlang();
 extern int langidx();
 extern void info_reiz();
 extern int trumpf_idx();

@@ -23,19 +23,20 @@
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+
 #include "text.h"
 
 extern tx_typ tspnames[3][2];
 extern int charw[3], charh[3];
 extern int lost[3];
-extern Display *dpy[3];
+extern Display* dpy[3];
 extern Colormap cmap[3];
 extern Window win[3];
 extern unsigned long bpix[3], wpix[3], fgpix[3], bgpix[3], btpix[3];
 extern unsigned long b3dpix[3], w3dpix[3], mkpix[3];
 extern int gfx3d[3];
 extern GC gc[3], gcbck[3], gcxor[3];
-extern XFontStruct *dfont[3];
+extern XFontStruct* dfont[3];
 extern int ggcards;
 extern Pixmap bck[3];
 extern Pixmap symbs[3];
@@ -46,17 +47,17 @@ extern int skatopen, stichopen, spitzeopen, backopen[3];
 extern int ktrply, sptzmrk, schenkply;
 extern int revolsort, tauschcard, tauschdone, tauschply;
 extern long ticker;
-extern char *prog_name;
-extern char *disp_name[3];
-extern char *font_name;
-extern char *title[3];
-extern char *fg_col;
-extern char *bg_col;
-extern char *b3d_col;
-extern char *w3d_col;
-extern char *mk_col;
-extern char *bt_col;
-extern char *ccol[4];
+extern char* prog_name;
+extern char* disp_name[3];
+extern char* font_name;
+extern char* title[3];
+extern char* fg_col;
+extern char* bg_col;
+extern char* b3d_col;
+extern char* w3d_col;
+extern char* mk_col;
+extern char* bt_col;
+extern char* ccol[4];
 extern int nopre;
 extern int bwcol;
 extern int downup;
@@ -67,7 +68,7 @@ extern XSizeHints szhints[3];
 extern XWMHints wmhints;
 
 struct SelPosEntry {
-    int x1, y1, x2, y2, f;
+  int x1, y1, x2, y2, f;
 };
 struct SelPosData {
   int num, act;

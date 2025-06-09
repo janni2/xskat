@@ -30,17 +30,13 @@
 
 EXTERN int rswert[8]
 #ifdef RAMSCH_C
-    =
-        {
-            0, 0, 4, 5, 0, 3, 2, 1}
+    = {0, 0, 4, 5, 0, 3, 2, 1}
 #endif
 ;
 
 EXTERN int ggdmw[8]
 #ifdef RAMSCH_C
-    =
-        {
-            7, 6, 5, 0, 4, 1, 2, 3}
+    = {7, 6, 5, 0, 4, 1, 2, 3}
 #endif
 ;
 

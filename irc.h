@@ -32,13 +32,7 @@
 
 #define IRC_NICK_LEN 30
 
-enum
-{
-  IRC_OFFLINE,
-  IRC_TALK,
-  IRC_SERVER,
-  IRC_PLAYING
-};
+enum { IRC_OFFLINE, IRC_TALK, IRC_SERVER, IRC_PLAYING };
 
 EXTERN pid_t irc_telnetpid;
 EXTERN int irc_i, irc_o;
@@ -53,12 +47,11 @@ EXTERN int irc_inplen;
 EXTERN long irc_tick;
 EXTERN char *irc_telnet, *irc_host, *irc_channel;
 EXTERN char *irc_nick, *irc_user, *irc_realname;
-EXTERN char *irc_logfile;
-EXTERN char *irc_history[3][100];
+EXTERN char* irc_logfile;
+EXTERN char* irc_history[3][100];
 EXTERN char irc_substr[100];
 EXTERN char irc_inpbuf[1024];
-EXTERN struct
-{
+EXTERN struct {
   char nick[IRC_NICK_LEN + 1];
   int sort1, alternate, large;
   int nimmstich, pos, abkuerz;
@@ -74,7 +67,7 @@ extern void irc_log();
 extern void irc_out();
 extern void irc_print();
 extern void irc_printnl();
-extern char *irc_getline();
+extern char* irc_getline();
 extern int irc_xinput();
 extern int irc_match();
 extern void irc_sendnick();
@@ -103,7 +96,7 @@ extern void irc_sendsync();
 extern void irc_checksync();
 extern void irc_alarm();
 extern void irc_talk();
-extern char *irc_copyname();
+extern char* irc_copyname();
 extern int irc_senderok();
 extern void irc_histsave();
 extern void irc_sendbtev();
