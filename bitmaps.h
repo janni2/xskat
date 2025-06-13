@@ -21,6 +21,9 @@
 #ifndef BITMAPS_H
 #define BITMAPS_H
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+
 #undef EXTERN
 #ifdef BITMAPS_C
 #define EXTERN
@@ -195,5 +198,7 @@ EXTERN struct {
 }
 #endif
 ;
+
+EXTERN SDL_Texture* get_card_texture_from_bitmaps(int card_id, SDL_Renderer* renderer);
 
 #endif /* BITMAPS_H */

@@ -3069,9 +3069,83 @@ int main(argc, argv)
 int argc;
 char* argv[];
 {
-  setrnd(&seed[0], savseed = time((time_t*)0));
-  xinit(theargc = argc, theargv = argv);
-  play();
-  exitus(0);
+  fprintf(stderr, "Debug: main() start\n"); fflush(stderr);
+
+  fprintf(stderr, "Debug: main() calling SDL_Init\n"); fflush(stderr);
+  if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+    fprintf(stderr, "SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
+    return 1; // Or proper error handling
+  }
+  fprintf(stderr, "Debug: main() SDL_Init successful\n"); fflush(stderr);
+
+  setrnd(&seed[0], savseed = time((time_t*)0)); // Standard C library, should be fine
+
+  fprintf(stderr, "Debug: main() calling xinit\n"); fflush(stderr);
+  xinit(theargc = argc, theargv = argv); // This now creates SDL window/renderer
+  fprintf(stderr, "Debug: main() returned from xinit\n"); fflush(stderr);
+
+  // play(); // Comment out original game loop for now
+
+  // Basic SDL event and rendering loop
+  int quit_main_loop = 0;
+  SDL_Event e;
+
+  // Ensure g_sdlRenderer is available (initialized in xinit -> xinitwin)
+  fprintf(stderr, "Debug: main() checking g_sdlWindow and g_sdlRenderer\n"); fflush(stderr);
+  if (g_sdlWindow && g_sdlRenderer) {
+    fprintf(stderr, "Debug: main() entering SDL event loop\n"); fflush(stderr);
+    while (!quit_main_loop) {
+        while (SDL_PollEvent(&e) != 0) {
+            process_sdl_event(&e); // Call new centralized event processor
+            if (e.type == SDL_QUIT) { // Still check for quit here directly
+                quit_main_loop = 1;
+            }
+             // ESC key for quitting can be handled in process_sdl_event or xdial_handle_key_press
+        }
+
+        // Clear screen (using g_colorBg from xio.c)
+        SDL_SetRenderDrawColor(g_sdlRenderer, g_colorBg.r, g_colorBg.g, g_colorBg.b, g_colorBg.a);
+        SDL_RenderClear(g_sdlRenderer);
+
+        // --- Game and UI Rendering will go here ---
+        // For now, just draw active dialogs if any
+        // actdial is defined in xdial.h, OBJECT in xdial.h, draw_dial in xdial.c (currently stubbed X11)
+        // This part will become more complex with actual game state drawing.
+        // We assume sn=0 for single player / main view context for now.
+        if (actdial[0]) { // If a dialog is active for player 0
+            // The draw_dial function needs to be fully refactored for SDL.
+            // For now, this call might not do much if draw_dial is heavily stubbed.
+            // draw_dial(0, 0, actdial[0]); // Draw dialog background/root
+            // for (int i = 1; i < actdial[0][0].spec; ++i) { // Draw elements
+            //     if (!(actdial[0][i].spec & OB_HIDDEN)) {
+            //         draw_dial(0, i, actdial[0]);
+            //     }
+            // }
+            // Placeholder: draw a simple rect for the dialog area
+            if (actdial[0][0].spec > 0) { // Check if dialog object has info
+                 // Approximate dialog position and size (needs proper calculation from xdial.c's logic)
+                 int dialog_w = actdial[0][0].w * charw[0]; // charw[0] from xio.c (TTF font based)
+                 int dialog_h = actdial[0][0].h * charh[0]; // charh[0] from xio.c
+                 int dialog_x = (desk[0].w - dialog_w) / 2; // desk[0] from xio.c
+                 int dialog_y = (desk[0].h - dialog_h) / 2;
+                 sdl_fill_rect(dialog_x, dialog_y, dialog_w, dialog_h, g_colorBt); // Use button color for dialog bg
+                 sdl_draw_rect(dialog_x -1, dialog_y -1, dialog_w + 2, dialog_h + 2, g_colorFg); // Border
+            }
+        }
+        // --- End Game and UI Rendering ---
+
+        SDL_RenderPresent(g_sdlRenderer);
+
+        SDL_Delay(16); // Cap framerate roughly
+    }
+  } else {
+    fprintf(stderr, "SDL Window or Renderer not initialized. Cannot start main loop.\n"); fflush(stderr);
+  }
+
+  fprintf(stderr, "Debug: main() calling SDL_Quit\n"); fflush(stderr);
+  SDL_Quit();
+  fprintf(stderr, "Debug: main() calling exitus(0)\n"); fflush(stderr);
+  exitus(0); // exitus now also handles SDL_DestroyWindow/Renderer
+  fprintf(stderr, "Debug: main() should not reach here\n"); fflush(stderr);
   return 0;
 }

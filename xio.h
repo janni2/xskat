@@ -21,28 +21,40 @@
 #ifndef XIO_H
 #define XIO_H
 
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
+// #include <X11/Xlib.h>
+// #include <X11/Xutil.h>
+#include <SDL2/SDL.h> // Ensure SDL.h is included
+#include <SDL2/SDL_image.h> // For IMG_LoadTexture_RW etc.
+#include <SDL2/SDL_ttf.h> // For SDL_ttf
 
 #include "text.h"
 
 extern tx_typ tspnames[3][2];
 extern int charw[3], charh[3];
 extern int lost[3];
-extern Display* dpy[3];
-extern Colormap cmap[3];
-extern Window win[3];
-extern unsigned long bpix[3], wpix[3], fgpix[3], bgpix[3], btpix[3];
-extern unsigned long b3dpix[3], w3dpix[3], mkpix[3];
-extern int gfx3d[3];
-extern GC gc[3], gcbck[3], gcxor[3];
-extern XFontStruct* dfont[3];
-extern int ggcards;
-extern Pixmap bck[3];
-extern Pixmap symbs[3];
-extern Pixmap cardpx[3][33];
-extern Cursor cursor[3][2];
-extern int actbtn[3];
+// extern Display* dpy[3];
+// extern Colormap cmap[3]; // Already commented in xio.c, ensure consistency
+// extern Window win[3];
+extern SDL_Window* g_sdlWindow;
+extern SDL_Renderer* g_sdlRenderer;
+
+// SDL Color definitions
+extern SDL_Color g_colorBlack, g_colorWhite, g_colorRed, g_colorGreen, g_colorBlue; // Basic colors
+extern SDL_Color g_colorFg, g_colorBg, g_colorBt; // Game specific colors (foreground, background, button)
+
+extern unsigned long bpix[3], wpix[3], fgpix[3], bgpix[3], btpix[3]; // These might be replaced by SDL_Color later
+extern unsigned long b3dpix[3], w3dpix[3], mkpix[3]; // These might be replaced by SDL_Color later
+extern int gfx3d[3]; // Game logic, keep
+// extern GC gc[3], gcbck[3], gcxor[3]; // X11 Graphics Context
+// extern XFontStruct* dfont[3]; // X11 Font structure - Replaced by g_font
+extern TTF_Font* g_font; // Global font
+extern int ggcards; // Game logic, keep
+// extern Pixmap bck[3]; // X11 Pixmap - Background will be handled by renderer clear or specific texture
+// extern Pixmap symbs[3]; // X11 Pixmap - Symbols will need new SDL_Texture handling
+// extern Pixmap cardpx[3][33]; // X11 Pixmap - Replaced by g_cardTextures
+extern SDL_Texture* g_cardTextures[33]; // Global array for card textures
+// extern Cursor cursor[3][2]; // X11 Cursor
+extern int actbtn[3]; // Game logic (related to button state), keep for now
 extern int skatopen, stichopen, spitzeopen, backopen[3];
 extern int ktrply, sptzmrk, schenkply;
 extern int revolsort, tauschcard, tauschdone, tauschply;
@@ -62,10 +74,10 @@ extern int nopre;
 extern int bwcol;
 extern int downup;
 extern int altseq;
-extern int geom_f[3], geom_x[3], geom_y[3];
-extern int colerr;
-extern XSizeHints szhints[3];
-extern XWMHints wmhints;
+extern int geom_f[3], geom_x[3], geom_y[3]; // Related to XParseGeometry, may remove later
+extern int colerr; // X11 color error flag
+// extern XSizeHints szhints[3]; // X11 window size hints
+// extern XWMHints wmhints; // X11 window manager hints
 
 struct SelPosEntry {
   int x1, y1, x2, y2, f;
@@ -89,9 +101,9 @@ struct DeskData {
   int cardx, cardw, cardh;
   int f, q;
 };
-extern struct DeskData desk[3];
+extern struct DeskData desk[3]; // Game layout, keep
 
-extern XColor color[3][256];
+// extern XColor color[3][256]; // X11 Color structure array
 extern int cnts[];
 extern int bigs[];
 extern int smls[];
@@ -135,6 +147,8 @@ extern void drawimg();
 extern void create_card();
 extern void xinitwin();
 extern void xinitplayers();
+extern void sdl_fill_rect(int x, int y, int w, int h, SDL_Color color);
+extern void sdl_draw_rect(int x, int y, int w, int h, SDL_Color color);
 extern int closecol();
 extern void find_cardcol();
 extern void card_colors();

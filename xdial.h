@@ -21,7 +21,7 @@
 #ifndef XDIAL_H
 #define XDIAL_H
 
-#include <X11/X.h>
+#include <SDL2/SDL.h> // For SDL_Event, SDL_Keycode
 
 #include "text.h"
 
@@ -50,7 +50,8 @@ typedef struct {
   int x, y, w, h;
   tx_typ* str;
   int next;
-  Window win;
+  // Window win; // X11 specific, dialog elements won't be separate X windows
+  void* sdl_widget_ref; // Placeholder for potential SDL widget reference
 } OBJECT;
 
 EXTERN OBJECT* actdial[3];
@@ -1089,5 +1090,11 @@ extern void di_irc();
 extern void di_eingabe();
 extern void di_wieder();
 extern void di_input();
+
+// New SDL event processing functions
+extern void process_sdl_event(SDL_Event* event);
+extern void xdial_handle_mouse_click(int x, int y);
+extern void xdial_handle_key_press(SDL_Keycode keycode);
+
 
 #endif /* XDIAL_H */

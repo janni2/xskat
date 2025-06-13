@@ -427,8 +427,10 @@ void irc_checksync() {
 
 void irc_alarm() {
   if (irc_bell) {
-    XBell(dpy[0], 100);
-    XFlush(dpy[0]);
+    // XBell(dpy[0], 100); // X11 specific
+    // XFlush(dpy[0]); // X11 specific
+    // TODO: Add SDL sound equivalent for bell if desired
+    printf("IRC ALARM (Bell)\n"); // Placeholder
   }
 }
 
