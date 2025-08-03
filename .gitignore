@@ -59,7 +59,33 @@ xskat
 
 # CMake
 build/
+cmake-build-*/
 CMakeCache.txt
 CMakeFiles/
+CMakeScripts/
+Testing/
+Makefile
 cmake_install.cmake
+install_manifest.txt
+compile_commands.json
 CTestTestfile.cmake
+_deps
+.cmake/
+
+# Additional build directories and files
+CMakeLists.txt.user
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Additional IDE files
+.idea/
+*.swp
+*.swo
+*~
