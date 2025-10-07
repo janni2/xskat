@@ -29,11 +29,13 @@ set(DOMAIN_SOURCES
 # Application Layer: Business services (settings, i18n, networking)
 set(APPLICATION_SOURCES
     src/application/settings.c  # Centralized settings management
+    src/application/irc.c       # Network communication and IRC protocol
+    src/application/text.c      # Internationalization and localization
 )
 
 # UI Layer: X11 presentation layer (ready for refactoring)
 set(UI_SOURCES
-    # Future layered UI components will go here
+    src/ui/bitmaps.c        # Graphics assets and card rendering (includes cards.c)
 )
 
 # Current source files (being organized into layers)
@@ -41,11 +43,12 @@ set(CORE_SOURCES
     src/skat.c      # Main application and remaining game logic
     src/ramsch.c    # Ramsch game variant (domain layer candidate)
     # src/null.c    # MOVED to domain layer
-    src/bitmaps.c   # Graphics assets (UI layer candidate)
+    # src/bitmaps.c # MOVED to UI layer  
+    # src/cards.c   # MOVED to UI layer (included in bitmaps.c)
     src/xio.c       # X11 window management (UI layer candidate)
     src/xdial.c     # Dialog management (UI layer candidate)
-    src/irc.c       # Network communication (application layer candidate)
-    src/text.c      # Internationalization (application layer candidate)
+    # src/irc.c     # MOVED to application layer
+    # src/text.c    # MOVED to application layer
 )
 
 set(XSKAT_SOURCES

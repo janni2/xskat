@@ -20,10 +20,7 @@
 
 #define BITMAPS_C
 
-#include "bitmaps.h"
-
-#include "skat.h"
-#include "xio.h"
+#include "ui/bitmaps.h"
 
 #define static
 #include "../resources/icon.xbm"

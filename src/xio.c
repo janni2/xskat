@@ -37,7 +37,7 @@
 #include <sys/utsname.h>
 
 // Order of includes is important. xio.h defines types used by others.
-#include "bitmaps.h"
+#include "ui/bitmaps.h"
 #include "irc.h"
 #include "ramsch.h"
 #include "skat.h"

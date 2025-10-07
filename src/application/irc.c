@@ -20,7 +20,7 @@
 
 #define IRC_C
 
-#include "irc.h"
+#include "application/irc.h"
 
 #include <fcntl.h>
 #include <signal.h>

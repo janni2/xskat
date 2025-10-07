@@ -20,7 +20,7 @@
 
 #define TEXT_C
 
-#include "text.h"
+#include "application/text.h"
 
 #include <ctype.h>
 #include <stdio.h>

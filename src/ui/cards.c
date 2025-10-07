@@ -1,5 +1,5 @@
 
-#include "bitmaps.h"
+#include "ui/bitmaps.h"
 #include "skat.h"
 #include "text.h"
 #include "xio.h"
