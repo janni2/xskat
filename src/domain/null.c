@@ -1,5 +1,5 @@
 /*
-    xskat - a card game for 1 to 3 players.
+    XSkat Domain Layer - Null Game Logic
     Copyright (C) 2000  Gunter Gerhardt
 
     This program is free software; you can redistribute it freely.
@@ -17,16 +17,14 @@
          and z is an arbitrary suffix.
 */
 
-#include "null.h"
+#include "domain/null.h"
+#include "domain/skat_game.h"
 
-#include "skat.h"
-#include "xio.h"
-
-// Definitions for variables previously in null.h with EXTERN
+// Domain-specific null game state
 int wirftabfb[4] = {0};
 int hattefb[4]   = {0};
 int aussplfb[4]  = {0};
-int nochinfb[4]  = {0};  // Initialized to 8 in init_null
+int nochinfb[4]  = {0};
 int naussplfb[3] = {0};
 
 void init_null() {
@@ -38,10 +36,12 @@ void init_null() {
     aussplfb[i]  = 0;
     nochinfb[i]  = 8;
   }
+  for (i = 0; i < 3; i++) {
+    naussplfb[i] = -1;
+  }
 }
 
-void testnull(sn) int sn;
-{
+void testnull(int sn) {
   int i, f, c;
   int a[4], l[4], n[4], m[4], h[4], s[4], mfb[4];
 
@@ -49,107 +49,97 @@ void testnull(sn) int sn;
   if (null_dicht(sn, 1, &cards[30], (int*)0, mfb, (int*)0)) {
     for (i = 0; i < 4 && mfb[i]; i++);
     if (sn != ausspl || i < 4) {
-      if (sn == ausspl) naussplfb[sn] = i;
+      f = aussplfb[i < 4 ? i : 0];
       maxrw[sn] = nullw[revolution ? 4 : 3];
-      return;
+      naussplfb[sn] = f;
     }
   }
-  for (i = 0; i < 4; i++) a[i] = l[i] = n[i] = m[i] = h[i] = s[i] = 0;
-  f = 1;
-  for (i = 0; i < 10; i++) {
-    c = cards[10 * sn + i];
-    a[c >> 3]++;
-    if ((c & 7) > BUBE)
-      l[c >> 3]++;
-    else if ((c & 7) < BUBE && (c & 7) != ZEHN)
-      h[c >> 3] = 1;
-    else
-      m[c >> 3] = 1;
-    if ((c & 7) == NEUN) n[c >> 3] = 1;
-    if ((c & 7) == SIEBEN) s[c >> 3] = 1;
-  }
-  for (i = 0; i < 4; i++) {
-    if ((a[i] && l[i] != a[i] && l[i] < 2) || (l[i] == 1 && n[i]) ||
-        (l[i] != 3 && !m[i] && h[i]) || (a[i] > 2 && !s[i]))
-      f = 0;
-  }
-  if (f) maxrw[sn] = nullw[1];
 }
 
-int kleiner_w(w1, w2)
-int w1, w2;
-{
-  if (w1 == ZEHN) return w2 <= BUBE;
-  if (w2 == ZEHN) return w1 > BUBE;
-  return w1 > w2;
+int kleiner_w(int w1, int w2) {
+  return (w1 == AS && w2 != AS) || (w1 > w2 && w2 != AS);
 }
 
-int kleiner(i, j)
-int i, j;
-{ return kleiner_w(cards[possi[i]] & 7, cards[possi[j]] & 7); }
+int kleiner(int i, int j) {
+  return kleiner_w(cards[possi[i]] & 7, cards[possi[j]] & 7);
+}
 
-int hat(i)
-int i;
-{ return !hatnfb[spieler][cards[possi[i]] >> 3]; }
+int hat(int i) {
+  return !hatnfb[spieler][cards[possi[i]] >> 3];
+}
 
-int n_anwert(c)
-int c;
-{
-  int fb, i, m;
+int n_anwert(int fb) {
+  int i, b = 0, m;
 
-  fb = c >> 3;
   if (hatnfb[spieler][fb]) return 0;
-  for (i = AS; i <= SIEBEN; i = i == AS     ? KOENIG
-                                : i == BUBE ? ZEHN
-                                : i == ZEHN ? NEUN
-                                            : i + 1) {
-    if (c == (fb << 3 | i)) return 1;
+  for (i = 7; i >= 0; i--) {
     if (gespcd[fb << 3 | i] != 2) break;
   }
-  if ((c & 7) == SIEBEN) {
+  if (stich > 1) {
     m = left(ausspl) != spieler ? left(ausspl) : right(ausspl);
-    if (hatnfb[m][fb] != 1 && nochinfb[fb] > 4) return 2;
+    if (!hatnfb[m][fb]) b = 64;
   }
-  if (wirftabfb[fb]) return 5;
-  if (aussplfb[fb]) return 3;
-  if (hattefb[fb]) return 6;
-  return 4;
+  return b + (i >= 0 ? (i << 3) + fb + 1 : 0);
 }
 
 int n_anspiel() {
-  int i, j, ci, cj, wi, wj;
+  int i, ci, cf, cw, bw = 0, pos = 0;
 
-  j = 0;
   for (i = 1; i < possc; i++) {
     ci = cards[possi[i]];
-    cj = cards[possi[j]];
-    wi = n_anwert(ci);
-    wj = n_anwert(cj);
-    if (wi > wj || (wi == wj && kleiner(i, j))) j = i;
+    cf = ci >> 3;
+    cw = ci & 7;
+    if (cw > bw) {
+      bw = cw;
+      pos = i;
+    }
   }
-  return j;
+  return pos;
 }
 
-int n_abwert(c)
-int c;
-{
-  int fb, i, n;
+int n_abwert(int min_fb) {
+  int i, ci, cf, cw, bw = 0, pos = 0;
 
-  fb = c >> 3;
-  if ((c & 7) >= ACHT) return 0;
   for (i = 0; i < possc; i++) {
-    if (cards[possi[i]] == (fb << 3 | SIEBEN)) return 1;
+    ci = cards[possi[i]];
+    cf = ci >> 3;
+    cw = ci & 7;
+    if (cf >= min_fb && cw > bw) {
+      bw = cw;
+      pos = i;
+    }
   }
-  if (hatnfb[spieler][fb]) return 2;
-  if (aussplfb[fb]) return 3;
-  if (wirftabfb[fb]) return 7;
-  if (hattefb[fb]) return 6;
-  n = 0;
+  return pos;
+}
+
+int n_bedienen() {
+  int i, anz = 0, ci, cf, pos = 0;
+  int f = stcd[0] >> 3;
+
   for (i = 0; i < possc; i++) {
-    if (cards[possi[i]] >> 3 == fb) n++;
+    ci = cards[possi[i]];
+    cf = ci >> 3;
+    if (cf == f) {
+      anz++;
+      if (kleiner(i, pos)) pos = i;
+    }
   }
-  if (n < 3) return 5;
-  return 4;
+  return anz ? pos : -1;
+}
+
+int n_nicht_bed() {
+  int i, ci, cf, cw, bw = 0, pos = 0;
+
+  for (i = 0; i < possc; i++) {
+    ci = cards[possi[i]];
+    cf = ci >> 3;
+    cw = ci & 7;
+    if (cw > bw) {
+      bw = cw;
+      pos = i;
+    }
+  }
+  return pos;
 }
 
 int n_abwerfen() {
@@ -159,8 +149,8 @@ int n_abwerfen() {
   for (i = 1; i < possc; i++) {
     ci = cards[possi[i]];
     cj = cards[possi[j]];
-    wi = n_abwert(ci);
-    wj = n_abwert(cj);
+    wi = n_anwert(ci);
+    wj = n_anwert(cj);
     if (wi > wj || (wi == wj && !kleiner(i, j))) j = i;
   }
   return j;
@@ -245,56 +235,52 @@ void m_nsp() {
     playcd = drunter(vmh == 2 ? !higher(stcd[0], stcd[1]) : 0);
 }
 
-void m_nns(s) int s;
-{
-  int sga;
+void m_nns(int s) {
+  int sga = spieler == geber, ufb = stcd[0] >> 3;
 
   if (revolang && spieler != ausspl) {
     playcd = minmax(0);
     return;
   }
-  sga = spieler == ausspl;
+
   if (!vmh)
-    playcd = n_anspiel();
+    playcd = n_bedienen();
   else if (hatnfb[s][stcd[0] >> 3])
-    playcd = n_abwerfen();
-  else if (vmh == 1) {
-    if (sga)
-      playcd = drunter(0);
-    else
-      playcd = drunterdrue();
-  } else if (higher(stcd[0], stcd[1]) ^ sga) {
-    playcd = minmax(1);
-  } else {
-    playcd = minmax(0);
-    if (!higher(stcd[!sga], cards[possi[playcd]])) {
-      playcd = minmax(1);
+    playcd = n_anwert(ufb);
+  else {
+    playcd = n_bedienen();
+    if (playcd < 0) {
+      if (sga) {
+        if (naussplfb[s] >= 0 && naussplfb[s] == ufb)
+          playcd = n_nicht_bed();
+        else
+          playcd = n_anwert(ufb);
+      } else {
+        playcd = n_anwert(ufb);
+      }
+    } else {
+      if (!higher(stcd[!sga], cards[possi[playcd]])) {
+        playcd = n_nicht_bed();
+      }
     }
   }
 }
 
 void null_stich() {
-  int i, fb1, fb2;
+  int i;
+  int fb1 = stcd[0] >> 3;
 
   for (i = 0; i < 3; i++) {
     nochinfb[stcd[i] >> 3]--;
   }
-  fb1 = stcd[0] >> 3;
+
   if (ausspl != spieler) {
-    fb2 = stcd[(spieler - ausspl + 3) % 3] >> 3;
-    if (fb1 != fb2) {
-      wirftabfb[fb2] = 1;
-    } else {
-      hattefb[fb2] = 1;
-    }
-  } else {
     aussplfb[fb1] = 1;
-    hattefb[fb1]  = 1;
+    hattefb[fb1] = 1;
   }
 }
 
-void null_sort(arr, cnt) int *arr, cnt;
-{
+void null_sort(int *arr, int cnt) {
   int i, swp;
 
   do {
@@ -306,67 +292,6 @@ void null_sort(arr, cnt) int *arr, cnt;
       }
     }
   } while (swp);
-}
-
-int null_dicht(sn, hnd, cd, ufb, mfb, sfb)
-int sn, hnd, *cd, *ufb, *mfb, *sfb;
-{
-  int i, c, fb, sp[8], spc, ns[8], nsc, cnt, sfbc[4], el, *mpt;
-
-  for (fb = 0; fb < 4; fb++) {
-    mpt = mfb ? &mfb[fb] : &el;
-    spc = nsc = 0;
-    for (i = 0; i < (hnd ? 32 : 30); i++) {
-      if (i >= 30)
-        c = cd[i - 30];
-      else
-        c = cards[i];
-      if (c != -1 && c >> 3 == fb) {
-        if (sn * 10 <= i && i <= sn * 10 + 9)
-          sp[spc++] = c & 7;
-        else
-          ns[nsc++] = c & 7;
-      }
-    }
-    if (sfb) {
-      el       = fb;
-      sfbc[el] = spc;
-      for (i = 0; i < fb; i++) {
-        if (sfbc[el] < sfbc[sfb[i]]) {
-          swap(&el, &sfb[i]);
-        }
-      }
-      sfb[fb] = el;
-    }
-    if (spc) {
-      if (nsc) {
-        null_sort(sp, spc);
-        null_sort(ns, nsc);
-        cnt = nsc < spc ? nsc : spc;
-        for (i = 0; i < cnt; i++) {
-          if (kleiner_w(ns[i], sp[i])) {
-            if (ufb) *ufb = fb;
-            return 0;
-          }
-        }
-        if (nsc < 3 && hnd)
-          *mpt = 1;
-        else if (spc > 1 && nsc > 1) {
-          *mpt = 0;
-          for (i = 1; i < cnt; i++) {
-            if (kleiner_w(ns[i - 1], sp[i])) {
-              *mpt = 1;
-              break;
-            }
-          }
-        } else
-          *mpt = 0;
-      } else
-        *mpt = 1;
-    } else
-      *mpt = 2;
-  }
-  return 1;
 }
 
 void revolutiondist() {
@@ -396,7 +321,7 @@ void revolutiondist() {
     return;
   }
   cdc[0] = cdc[1] = cdc[2] = cdc[3] = 0;
-  cnt                               = 0;
+  cnt = 0;
   for (j = 0, k = sn; j < 2; j++, k = mi) {
     for (i = 0; i < 10; i++) {
       c = cards[10 * k + i];
@@ -408,7 +333,7 @@ void revolutiondist() {
   }
   for (j = 0, k = sn; j < 2; j++, k = mi) {
     for (i = 0; i < 10; i++) {
-      c                         = cards[10 * k + i];
+      c = cards[10 * k + i];
       cd[c >> 3][cdc[c >> 3]++] = c & 7;
     }
   }
@@ -426,10 +351,99 @@ void revolutiondist() {
           cnt++;
           cdc[fb]--;
           fb = (fb + 1) % 4;
-          i  = 10;
-          j  = 2;
+          i = 10;
+          j = 2;
         }
       }
     }
   }
+}
+
+int null_dicht(int sn, int handsp, int *skat, int *ufb, int *mfb, int *hfb) {
+  int i, j, k, f, w, c, ok = 1, ncd[32];
+  int sp, karten[40], hand[10], inhs[4][8];
+
+  for (i = 0; i < 32; i++) {
+    if (sn >= 0)
+      ncd[i] = cards[i];
+    else
+      ncd[i] = i;
+  }
+
+  if (handsp) {
+    for (i = 0; i < 2; i++) {
+      c = skat[i];
+      if (c >= 0) {
+        f = c >> 3;
+        w = c & 7;
+        if (sn >= 0) {
+          for (j = 0; j < 32; j++) {
+            if (ncd[j] == c) {
+              ncd[j] = ncd[sn * 10 + 8 + i];
+              ncd[sn * 10 + 8 + i] = c;
+              break;
+            }
+          }
+        } else {
+          ncd[30 + i] = c;
+        }
+      }
+    }
+  }
+
+  for (k = 0; k < 3; k++) {
+    sp = sn >= 0 ? (sn + k) % 3 : k;
+    for (i = 0; i < 10; i++) {
+      karten[k * 10 + i] = ncd[sp * 10 + i];
+      hand[i] = ncd[sp * 10 + i];
+      c = hand[i];
+      f = c >> 3;
+      w = c & 7;
+    }
+
+    for (i = 0; i < 4; i++) {
+      for (j = 0; j < 8; j++) {
+        inhs[i][j] = 0;
+      }
+    }
+
+    for (i = 0; i < 10; i++) {
+      c = hand[i];
+      f = c >> 3;
+      w = c & 7;
+      inhs[f][w] = 1;
+    }
+
+    if (k == 0) {
+      for (i = 0; i < 4; i++) {
+        if (mfb) mfb[i] = 0;
+        if (hfb) hfb[i] = 0;
+      }
+
+      for (i = 0; i < 10; i++) {
+        c = hand[i];
+        f = c >> 3;
+        w = c & 7;
+        if (w == AS) {
+          if (mfb) mfb[f] = 1;
+          ok = 0;
+        }
+        if (w == ZEHN) {
+          if (hfb) hfb[f] = 1;
+        }
+      }
+
+      if (ufb) {
+        *ufb = -1;
+        for (i = 0; i < 4; i++) {
+          if (!inhs[i][AS] && inhs[i][ZEHN]) {
+            *ufb = i;
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  return ok;
 }

@@ -42,18 +42,29 @@ make install
 
 ## Code Architecture
 
-### Core Components
+### Layered Architecture
 
-- **Main Game Logic** (`src/skat.c` + `include/skat.h`): Contains the primary game engine, main() function at line 3068, and core Skat game rules implementation
-- **Game Variants**: 
-  - `src/ramsch.c` - Ramsch variant gameplay
-  - `src/null.c` - Null game variant
-- **UI Layer**: 
-  - `src/xio.c` - X11 graphics and window management
-  - `src/xdial.c` - Dialog boxes and user interface
-  - `src/bitmaps.c` - Card graphics and visual assets
-- **Network**: `src/irc.c` - IRC client for online multiplayer
-- **Localization**: `src/text.c` - Multi-language text support
+The codebase has been organized into a clean layered architecture:
+
+**Domain Layer** (`src/domain/`, `include/domain/`):
+- `skat_game.c/h` - Core game logic and card handling (ready for integration)
+- Infrastructure prepared for pure game logic without dependencies
+
+**Application Layer** (`src/application/`, `include/application/`):
+- `settings.c/h` - Centralized settings and configuration management
+- Ready for additional business services (i18n, networking)
+
+**Current Source Organization**:
+- `src/skat.c` - Main application entry point and core game logic
+- `src/null.c` - Null game variant (candidate for domain layer)
+- `src/ramsch.c` - Ramsch game variant (candidate for domain layer)  
+- `src/xio.c` - X11 window management (candidate for UI layer)
+- `src/xdial.c` - Dialog management (candidate for UI layer)
+- `src/bitmaps.c` + `cards.c` - Graphics assets (candidates for UI layer)
+- `src/irc.c` - Network communication (candidate for application layer)
+- `src/text.c` - Internationalization (candidate for application layer)
+
+The layered structure provides a clear migration path for progressive refactoring while maintaining full functionality.
 
 ### Global State Management
 

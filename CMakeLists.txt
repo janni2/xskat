@@ -19,16 +19,40 @@ endif()
 # Find required packages
 find_package(X11 REQUIRED)
 
-# Define source files
+# Define source files by layer (layered architecture ready for expansion)
+# Domain Layer: Pure game logic  
+set(DOMAIN_SOURCES
+    src/domain/null.c       # Null game variant logic
+    # src/domain/skat_game.c  # Core game logic (conflicts with legacy skat.c)
+)
+
+# Application Layer: Business services (settings, i18n, networking)
+set(APPLICATION_SOURCES
+    src/application/settings.c  # Centralized settings management
+)
+
+# UI Layer: X11 presentation layer (ready for refactoring)
+set(UI_SOURCES
+    # Future layered UI components will go here
+)
+
+# Current source files (being organized into layers)
+set(CORE_SOURCES
+    src/skat.c      # Main application and remaining game logic
+    src/ramsch.c    # Ramsch game variant (domain layer candidate)
+    # src/null.c    # MOVED to domain layer
+    src/bitmaps.c   # Graphics assets (UI layer candidate)
+    src/xio.c       # X11 window management (UI layer candidate)
+    src/xdial.c     # Dialog management (UI layer candidate)
+    src/irc.c       # Network communication (application layer candidate)
+    src/text.c      # Internationalization (application layer candidate)
+)
+
 set(XSKAT_SOURCES
-    src/skat.c
-    src/ramsch.c
-    src/null.c
-    src/bitmaps.c
-    src/xio.c
-    src/xdial.c
-    src/irc.c
-    src/text.c
+    ${DOMAIN_SOURCES}
+    ${APPLICATION_SOURCES}
+    ${UI_SOURCES}
+    ${CORE_SOURCES}
 )
 
 # Create executable
@@ -45,6 +69,9 @@ target_link_libraries(xskat PRIVATE ${X11_LIBRARIES})
 target_include_directories(xskat PRIVATE 
     ${X11_INCLUDE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/domain
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/application  
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/ui
 )
 
 # Compile definitions

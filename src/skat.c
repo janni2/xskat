@@ -30,11 +30,17 @@
 #include <time.h>
 
 #include "irc.h"
-#include "null.h"
+#include "domain/null.h"
 #include "ramsch.h"
 #include "text.h"
 #include "xdial.h"
 #include "xio.h"
+
+// Note: Layered architecture implemented in:
+// - src/domain/     (game logic)
+// - src/application/ (business services) 
+// - src/ui/         (presentation layer)
+// Legacy files maintained for compatibility during transition
 
 int left(s)
 int s;
