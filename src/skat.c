@@ -3,6 +3,8 @@
     xskat - a card game for 1 to 3 players.
     Copyright (C) 2004  Gunter Gerhardt
 
+    XSkat Main Application - Layered Architecture Composition Root
+
     This program is free software; you can redistribute it freely.
     Use it at your own risk; there is NO WARRANTY.
 
@@ -17,30 +19,46 @@
          where x.y is the version of the original program
          and z is an arbitrary suffix.
 
+    Architecture Overview:
+    This file serves as the composition root and main orchestrator for the
+    layered architecture implementation of XSkat.
 */
 
 #define SKAT_C
 
 #include "skat.h"
 
+// Standard library includes
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
-#include "application/irc.h"
-#include "domain/null.h"
-#include "application/ramsch.h"
-#include "application/text.h"
-#include "ui/xdial.h"
-#include "ui/xio.h"
+// Layered architecture interfaces
+#include "game_interfaces.h"  // Unified layer interfaces
+#include "core_utils.h"       // Core utility functions
 
-// Note: Layered architecture implemented in:
-// - src/domain/     (game logic)
-// - src/application/ (business services) 
-// - src/ui/         (presentation layer)
-// Legacy files maintained for compatibility during transition
+/*
+ * Layered Architecture Structure:
+ * 
+ * Domain Layer (src/domain/, include/domain/):
+ * - Pure game logic and rules implementation
+ * - No external dependencies, fully testable
+ * 
+ * Application Layer (src/application/, include/application/):
+ * - Business services and coordination logic
+ * - Settings, internationalization, networking
+ * 
+ * UI Layer (src/ui/, include/ui/):
+ * - User interface and presentation logic
+ * - X11 window management, dialogs, graphics
+ * 
+ * Main Application (this file):
+ * - Orchestrates all layers and manages game flow
+ * - Contains legacy functions during transition
+ * - Acts as the composition root for dependency injection
+ */
 
 int left(s)
 int s;
