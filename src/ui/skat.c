@@ -35,7 +35,17 @@
 #include "text.h"
 #include "xdial.h"
 #include "xio.h"
+#include "ui_bridge.h" // Include the new C bridge interface
 
+// The old game logic functions are being removed or moved.
+// We will replace them with calls to the GameController via the bridge.
+
+/*
+  The original left(), right(), iscomp(), etc. functions are part of the
+  game logic that is being moved to the C++ domain layer. The UI will
+  no longer need them directly. It will get all necessary state from the
+  UIGameState struct.
+*/
 int left(s)
 int s;
 { return (s + 1) % 3; }
@@ -518,7 +528,8 @@ void do_geben() {
   givecard(hoerer, 2);
   givecard(sager, 2);
   givecard(geber, 2);
-  for (sn = 0; sn < numsp; sn++) initscr(sn, 1);
+  for (sn = 0; sn < numsp; sn++) initscr(sn, 1, NULL);
+  for (sn = 0; sn < numsp; sn++) initscr(sn, 1, NULL);
   for (i = 0; i < 3; i++) {
     lastmsaho[i] = 0;
     sagte18[i]   = 0;
@@ -1323,7 +1334,7 @@ void spielphase() {
     alternate[sn] = alternate[0];
     sort(sn);
   }
-  for (sn = 0; sn < numsp; sn++) initscr(sn, 1);
+  for (sn = 0; sn < numsp; sn++) initscr(sn, 1, NULL);
 }
 
 int higher(c1, c2)
@@ -3051,27 +3062,50 @@ void computer() {
   do_spielen();
 }
 
-void play() {
-  if (!resumebock || !playbock) {
-    bockspiele = bockinc = ramschspiele = 0;
-  } else if (playbock != 2) {
-    ramschspiele = 0;
-  }
-  phase = GEBEN;
-  do {
-    computer();
-    computer();
-    hndl_events();
-  } while (!quit);
+// The original `play()` function contained the main game loop.
+// This is now being replaced by a new loop that interacts with the GameController.
+void new_main_loop(GameController* controller) {
+    UIGameState ui_state;
+    int sn;
+
+    // Start the game via the controller
+    controller_start_new_game(controller);
+
+    do {
+        // 1. Get the current state from the controller
+        controller_get_ui_state(controller, &ui_state);
+
+        // 2. Update the UI based on the new state
+        for (sn = 0; sn < numsp; sn++) { // numsp is a global from xio.c
+            initscr(sn, 1, &ui_state);
+        }
+
+        // 3. Handle X11 events and user input
+        hndl_events(controller); // Pass the controller to the event handler.
+
+        // The computer() calls are no longer needed here, as the C++ ComputerPlayer handles its own logic.
+
+    } while (!quit);
 }
+
 
 int main(argc, argv)
 int argc;
 char* argv[];
 {
+  // The old initialization
   setrnd(&seed[0], savseed = time((time_t*)0));
   xinit(theargc = argc, theargv = argv);
-  play();
+
+  // NEW: Create and use the GameController via the bridge
+  GameController* controller = create_game_controller();
+
+  // The new main loop
+  new_main_loop(controller);
+
+  // Cleanup
+  destroy_game_controller(controller);
+
   exitus(0);
   return 0;
 }

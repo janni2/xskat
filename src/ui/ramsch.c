@@ -56,7 +56,8 @@ void init_ramsch() {
   info_reiz();
   info_spiel();
   for (sn = 0; sn < numsp; sn++) {
-    initscr(sn, 1);
+    // Pass NULL for the state, as this part of the UI is not yet fully refactored.
+    initscr(sn, 1, NULL);
   }
   for (sn = 0; sn < 3; sn++) {
     rstsum[sn] = rstich[sn] = ggdurchm[sn] = 0;

@@ -1,26 +1,18 @@
 cmake_minimum_required(VERSION 3.10)
-project(xskat C)
+project(xskat C CXX)
 
+# Set language standards
 set(CMAKE_C_STANDARD 99)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Find necessary external packages
 find_package(X11 REQUIRED)
 
-add_executable(xskat
-    skat.c
-    ramsch.c
-    null.c
-    bitmaps.c
-    xio.c
-    xdial.c
-    irc.c
-    text.c
-)
+# Add the src directory to start the build process for the layers
+add_subdirectory(src)
 
-if(X11_FOUND)
-    include_directories(${X11_INCLUDE_DIR})
-    target_link_libraries(xskat PRIVATE ${X11_LIBRARIES})
-endif()
-
+# Global compile definitions (if any)
 target_compile_definitions(xskat PRIVATE
     DEFAULT_LANGUAGE="english"
     DEFAULT_IRC_SERVER="irc.fu-berlin.de"

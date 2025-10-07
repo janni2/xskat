@@ -21,6 +21,8 @@
 #ifndef XIO_H
 #define XIO_H
 
+#include "ui_bridge.h" // Moved to the top to ensure types are defined first.
+
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
@@ -158,7 +160,7 @@ extern void remmark();
 extern void movecard();
 extern void homecard();
 extern void givecard();
-extern void initscr();
+extern void initscr(int sn, int sor, const UIGameState* state);
 extern void spielendscr();
 extern void revolutionsort();
 extern void revolutionscr();
@@ -171,12 +173,13 @@ extern void put_fbox();
 extern void rem_fbox();
 extern void inv_fbox();
 extern int card_at();
-extern int hndl_reizen();
-extern int hndl_druecken();
-extern int hndl_tauschen();
-extern int hndl_spielen();
-extern int hndl_nimmstich();
-extern int hndl_button();
+extern void hndl_events(GameController* controller);
+extern int hndl_button(GameController* controller, int sn, int x, int y, int opt, int send);
+extern int hndl_reizen(GameController* controller, int sn, int x, int y);
+extern int hndl_druecken(GameController* controller, int sn, int x, int y);
+extern int hndl_tauschen(GameController* controller, int sn, int x, int y);
+extern int hndl_spielen(GameController* controller, int sn, int x, int y);
+extern int hndl_nimmstich(GameController* controller, int sn);
 extern void setcurs();
 
 #endif /* XIO_H */

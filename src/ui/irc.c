@@ -1,4 +1,3 @@
-
 /*
     xskat - a card game for 1 to 3 players.
     Copyright (C) 2004  Gunter Gerhardt
@@ -800,7 +799,7 @@ char* q;
     }
   } else if (irc_match("xy ", &q)) {
     sscanf(q, "%d,%d,%d\n", &x, &y, &opt);
-    if (hndl_button(sn, x, y, opt, 0)) {
+    if (hndl_button(NULL, sn, x, y, opt, 0)) {
       irc_incidx(irc_histidx, sn);
       ok = 1;
     }
@@ -811,7 +810,7 @@ char* q;
     sort1[sn]     = s1;
     sort2[sn]     = s2;
     alternate[sn] = a;
-    initscr(sn, 1);
+    initscr(sn, 1, NULL);
   } else if (irc_match("sc", &q)) {
     irc_incidx(irc_histidx, sn);
     ok = 1;

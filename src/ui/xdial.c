@@ -1,4 +1,3 @@
-
 /*
     xskat - a card game for 1 to 3 players.
     Copyright (C) 2004  Gunter Gerhardt
@@ -696,8 +695,7 @@ void hndl_btevent(sn, bt) int sn, bt;
         sort2[sn]     = s2;
         alternate[sn] = al;
         if (irc_play) irc_sendsort(sn);
-        initscr(sn, 1);
-        if (sav != sort1[sn] + 2 * alternate[sn] && !irc_play) save_opt();
+        initscr(sn, 1, NULL);
       }
       if (bt == 21)
         di_ende(sn);
@@ -751,7 +749,7 @@ void hndl_btevent(sn, bt) int sn, bt;
         ag = 1;
       }
       if (ag) {
-        initscr(sn, 2);
+        initscr(sn, 2, NULL);
         setcurs(sn + 1);
         if (resdial[sn]) {
           XUnmapWindow(dpy[sn], resdial[sn][0].win);
@@ -1357,152 +1355,13 @@ void polldisps() {
   di_warteauf(0, 1, s[0], s[1]);
 }
 
-void hndl_events() {
-  int sn, b, x, y, i, opt, bt;
-  XEvent event;
-  KeySym keysym;
-  char buf[100], *l;
-  OBJECT* ob;
-  static int sl, sr;
+/* This function is now defined in xio.c to handle the GameController.
+   This duplicate definition is removed to fix the linker error.
 
-  if (!lost[0] && !lost[1] && !lost[2]) setcurs(0);
-  waitt(50, 1);
-  for (sn = 0; sn < numsp; sn++) {
-    if (irc_play && irc_pos != sn) continue;
-    b = x = y = opt = 0;
-    set_selpos(sn);
-    while (!lost[sn] && XCheckMaskEvent(dpy[sn], ~0, &event)) {
-      ob = actdial[sn];
-      switch (event.type) {
-        case KeyRelease:
-          keysym = XLookupKeysym((XKeyEvent*)&event, 0);
-          if (keysym == XK_Shift_L)
-            sl = 0;
-          else if (keysym == XK_Shift_R)
-            sr = 0;
-          break;
-        case KeyPress:
-          i = XLookupString((XKeyEvent*)&event, buf, sizeof(buf) - 1, &keysym,
-                            (XComposeStatus*)0);
-          if (keysym == XK_Shift_L)
-            sl = 1;
-          else if (keysym == XK_Shift_R)
-            sr = 1;
-          if (keysym == XK_F6 && pkoption != 1) {
-            if (!pkoption)
-              pkoption = 2;
-            else if (pkoption != 4)
-              pkoption++;
-          }
-          if (!ob && (keysym == XK_Escape || keysym == XK_F1)) {
-            b   = sn + 1;
-            opt = 2;
-          } else if (i && irc_state == IRC_PLAYING && irc_xinput(buf, i))
-            ;
-          else if (ob || selpos[sn].num) {
-            if (ob == diinput[sn] &&
-                ((i == 1 && (unsigned int)buf[0] >= ' ') ||
-                 keysym == XK_BackSpace || keysym == XK_Delete)) {
-              buf[1] = 0;
-              if (keysym == XK_BackSpace || keysym == XK_Delete) {
-                if (strlen(inputbuf[sn]) > 1) {
-                  inputbuf[sn][strlen(inputbuf[sn]) - 2] = '_';
-                  inputbuf[sn][strlen(inputbuf[sn]) - 1] = 0;
-                }
-              } else if (strlen(inputbuf[sn]) - 1 < inputlen[sn]) {
-                inputbuf[sn][strlen(inputbuf[sn]) - 1] = 0;
-                strcat(inputbuf[sn], buf);
-                strcat(inputbuf[sn], "_");
-              }
-              if (actbtn[sn] != 4) {
-                actbtn[sn] = 4;
-                draw_di(sn, 3);
-                draw_di(sn, 4);
-              }
-              draw_di(sn, 2);
-            } else if ((keysym == XK_Tab && !sr && !sl) ||
-                       (keysym == XK_KP_Tab && !sr && !sl) ||
-                       keysym == XK_Right || keysym == XK_Down ||
-                       keysym == XK_KP_Right || keysym == XK_KP_Down ||
-                       keysym == osfXK_Right || keysym == osfXK_Down) {
-              new_actbtn(sn, 1);
-            } else if ((keysym == XK_Tab && sr + sl) ||
-                       (keysym == XK_KP_Tab && sr + sl) ||
-                       keysym == XK_3270_BackTab || keysym == XK_ISO_Left_Tab ||
-                       keysym == hpXK_BackTab || keysym == hpXK_KP_BackTab ||
-                       keysym == osfXK_BackTab || keysym == XK_Left ||
-                       keysym == XK_Up || keysym == XK_KP_Left ||
-                       keysym == XK_KP_Up || keysym == osfXK_Left ||
-                       keysym == osfXK_Up) {
-              new_actbtn(sn, -1);
-            } else if (keysym == XK_Return || keysym == XK_KP_Enter ||
-                       keysym == XK_space || keysym == XK_Escape ||
-                       keysym == XK_F1) {
-              if (ob && actbtn[sn]) {
-                button_press(sn, actbtn[sn], ob);
-                new_actbtn(sn, 0);
-              } else if (selpos[sn].num) {
-                i = selpos[sn].act;
-                del_selpos(sn);
-                hndl_button(sn, selpos[sn].p[i].x1 + 2, selpos[sn].p[i].y1 + 2,
-                            0, 1);
-              }
-            }
-          }
-          break;
-        case ButtonPress:
-          if (ob) {
-            for (bt = 1; bt < ob[0].spec; bt++) {
-              if (event.xbutton.window == ob[bt].win &&
-                  ob[bt].spec & (OB_BUTTON | OB_EXIT)) {
-                button_press(sn, bt, ob);
-                break;
-              }
-            }
-          } else {
-            b   = sn + 1;
-            x   = event.xbutton.x;
-            y   = event.xbutton.y;
-            opt = (mbutton[sn] && mbutton[sn] == event.xbutton.button) ? 2
-                  : !mbutton[sn]                                       ? 1
-                                                                       : 0;
-          }
-          break;
-        case Expose:
-          if (event.xexpose.window == win[sn]) {
-            XCopyArea(dpy[sn], bck[sn], win[sn], gc[sn], event.xexpose.x,
-                      event.xexpose.y, event.xexpose.width,
-                      event.xexpose.height, event.xexpose.x, event.xexpose.y);
-          } else if (ob && (i = ismemb(event.xexpose.window, ob))) {
-            if (!event.xexpose.count) {
-              draw_di(sn, i < 0 ? 0 : i);
-            }
-          } else if (resdial[sn] &&
-                     (i = ismemb(event.xexpose.window, resdial[sn]))) {
-            if (!event.xexpose.count) {
-              draw_dial(sn, i < 0 ? 0 : i, resdial[sn]);
-            }
-          }
-          break;
-      }
-      set_selpos(sn);
-    }
-    if (b) {
-      del_selpos(sn);
-      hndl_button(b - 1, x, y, opt, 1);
-    }
-    computer();
-  }
-  if (actdial[0] == diwarteauf) {
-    polldisps();
-  }
-  if (irc_play) {
-    while ((l = irc_getline())) {
-      irc_parse(l);
-    }
-    irc_talk((char*)0);
-  }
+void hndl_events() {
+  ...
 }
+*/
 
 void getob_xywhbd(sn, ob, i, x, y, w, h, bp) int sn;
 OBJECT* ob;
@@ -1976,11 +1835,11 @@ void di_kontra(sn) int sn;
   ktrply    = sn;
   ktrsag    = sn;
   sort2[sn] = sort2[spieler] = trumpf == -1;
-  if (!iscomp(spieler)) initscr(spieler, 1);
+  if (!iscomp(spieler)) initscr(spieler, 1, NULL);
   if (iscomp(sn)) {
     di_ktrnext(sn, sage_kontra(sn));
   } else {
-    initscr(sn, 1);
+    initscr(sn, 1, NULL);
     create_di(sn, dikontra[sn]);
   }
 }
