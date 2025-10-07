@@ -67,7 +67,15 @@ XSkat has been refactored into a clean layered architecture that separates conce
 - Coordinates all layers and manages overall game flow
 - Acts as dependency injection composition root
 - Contains main game loop and coordination logic
-- Legacy functions maintained during transition
+- Organized into clear functional sections for maintainability
+
+**Structure**:
+- **Main Entry Point**: Clean main() function that initializes and starts the game
+- **Core Utilities**: Basic utility functions (left, right, swap, random number generation)
+- **File I/O and Error Handling**: Configuration and game state persistence
+- **Game Logic and Card Evaluation**: Core Skat game mechanics
+- **Game Phase Handlers**: Manages different phases of the game (dealing, bidding, playing)
+- **Computer AI and Strategy**: Computer player logic and decision making
 
 ## Interface Contracts
 
@@ -166,5 +174,42 @@ set(CORE_SOURCES
 2. **Application Layer**: Coordinate services but avoid UI dependencies
 3. **UI Layer**: Handle presentation concerns only, delegate business logic
 4. **Main Application**: Act as orchestrator, avoid implementing business logic
+
+## Main Application Organization
+
+The `src/skat.c` file has been reorganized with a clean structure:
+
+### Entry Point
+```c
+int main(int argc, char* argv[]) {
+    // Initialize random seed for game
+    setrnd(&seed[0], savseed = time((time_t*)0));
+    
+    // Initialize X11 UI system and process command line arguments
+    xinit(theargc = argc, theargv = argv);
+    
+    // Start main game loop
+    play();
+    
+    // Clean application exit
+    exitus(0);
+    return 0;
+}
+```
+
+### Functional Sections
+- **Main Entry Point**: Minimal, clean initialization and game startup
+- **Core Utilities**: Player positioning, swapping, random number generation
+- **File I/O and Error Handling**: Configuration persistence and error reporting
+- **Game Logic and Card Evaluation**: Card shuffling, hand evaluation, game rules
+- **Game Phase Handlers**: Dealing, bidding, playing phases
+- **Computer AI and Strategy**: Computer player decision making
+
+### Future Improvements
+While the current organization maintains all functionality, future iterations could:
+- Extract more utility functions to a dedicated utils module
+- Move AI logic to a separate AI service in the application layer
+- Create more granular game state management
+- Implement proper dependency injection for better testability
 
 This architecture provides a solid foundation for maintaining and extending XSkat while preserving its existing functionality.

@@ -28,10 +28,10 @@ set(DOMAIN_SOURCES
 
 # Application Layer: Business services (settings, i18n, networking)
 set(APPLICATION_SOURCES
-    src/application/settings.c  # Centralized settings management
-    src/application/irc.c       # Network communication and IRC protocol
-    src/application/text.c      # Internationalization and localization
-    src/application/ramsch.c    # Ramsch game variant business logic
+    src/application/settings.c    # Centralized settings management
+    src/application/irc.c         # Network communication and IRC protocol
+    src/application/text.c        # Internationalization and localization
+    src/application/ramsch.c      # Ramsch game variant business logic
 )
 
 # UI Layer: X11 presentation layer (ready for refactoring)
@@ -41,9 +41,9 @@ set(UI_SOURCES
     src/ui/xdial.c          # Dialog management and user interface
 )
 
-# Current source files (being organized into layers)
+# Core utilities and main application
 set(CORE_SOURCES
-    src/skat.c      # Main application and remaining game logic
+    src/skat.c        # Main application and game logic
     # src/ramsch.c  # MOVED to application layer
     # src/null.c    # MOVED to domain layer
     # src/bitmaps.c # MOVED to UI layer  

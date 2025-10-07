@@ -60,6 +60,43 @@
  * - Acts as the composition root for dependency injection
  */
 
+/* ========================================================================
+ * MAIN APPLICATION ENTRY POINT
+ * ======================================================================== */
+
+int main(int argc, char* argv[]) {
+    // Initialize random seed for game
+    setrnd(&seed[0], savseed = time((time_t*)0));
+    
+    // Initialize X11 UI system and process command line arguments
+    xinit(theargc = argc, theargv = argv);
+    
+    // Start main game loop
+    play();
+    
+    // Clean application exit
+    exitus(0);
+    return 0;
+}
+
+void play() {
+    if (!resumebock || !playbock) {
+        bockspiele = bockinc = ramschspiele = 0;
+    } else if (playbock != 2) {
+        ramschspiele = 0;
+    }
+    phase = GEBEN;
+    do {
+        computer();
+        computer();
+        hndl_events();
+    } while (!quit);
+}
+
+/* ========================================================================
+ * CORE UTILITY FUNCTIONS
+ * ======================================================================== */
+
 int left(s)
 int s;
 { return (s + 1) % 3; }
@@ -100,6 +137,10 @@ int m;
 int rnd(m)
 int m;
 { return rndval(&seed[1], m); }
+
+/* ========================================================================
+ * FILE I/O AND ERROR HANDLING
+ * ======================================================================== */
 
 void synerr(f, s) FILE* f;
 char* s;
@@ -239,6 +280,10 @@ int get_game() {
   game_file = 0;
   return 0;
 }
+
+/* ========================================================================
+ * GAME LOGIC AND CARD EVALUATION
+ * ======================================================================== */
 
 int gutesblatt() {
   int i, c, tr, bb, bs, as, ze;
@@ -497,6 +542,10 @@ void calc_rw(s) int s;
       maxrw[s] = 17;
   }
 }
+
+/* ========================================================================
+ * GAME PHASE HANDLERS
+ * ======================================================================== */
 
 void do_geben() {
   int sn, i;
@@ -2132,6 +2181,10 @@ int ci;
   return ci != cj && cj == shigh[trumpf] && trdr - tr <= 1;
 }
 
+/* ========================================================================
+ * COMPUTER AI AND STRATEGY FUNCTIONS
+ * ======================================================================== */
+
 int ignorieren() {
   int mi, fb, i, ih, k[8];
 
@@ -3075,27 +3128,4 @@ void computer() {
   do_spielen();
 }
 
-void play() {
-  if (!resumebock || !playbock) {
-    bockspiele = bockinc = ramschspiele = 0;
-  } else if (playbock != 2) {
-    ramschspiele = 0;
-  }
-  phase = GEBEN;
-  do {
-    computer();
-    computer();
-    hndl_events();
-  } while (!quit);
-}
-
-int main(argc, argv)
-int argc;
-char* argv[];
-{
-  setrnd(&seed[0], savseed = time((time_t*)0));
-  xinit(theargc = argc, theargv = argv);
-  play();
-  exitus(0);
-  return 0;
-}
+/* End of XSkat Main Application */
