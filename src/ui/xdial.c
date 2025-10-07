@@ -20,7 +20,7 @@
 
 #define XDIAL_C
 
-#include "xdial.h"
+#include "ui/xdial.h"
 
 #include <X11/X.h>
 #include <X11/Xlib.h>
@@ -31,11 +31,11 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "irc.h"
+#include "application/irc.h"
 #include "ramsch.h"
 #include "skat.h"
-#include "text.h"
-#include "xio.h"
+#include "application/text.h"
+#include "ui/xio.h"
 
 #ifndef XK_KP_Tab
 #define XK_KP_Tab 0xFF89

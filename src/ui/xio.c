@@ -38,12 +38,12 @@
 
 // Order of includes is important. xio.h defines types used by others.
 #include "ui/bitmaps.h"
-#include "irc.h"
+#include "application/irc.h"
 #include "ramsch.h"
 #include "skat.h"
-#include "text.h"
-#include "xdial.h"
-#include "xio.h"
+#include "application/text.h"
+#include "ui/xdial.h"
+#include "ui/xio.h"
 
 // Definitions for variables previously in xio.h with EXTERN
 

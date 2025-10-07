@@ -36,6 +36,8 @@ set(APPLICATION_SOURCES
 # UI Layer: X11 presentation layer (ready for refactoring)
 set(UI_SOURCES
     src/ui/bitmaps.c        # Graphics assets and card rendering (includes cards.c)
+    src/ui/xio.c            # X11 window management and event handling
+    src/ui/xdial.c          # Dialog management and user interface
 )
 
 # Current source files (being organized into layers)
@@ -45,8 +47,8 @@ set(CORE_SOURCES
     # src/null.c    # MOVED to domain layer
     # src/bitmaps.c # MOVED to UI layer  
     # src/cards.c   # MOVED to UI layer (included in bitmaps.c)
-    src/xio.c       # X11 window management (UI layer candidate)
-    src/xdial.c     # Dialog management (UI layer candidate)
+    # src/xio.c     # MOVED to UI layer
+    # src/xdial.c   # MOVED to UI layer
     # src/irc.c     # MOVED to application layer
     # src/text.c    # MOVED to application layer
 )
