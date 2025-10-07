@@ -26,9 +26,9 @@
 #include "xio.h"
 
 #define static
-#include "icon.xbm"
-#include "symbl.xbm"
-#include "symbs.xbm"
+#include "../resources/icon.xbm"
+#include "../resources/symbl.xbm"
+#include "../resources/symbs.xbm"
 #undef static
 
 #include "cards.c"

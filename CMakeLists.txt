@@ -21,14 +21,14 @@ find_package(X11 REQUIRED)
 
 # Define source files
 set(XSKAT_SOURCES
-    skat.c
-    ramsch.c
-    null.c
-    bitmaps.c
-    xio.c
-    xdial.c
-    irc.c
-    text.c
+    src/skat.c
+    src/ramsch.c
+    src/null.c
+    src/bitmaps.c
+    src/xio.c
+    src/xdial.c
+    src/irc.c
+    src/text.c
 )
 
 # Create executable
@@ -42,7 +42,10 @@ set_target_properties(xskat PROPERTIES
 
 # Link libraries
 target_link_libraries(xskat PRIVATE ${X11_LIBRARIES})
-target_include_directories(xskat PRIVATE ${X11_INCLUDE_DIR})
+target_include_directories(xskat PRIVATE 
+    ${X11_INCLUDE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
 
 # Compile definitions
 target_compile_definitions(xskat PRIVATE
