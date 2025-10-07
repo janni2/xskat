@@ -32,7 +32,7 @@
 #include <unistd.h>
 
 #include "application/irc.h"
-#include "ramsch.h"
+#include "application/ramsch.h"
 #include "skat.h"
 #include "application/text.h"
 #include "ui/xio.h"

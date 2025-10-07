@@ -39,7 +39,7 @@
 // Order of includes is important. xio.h defines types used by others.
 #include "ui/bitmaps.h"
 #include "application/irc.h"
-#include "ramsch.h"
+#include "application/ramsch.h"
 #include "skat.h"
 #include "application/text.h"
 #include "ui/xdial.h"

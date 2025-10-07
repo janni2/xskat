@@ -17,11 +17,11 @@
          and z is an arbitrary suffix.
 */
 
-#include "ramsch.h"
+#include "application/ramsch.h"
 
 #include "skat.h"
-#include "xdial.h"  // Added to resolve implicit declarations
-#include "xio.h"
+#include "ui/xdial.h"  // Added to resolve implicit declarations
+#include "ui/xio.h"
 
 // Definitions for variables previously in ramsch.h with EXTERN
 int rswert[8]   = {0, 0, 4, 5, 0, 3, 2, 1};

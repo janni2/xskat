@@ -29,12 +29,12 @@
 #include <string.h>
 #include <time.h>
 
-#include "irc.h"
+#include "application/irc.h"
 #include "domain/null.h"
-#include "ramsch.h"
-#include "text.h"
-#include "xdial.h"
-#include "xio.h"
+#include "application/ramsch.h"
+#include "application/text.h"
+#include "ui/xdial.h"
+#include "ui/xio.h"
 
 // Note: Layered architecture implemented in:
 // - src/domain/     (game logic)
