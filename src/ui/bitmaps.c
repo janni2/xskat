@@ -28,4 +28,5 @@
 #include "../resources/symbs.xbm"
 #undef static
 
-#include "cards.c"
+// The bitmap data previously in cards.c is now compiled separately
+// and linked, so the direct include has been removed.
