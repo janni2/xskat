@@ -38,7 +38,7 @@
 #include "application/settings.h"
 #include "application/text.h"
 #include "application/irc.h"
-#include "application/ramsch.h"
+#include "domain/ramsch.h"
 
 // UI Layer Interface - Presentation Services
 // Functions that handle user interaction and display

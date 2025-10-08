@@ -19,39 +19,35 @@ endif()
 # Find required packages
 find_package(X11 REQUIRED)
 
-# Define source files by layer (layered architecture ready for expansion)
-# Domain Layer: Pure game logic  
+# Define source files by layer (layered architecture)
+# Domain Layer: Pure game logic
 set(DOMAIN_SOURCES
     src/domain/null.c       # Null game variant logic
-    # src/domain/skat_game.c  # Core game logic (conflicts with legacy skat.c)
+    src/domain/ramsch.c     # Ramsch game variant logic
+    src/domain/utils.c      # Utility functions (random number generation, error handling)
+    src/domain/skat_core.c  # Core card evaluation and game logic
 )
 
 # Application Layer: Business services (settings, i18n, networking)
 set(APPLICATION_SOURCES
     src/application/settings.c    # Centralized settings management
+    src/application/file_manager.c # File I/O and configuration management
+    src/application/ai_engine.c   # AI and computer player logic
+    src/application/game_engine.c # Game coordination and flow management
     src/application/irc.c         # Network communication and IRC protocol
     src/application/text.c        # Internationalization and localization
-    src/application/ramsch.c      # Ramsch game variant business logic
 )
 
-# UI Layer: X11 presentation layer (ready for refactoring)
+# UI Layer: X11 presentation layer
 set(UI_SOURCES
     src/ui/bitmaps.c        # Graphics assets and card rendering (includes cards.c)
     src/ui/xio.c            # X11 window management and event handling
     src/ui/xdial.c          # Dialog management and user interface
 )
 
-# Core utilities and main application
+# Main application orchestrator (composition root)
 set(CORE_SOURCES
-    src/skat.c        # Main application and game logic
-    # src/ramsch.c  # MOVED to application layer
-    # src/null.c    # MOVED to domain layer
-    # src/bitmaps.c # MOVED to UI layer  
-    # src/cards.c   # MOVED to UI layer (included in bitmaps.c)
-    # src/xio.c     # MOVED to UI layer
-    # src/xdial.c   # MOVED to UI layer
-    # src/irc.c     # MOVED to application layer
-    # src/text.c    # MOVED to application layer
+    src/skat.c              # Main application entry point and game loop
 )
 
 set(XSKAT_SOURCES

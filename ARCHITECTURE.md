@@ -18,10 +18,11 @@ XSkat has been refactored into a clean layered architecture that separates conce
 
 **Current Components**:
 - `null.c/null.h` - Null game variant logic
+- `ramsch.c/ramsch.h` - Ramsch game variant logic
 - `game_rules.h` - Unified domain API (interface)
 
 **Future Expansions**:
-- Core Skat game rules extraction
+- Core Skat game rules extraction from skat.c
 - Card evaluation and scoring logic
 - Pure game state validation
 
@@ -39,7 +40,6 @@ XSkat has been refactored into a clean layered architecture that separates conce
 - `settings.c/settings.h` - Game configuration management
 - `text.c/text.h` - Internationalization and localization
 - `irc.c/irc.h` - Network communication services
-- `ramsch.c/ramsch.h` - Ramsch game variant coordination
 - `game_services.h` - Unified application services API
 
 ### UI Layer (`src/ui/`, `include/ui/`)
@@ -70,12 +70,13 @@ XSkat has been refactored into a clean layered architecture that separates conce
 - Organized into clear functional sections for maintainability
 
 **Structure**:
-- **Main Entry Point**: Clean main() function that initializes and starts the game
-- **Core Utilities**: Basic utility functions (left, right, swap, random number generation)
-- **File I/O and Error Handling**: Configuration and game state persistence
-- **Game Logic and Card Evaluation**: Core Skat game mechanics
-- **Game Phase Handlers**: Manages different phases of the game (dealing, bidding, playing)
-- **Computer AI and Strategy**: Computer player logic and decision making
+- **Application Initialization**: Clean main() function that initializes and starts the game
+- **Main Game Loop**: play() function that coordinates the overall game flow
+- **Core Utilities**: Basic utility functions (marked for extraction to domain layer)
+- **File I/O and Error Handling**: Configuration and game state persistence (marked for extraction)
+- **Game Logic and Card Evaluation**: Core Skat game mechanics (marked for extraction to domain layer)
+- **Game Phase Handlers**: Manages different phases of the game (marked for extraction)
+- **Computer AI and Strategy**: Computer player logic and decision making (marked for extraction)
 
 ## Interface Contracts
 
@@ -106,7 +107,8 @@ The CMakeLists.txt is organized by architectural layers:
 ```cmake
 # Domain Layer: Pure game logic
 set(DOMAIN_SOURCES
-    src/domain/null.c
+    src/domain/null.c       # Null game variant
+    src/domain/ramsch.c     # Ramsch game variant
 )
 
 # Application Layer: Business services
@@ -138,7 +140,7 @@ set(CORE_SOURCES
 - **Settings management** → Application layer
 - **IRC networking** → Application layer
 - **Internationalization** → Application layer
-- **Ramsch game variant** → Application layer
+- **Ramsch game variant** → Domain layer
 - **Graphics and UI components** → UI layer
 - **Dialog management** → UI layer
 - **Window management** → UI layer

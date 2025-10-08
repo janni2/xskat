@@ -17,7 +17,7 @@
          and z is an arbitrary suffix.
 */
 
-#include "application/ramsch.h"
+#include "domain/ramsch.h"
 
 #include "skat.h"
 #include "ui/xdial.h"  // Added to resolve implicit declarations
