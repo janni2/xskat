@@ -11,7 +11,7 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 
 # Add compile options for better debugging and warnings
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    add_compile_options(-Wall -Wextra -g)
+    add_compile_options(-Wall -Wextra -gline-tables-only)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     add_compile_options(-O2 -DNDEBUG)
 endif()
@@ -26,6 +26,7 @@ set(DOMAIN_SOURCES
     src/domain/ramsch.c     # Ramsch game variant logic
     src/domain/utils.c      # Utility functions (random number generation, error handling)
     src/domain/skat_core.c  # Core card evaluation and game logic
+    src/domain/skat_game.c
 )
 
 # Application Layer: Business services (settings, i18n, networking)
@@ -41,6 +42,7 @@ set(APPLICATION_SOURCES
 # UI Layer: X11 presentation layer
 set(UI_SOURCES
     src/ui/bitmaps.c        # Graphics assets and card rendering (includes cards.c)
+    src/ui/cards.c
     src/ui/xio.c            # X11 window management and event handling
     src/ui/xdial.c          # Dialog management and user interface
 )
