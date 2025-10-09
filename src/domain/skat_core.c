@@ -53,6 +53,7 @@
 
 // UI layer includes (for functions that still have UI dependencies)
 #include "ui/xio.h"
+#include "domain/skat_enums.h"
 
 /* ========================================================================
  * CARD EVALUATION AND HAND ASSESSMENT
@@ -755,28 +756,46 @@ void calc_high(f, s) int f, s;
   for (i = 0; i < 32; i++) gespcd[i] = gespsav[i];
 }
 
-int zweihoechste(ci)
-int ci;
-{
-  int i, tr, trdr, cj = ci;
+int zweihoechste(int ci) {
+  int i, tr, trdr;
+  int cj = ci;
+  Suit trump_suit = (Suit)trumpf;
 
   calc_high(1, 1);
-  if (ci != high[trumpf]) return 0;
+
+  if (ci != high[trumpf]) {
+    return 0;
+  }
+
   for (i = 0; i < possc; i++) {
     cj = cards[possi[i]];
-    if (cj == shigh[trumpf]) break;
+    if (cj == shigh[trumpf]) {
+      break;
+    }
   }
+
   tr = 0;
   for (i = 0; i < possc; i++) {
-    if (cards[possi[i]] >> 3 == trumpf || (cards[possi[i]] & 7) == BUBE) {
+    int current_card = cards[possi[i]];
+    Suit card_suit = (Suit)(current_card >> 3);
+    Rank card_rank = (Rank)(current_card & 7);
+
+    if (card_rank == RANK_BUBE || (trump_suit < 4 && card_suit == trump_suit)) {
       tr++;
     }
   }
-  if (trumpf < 4)
-    trdr = 7 - gespfb[trumpf];
-  else
+
+  if (trump_suit < 4) {
+    trdr = 7 - gespfb[trump_suit];
+  } else {
     trdr = 0;
-  for (i = 0; i < 4; i++)
-    if (!gespcd[i << 3 | BUBE]) trdr++;
+  }
+
+  for (Suit s = SUIT_KREUZ; s <= SUIT_KARO; s++) {
+    if (!gespcd[s << 3 | RANK_BUBE]) {
+      trdr++;
+    }
+  }
+
   return ci != cj && cj == shigh[trumpf] && trdr - tr <= 1;
 }
