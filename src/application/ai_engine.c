@@ -64,9 +64,7 @@ int genugdrin() {
          cardw[stcd[0] & 7] + cardw[stcd[1] & 7] > 3 + rnd(1);
 }
 
-int gewinnstich(f)
-int f;
-{
+int gewinnstich(int f) {
   int i, p, s, g, ci, sf, su;
 
   s  = f ? astsum : gstsum;
@@ -104,9 +102,7 @@ int f;
   return 0;
 }
 
-int uebernehmen(p, h, n)
-int p, h, n;
-{
+int uebernehmen(int p, int h, int n) {
   int i, j, ci, cj, wi, wj, fb, is;
 
   is = (ausspl + vmh) % 3 == spieler;
@@ -228,9 +224,7 @@ int einstechen() {
   return 0;
 }
 
-int niedrighoch(f)
-int f;
-{
+int niedrighoch(int f) {
   int i, j, ok, gespsav[32];
 
   for (i = 0; i < 32; i++) gespsav[i] = gespcd[i];
@@ -457,9 +451,7 @@ void schenke() {
   playcd = j;
 }
 
-int zehnblank(ci)
-int ci;
-{
+int zehnblank(int ci) {
   int i, f, n, z, a, cj;
 
   f = ci >> 3;
@@ -688,9 +680,7 @@ int hatas() {
   return 1;
 }
 
-int schnippeln(f)
-int f;
-{
+int schnippeln(int f) {
   int fb, i, j, k, as, hi;
 
   if (gstsum >= 44 && gstsum < 60) return 0;
@@ -866,8 +856,7 @@ void m_bns() {
     m_bhns();
 }
 
-void make_best(s) int s;
-{
+void make_best(int s) {
   if (possc == 1)
     playcd = 0;
   else if (trumpf > 4) {
@@ -885,8 +874,7 @@ void make_best(s) int s;
   }
 }
 
-void adjfb(s, v) int s, v;
-{
+void adjfb(int s, int v) {
   int i, c, n;
   int fb[5];
 

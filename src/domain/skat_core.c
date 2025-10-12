@@ -148,9 +148,7 @@ void mischen() {
  * CARD COMPARISON AND SORTING
  * ======================================================================== */
 
-int lower(c1, c2, n)
-int c1, c2, n;
-{
+int lower(int c1, int c2, int n) {
   int f1, f2, w1, w2;
 
   if (c1 < 0) return 1;
@@ -179,8 +177,7 @@ int c1, c2, n;
   }
 }
 
-void sort(sn) int sn;
-{
+void sort(int sn) {
   int i, j, f = sn * 10;
   int hatfb[4], fbsum, firstf, sptz;
 
@@ -250,8 +247,7 @@ void sort(sn) int sn;
  * REIZ VALUE CALCULATION
  * ======================================================================== */
 
-void calc_rw(s) int s;
-{
+void calc_rw(int s) {
   int i, c, f, tr, bb, as, ze, dk, stg;
   int b[4], t[4];
 
@@ -333,8 +329,7 @@ void calc_rw(s) int s;
  * CARD HAND MANAGEMENT
  * ======================================================================== */
 
-void drueck(f, n, p) int f, n, *p;
-{
+void drueck(int f, int n, int *p) {
   int i, j;
 
   for (i = trumpf != 5; i < 8 && n && gedr < 2; i++) {
@@ -373,9 +368,7 @@ void truempfe() {
   }
 }
 
-int tr_voll(sn, f)
-int sn, f;
-{
+int tr_voll(int sn, int f) {
   int i, c, t, a, z, n[4], ze[4];
 
   if (trumpf == -1 || trumpf == 4) return f;
@@ -401,17 +394,11 @@ int sn, f;
                       (ze[2] && !n[2]) || (ze[3] && !n[3])));
 }
 
-int sage_kontra(sn)
-int sn;
-{ return tr_voll(sn, 0); }
+int sage_kontra(int sn) { return tr_voll(sn, 0); }
 
-int sage_re(sn)
-int sn;
-{ return tr_voll(sn, 1); }
+int sage_re(int sn) { return tr_voll(sn, 1); }
 
-int testgrand(bb, b, vh)
-int bb, b[4], vh;
-{
+int testgrand(int bb, int b[4], int vh) {
   int i, j, fl, ih, g3, g4, as, ze, ko, a[4], bz;
 
   bz = 2;
@@ -457,8 +444,7 @@ int bb, b[4], vh;
   return fl + bb > 4 && b[3] && !(bb + as == 5 && !ze && !ko);
 }
 
-void calc_inhand(sn) int sn;
-{
+void calc_inhand(int sn) {
   int i, c;
 
   for (i = 0; i < 4; i++) {
@@ -568,9 +554,7 @@ int karobubespielen() {
  * CARD PLAY COMPARISON
  * ======================================================================== */
 
-int higher(c1, c2)
-int c1, c2;
-{
+int higher(int c1, int c2) {
   int f1, w1, f2, w2;
 
   if (c2 == -1) return 1;
@@ -688,8 +672,7 @@ void calc_result() {
  * POSSIBLE CARD PLAYS CALCULATION
  * ======================================================================== */
 
-void calc_poss(s) int s;
-{
+void calc_poss(int s) {
   int i, j, k, f1, w1, f2, w2;
 
   possc = 0;
@@ -719,9 +702,7 @@ void calc_poss(s) int s;
   }
 }
 
-void c_high(f, h) int f;
-int* h;
-{
+void c_high(int f, int* h) {
   int i, j;
 
   h[0] = h[1] = h[2] = h[3] = h[4] = -1;
@@ -742,8 +723,7 @@ int* h;
   }
 }
 
-void calc_high(f, s) int f, s;
-{
+void calc_high(int f, int s) {
   int i, gespsav[32];
 
   c_high(f, high);

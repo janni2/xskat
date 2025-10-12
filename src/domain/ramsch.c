@@ -176,9 +176,7 @@ int bubeanspielen() {
   return 1;
 }
 
-int sicher(fb, pc, le)
-int fb, *pc, *le;
-{
+int sicher(int fb, int *pc, int *le) {
   int i, j, mkz, akz;
   int mk[7], ak[7], p[7];
 
@@ -269,8 +267,7 @@ void nimm_bube() {
   }
 }
 
-void moegldrunter(sc) int sc;
-{
+void moegldrunter(int sc) {
   int pc, f, fb, pcl, le, fr, w1, w2, wc;
 
   fb = cards[possi[0]] >> 3;
@@ -415,9 +412,7 @@ void m_bramsch() {
     m_bhr();
 }
 
-int unsich_fb(sn, s)
-int sn, *s;
-{
+int unsich_fb(int sn, int *s) {
   int fb, pc, le, n;
 
   for (possc = 0; possc < 10; possc++) {
@@ -434,9 +429,7 @@ int sn, *s;
   return n;
 }
 
-int comp_sramsch(sn)
-int sn;
-{
+int comp_sramsch(int sn) {
   int fb, n, i, j, c, ea, bb, dum;
   int p[4], t[4], s[4], o[4], b[4];
 
@@ -634,9 +627,7 @@ void ramsch_result() {
   if (bockspiele && !ramschspiele) spwert *= 2;
 }
 
-int testgrandhand(sn)
-int sn;
-{
+int testgrandhand(int sn) {
   int i, bb, as, zehn, b[4];
 
   bb = as = zehn = 0;

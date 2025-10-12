@@ -193,20 +193,14 @@ struct DeskData desk[3]     = {0};
    included.
 */
 
-void change_gc(sn, fg, gcp) int sn;
-unsigned long fg;
-GC* gcp;
-{
+void change_gc(int sn, unsigned long fg, GC* gcp) {
   XGCValues gcv;
 
   gcv.foreground = fg;
   XChangeGC(dpy[sn], gcp[sn], GCForeground, &gcv);
 }
 
-void change_gcbg(sn, bg, gcp) int sn;
-unsigned long bg;
-GC* gcp;
-{
+void change_gcbg(int sn, unsigned long bg, GC* gcp) {
   XGCValues gcv;
 
   gcv.background = bg;
@@ -217,9 +211,7 @@ void change_gcxor(sn, fg) int sn;
 unsigned long fg;
 { change_gc(sn, fg ^ bgpix[sn], gcxor); }
 
-int istrue(s)
-char* s;
-{
+int istrue(char* s) {
   char h[5];
   int i;
 
@@ -367,18 +359,12 @@ void drop_card(i, s) int i, s;
   stdwait();
 }
 
-int query_err(d, e)
-Display* d;
-XErrorEvent* e;
-{
+int query_err(Display* d, XErrorEvent* e) {
   colerr = 1;
   return 0;
 }
 
-int closest_col(sn, xcol)
-int sn;
-XColor* xcol;
-{
+int closest_col(int sn, XColor* xcol) {
   static int f[3];
   static XColor xcm[3][256];
   int i, j, k, pl;
@@ -578,9 +564,7 @@ void finish(sn, ex) int sn, ex;
   if (ex) exitus(1);
 }
 
-int ioerr(d)
-Display* d;
-{
+int ioerr(Display* d) {
   int sn, es = 0;
 
   for (sn = 0; sn < numsp; sn++) {
@@ -625,9 +609,7 @@ void startirc(f) int f;
   exitus(0);
 }
 
-int getdeffn(prog_name, pfn, res, suf)
-char *prog_name, **pfn, *res, *suf;
-{
+int getdeffn(char *prog_name, char **pfn, char *res, char *suf) {
   char *home, *fn, *rfn;
   int r;
 
@@ -683,10 +665,7 @@ void logit() {
 #endif
 }
 
-int getcode(bpos, csiz, msk, thegif)
-int *bpos, csiz, msk;
-unsigned char* thegif;
-{
+int getcode(int *bpos, int csiz, int msk, unsigned char* thegif) {
   int pos;
   long c;
 
@@ -1286,9 +1265,7 @@ void xinitplayers() {
   }
 }
 
-int closecol(x, r)
-int x, *r;
-{
+int closecol(int x, int *r) {
   int i;
 
   for (i = 1; x > r[i]; i++);
@@ -2980,9 +2957,7 @@ void inv_fbox(sn, rev) int sn, rev;
   }
 }
 
-int card_at(sn, x, y, zw)
-int sn, x, y, zw;
-{
+int card_at(int sn, int x, int y, int zw) {
   int c, s;
 
   zw = (zw && y >= desk[sn].skaty && y < desk[sn].skaty + desk[sn].cardh);
@@ -2997,9 +2972,7 @@ int sn, x, y, zw;
   return 0;
 }
 
-int hndl_reizen(sn, x, y)
-int sn, x, y;
-{
+int hndl_reizen(int sn, int x, int y) {
   int b;
 
   if (x <= desk[sn].pboxx + 60 * desk[sn].f / desk[sn].q)
@@ -3022,9 +2995,7 @@ int sn, x, y;
   return 0;
 }
 
-int hndl_druecken(sn, x, y)
-int sn, x, y;
-{
+int hndl_druecken(int sn, int x, int y) {
   int c, sna[1], x1[1], y1[1], x2[1], y2[1];
 
   c = card_at(sn, x, y, 0);
@@ -3097,9 +3068,7 @@ int sn, x, y;
   return 1;
 }
 
-int hndl_tauschen(sn, x, y)
-int sn, x, y;
-{
+int hndl_tauschen(int sn, int x, int y) {
   int c, c1, zw, mi, d[2], sna[2], x1[2], y1[2], x2[2], y2[2];
 
   mi = left(sn) == spieler ? left(spieler) : left(sn);
@@ -3174,9 +3143,7 @@ int sn, x, y;
   return 1;
 }
 
-int hndl_spielen(sn, x, y)
-int sn, x, y;
-{
+int hndl_spielen(int sn, int x, int y) {
   int i, c;
 
   c = card_at(sn, x, y, 0);
@@ -3197,9 +3164,7 @@ int sn, x, y;
   return 0;
 }
 
-int hndl_nimmstich(sn)
-int sn;
-{
+int hndl_nimmstich(int sn) {
   nimmstich[sn][1] = 0;
   phase            = SPIELEN;
   for (sn = 0; sn < numsp; sn++) {
@@ -3213,9 +3178,7 @@ int sn;
   return 1;
 }
 
-int hndl_button(sn, x, y, opt, send)
-int sn, x, y, opt, send;
-{
+int hndl_button(int sn, int x, int y, int opt, int send) {
   int ok = 0;
   static int errcnt[3];
 

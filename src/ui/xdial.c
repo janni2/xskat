@@ -111,9 +111,7 @@ void info_reiz() {
   }
 }
 
-int trumpf_idx(sn, tr)
-int sn, tr;
-{
+int trumpf_idx(int sn, int tr) {
   return blatt[sn] >= 2 && tr >= 0 && tr <= 3 ? TX_SCHELLEN + tr
                                               : TX_NULL + tr + 1;
 }
@@ -182,10 +180,7 @@ int idx;
   }
 }
 
-int ismemb(w, ob)
-Window w;
-OBJECT* ob;
-{
+int ismemb(Window w, OBJECT* ob) {
   int i;
 
   for (i = 0; i < ob[0].spec; i++) {
@@ -274,10 +269,7 @@ void prverz(sn) int sn;
   }
 }
 
-int ob_disabled(ob, i)
-OBJECT* ob;
-int i;
-{
+int ob_disabled(OBJECT* ob, int i) {
   return ob[i].spec & OB_DISABLED ||
          (ob[0].next & OB_DISABLED && !(ob[i].spec & OB_EXIT));
 }
@@ -2216,9 +2208,7 @@ void di_schieben() {
   start_ramsch();
 }
 
-int di_verdoppelt(f, kl)
-int f, kl;
-{
+int di_verdoppelt(int f, int kl) {
   int ln, sn;
   static int verd1, verd2;
   static char txt[NUM_LANG][20];
@@ -2407,9 +2397,7 @@ void di_liste(sn, ini) int sn, ini;
   actbtn[sn] = 64;
 }
 
-int ger_toupper(c)
-int c;
-{
+int ger_toupper(int c) {
   switch (c) {
     case 'ä':
       return 'Ä';

@@ -145,8 +145,7 @@ int get_game() {
   return 0;
 }
 
-void read_opt_srpk(f) FILE* f;
-{
+void read_opt_srpk(FILE* f) {
   int i, v, va[3];
 
   if (fscanf(f, "s %d %d %d\n", &va[0], &va[1], &va[2]) == 3) {

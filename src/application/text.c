@@ -671,13 +671,11 @@ void init_text() {
   }
 }
 
-char* idxlang(i)
-int i;
-{ return textdesc[i].name[0]; }
+char* idxlang(int i) {
+  return textdesc[i].name[0];
+}
 
-int langidx(s)
-char* s;
-{
+int langidx(char* s) {
   char h[80];
   int i, j;
 

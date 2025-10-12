@@ -35,9 +35,7 @@
 #include "xdial.h"
 #include "xio.h"
 
-void irc_log(s, in) char* s;
-int in;
-{
+void irc_log(char* s, int in) {
   static FILE* f;
   static int ini, nl;
 
@@ -63,14 +61,12 @@ int in;
   }
 }
 
-void irc_out(s) char* s;
-{
+void irc_out(char* s) {
   write(irc_o, s, strlen(s));
   irc_log(s, 0);
 }
 
-void irc_print(s) char* s;
-{
+void irc_print(char* s) {
   unsigned char c;
 
   while ((c = *s++)) {
@@ -81,8 +77,7 @@ void irc_print(s) char* s;
   fflush(stderr);
 }
 
-void irc_printnl(s) char* s;
-{
+void irc_printnl(char* s) {
   irc_print(s);
   irc_print("\n");
 }
@@ -125,10 +120,7 @@ char* irc_getline() {
   return 0;
 }
 
-int irc_xinput(s, l)
-char* s;
-int l;
-{
+int irc_xinput(char* s, int l) {
   s[l] = 0;
   switch (s[0]) {
     case '\r':
@@ -166,10 +158,7 @@ int l;
   return 1;
 }
 
-int irc_match(cmd, s)
-char* cmd;
-char** s;
-{
+int irc_match(char* cmd, char** s) {
   int len;
 
   len = strlen(cmd);
@@ -180,29 +169,24 @@ char** s;
   return 0;
 }
 
-void irc_sendnick(s) char* s;
-{
+void irc_sendnick(char* s) {
   irc_out("nick ");
   irc_out(s);
   irc_out("\n");
 }
 
-void irc_pr_ss(s1, s2) char *s1, *s2;
-{
+void irc_pr_ss(char *s1, char *s2) {
   irc_print(s1);
   irc_print(" : ");
   irc_printnl(s2);
 }
 
-void irc_pr_bs(s) char* s;
-{
+void irc_pr_bs(char* s) {
   irc_print(" ");
   irc_printnl(s);
 }
 
-void irc_pr_sd(s, d) char* s;
-int d;
-{
+void irc_pr_sd(char* s, int d) {
   char buf[20];
 
   sprintf(buf, "%d", d);
@@ -211,72 +195,60 @@ int d;
   irc_printnl(buf);
 }
 
-void irc_pr_ramsch(val) int val;
-{
+void irc_pr_ramsch(int val) {
   irc_pr_ss(textarr[TX_RAMSCH_SPIELEN].t[lang[0]],
             textarr[val == 2 ? TX_IMMER : TX_NEIN - val].t[lang[0]]);
 }
 
-void irc_pr_sramsch(val) int val;
-{
+void irc_pr_sramsch(int val) {
   irc_pr_ss(textarr[TX_SCHIEBERAMSCH].t[lang[0]],
             textarr[TX_NEIN - val].t[lang[0]]);
 }
 
-void irc_pr_rskatloser(val) int val;
-{
+void irc_pr_rskatloser(int val) {
   irc_pr_ss(textarr[TX_SKAT_GEHT_AN].t[lang[0]],
             textarr[val ? TX_VERLIERER : TX_LETZTEN_STICH].t[lang[0]]);
 }
 
-void irc_pr_kontra(val) int val;
-{
+void irc_pr_kontra(int val) {
   irc_pr_ss(textarr[TX_KONTRA_SAGEN].t[lang[0]],
             textarr[val == 2 ? TX_AB18 : TX_NEIN - val].t[lang[0]]);
 }
 
-void irc_pr_bock(val) int val;
-{
+void irc_pr_bock(int val) {
   irc_pr_ss(textarr[TX_BOCK_RUNDEN].t[lang[0]],
             textarr[val == 2 ? TX_UND_RAMSCH : TX_NEIN - val].t[lang[0]]);
 }
 
-void irc_pr_resumebock(val) int val;
-{
+void irc_pr_resumebock(int val) {
   irc_pr_ss(textarr[TX_FORTSETZEN].t[lang[0]],
             textarr[TX_NEIN - val].t[lang[0]]);
 }
 
-void irc_pr_spitze(val) int val;
-{
+void irc_pr_spitze(int val) {
   irc_pr_ss(textarr[TX_SPITZE].t[lang[0]],
             textarr[val == 2 ? TX_PLUS2 : TX_NEIN - val].t[lang[0]]);
 }
 
-void irc_pr_revolution(val) int val;
-{
+void irc_pr_revolution(int val) {
   irc_pr_ss(textarr[TX_REVOLUTION].t[lang[0]],
             textarr[TX_NEIN - val].t[lang[0]]);
 }
 
-void irc_pr_klopfen(val) int val;
-{
+void irc_pr_klopfen(int val) {
   irc_pr_ss(textarr[TX_KLOPFEN].t[lang[0]], textarr[TX_NEIN - val].t[lang[0]]);
 }
 
-void irc_pr_schenken(val) int val;
-{
+void irc_pr_schenken(int val) {
   irc_pr_ss(textarr[TX_SCHENKEN].t[lang[0]], textarr[TX_NEIN - val].t[lang[0]]);
 }
 
-void irc_pr_oldrules(val) int val;
-{
+void irc_pr_oldrules(int val) {
   irc_pr_ss(textarr[TX_ALTE_REGELN].t[lang[0]],
             textarr[TX_NEIN - val].t[lang[0]]);
 }
 
-void irc_pr_bockevents(val) int val;
-{
+void irc_pr_bockevents(int val) {
   irc_print(textarr[TX_BOCK_EREIGNISSE_T].t[lang[0]] + 1);
   irc_printnl(":");
   if (val & BOCK_BEI_60) {
@@ -305,19 +277,16 @@ void irc_pr_bockevents(val) int val;
   }
 }
 
-void irc_pr_alist(val) int val;
-{
+void irc_pr_alist(int val) {
   irc_pr_ss(textarr[TX_SPIELLISTE].t[lang[0]], textarr[val == 2 ? TX_TURNIER
                                                        : val    ? TX_ALTERNATIV
                                                                 : TX_NORMAL]
                                                    .t[lang[0]]);
 }
 
-void irc_pr_start(val) int val;
-{ irc_pr_sd(textarr[TX_GEBER].t[lang[0]], right(val) ? right(val) : 3); }
+void irc_pr_start(int val) { irc_pr_sd(textarr[TX_GEBER].t[lang[0]], right(val) ? right(val) : 3); }
 
-void irc_pr_s1(val) int val;
-{ irc_pr_sd(textarr[TX_SPIELSTAERKE].t[lang[0]], val); }
+void irc_pr_s1(int val) { irc_pr_sd(textarr[TX_SPIELSTAERKE].t[lang[0]], val); }
 
 void irc_showrules(aplayramsch, aplaysramsch, aplaykontra, aplaybock,
                    aresumebock, aspitzezaehlt, arevolution, aklopfen, aschenken,
@@ -385,13 +354,11 @@ void irc_sendrules() {
   irc_out(buf);
 }
 
-void irc_incidx(idx, sn) int *idx, sn;
-{
+void irc_incidx(int *idx, int sn) {
   if (++idx[sn] >= 100) idx[sn] = 0;
 }
 
-void irc_sync(q) char* q;
-{
+void irc_sync(char* q) {
   int idx[3], n = 0;
 
   sscanf(q, "%d,%d,%d\n", &idx[0], &idx[1], &idx[2]);
@@ -407,8 +374,7 @@ void irc_sync(q) char* q;
   }
 }
 
-void irc_sendsync(f) int f;
-{
+void irc_sendsync(int f) {
   char buf[1024];
 
   sprintf(buf, "notice %s :/sync%s %d,%d,%d\n", irc_channel, f ? "" : "ed",
@@ -432,8 +398,7 @@ void irc_alarm() {
   }
 }
 
-void irc_talk(msg) char* msg;
-{
+void irc_talk(char* msg) {
   static int ini, len;
   static char buf[1024], channel[1024], nick[IRC_NICK_LEN + 1];
   int i, c;
@@ -674,9 +639,7 @@ void irc_talk(msg) char* msg;
   }
 }
 
-char* irc_copyname(t, f)
-char *t, *f;
-{
+char* irc_copyname(char *t, char *f) {
   char* p;
 
   p  = strchr(f, '~');
@@ -685,9 +648,7 @@ char *t, *f;
   return p + 1;
 }
 
-int irc_senderok(s)
-char* s;
-{
+int irc_senderok(char* s) {
   switch (irc_pos) {
     case 0:
       return !strcmp(irc_conf[1].nick, s)                   ? 2
@@ -704,9 +665,7 @@ char* s;
   }
 }
 
-void irc_histsave(sn, s) int sn;
-char* s;
-{
+void irc_histsave(int sn, char* s) {
   irc_out(s);
   s = strchr(strchr(s, ' ') + 1, ' ');
   if (irc_history[sn][irc_histidx[sn]]) {
@@ -719,16 +678,14 @@ char* s;
   irc_incidx(irc_histidx, sn);
 }
 
-void irc_sendbtev(sn, bt) int sn, bt;
-{
+void irc_sendbtev(int sn, int bt) {
   char buf[1024];
 
   sprintf(buf, "notice %s :/cmd%02dbt %d\n", irc_channel, irc_histidx[sn], bt);
   irc_histsave(sn, buf);
 }
 
-void irc_sendxyev(sn, x, y, opt) int sn, x, y, opt;
-{
+void irc_sendxyev(int sn, int x, int y, int opt) {
   char buf[1024];
 
   sprintf(buf, "notice %s :/cmd%02dxy %d,%d,%d\n", irc_channel, irc_histidx[sn],
@@ -736,8 +693,7 @@ void irc_sendxyev(sn, x, y, opt) int sn, x, y, opt;
   irc_histsave(sn, buf);
 }
 
-void irc_sendsort(sn) int sn;
-{
+void irc_sendsort(int sn) {
   char buf[1024];
 
   sprintf(buf, "notice %s :/cmd%02dso %d,%d,%d\n", irc_channel, irc_histidx[sn],
@@ -745,25 +701,21 @@ void irc_sendsort(sn) int sn;
   irc_histsave(sn, buf);
 }
 
-void irc_sendschenken(sn) int sn;
-{
+void irc_sendschenken(int sn) {
   char buf[1024];
 
   sprintf(buf, "notice %s :/cmd%02dsc\n", irc_channel, irc_histidx[sn]);
   irc_histsave(sn, buf);
 }
 
-void irc_sendloeschen(sn) int sn;
-{
+void irc_sendloeschen(int sn) {
   char buf[1024];
 
   sprintf(buf, "notice %s :/cmd%02dcl\n", irc_channel, irc_histidx[sn]);
   irc_histsave(sn, buf);
 }
 
-void irc_addcmd(sn, idx, p) int sn, idx;
-char* p;
-{
+void irc_addcmd(int sn, int idx, char* p) {
   if (irc_history[sn][idx])
     free(irc_history[sn][idx]);
   else
@@ -772,10 +724,7 @@ char* p;
   strcpy(irc_history[sn][idx], p);
 }
 
-int irc_getcmd(sn, fh, q)
-int sn, fh;
-char* q;
-{
+int irc_getcmd(int sn, int fh, char* q) {
   int idx, bt, x, y, opt, s1, s2, a, ok;
   char* p = q;
 
@@ -845,8 +794,7 @@ void irc_checkhist() {
   } while (ok);
 }
 
-void irc_getrules(q) char* q;
-{
+void irc_getrules(char* q) {
   int aplayramsch, aplaysramsch, aplaykontra, aplaybock;
   int aresumebock, aspitzezaehlt, arevolution, aklopfen;
   int aschenken, abockevents, ageber, aalist, astrateg;
@@ -861,8 +809,7 @@ void irc_getrules(q) char* q;
                 ageber, aalist, astrateg, aoldrules, arskatloser);
 }
 
-void irc_getserverconf(q) char* q;
-{
+void irc_getserverconf(char* q) {
   static int i, f;
   char plb[80];
   int ln;
@@ -979,8 +926,7 @@ void irc_setpos() {
   }
 }
 
-void irc_getclientconf(s, q) char *s, *q;
-{
+void irc_getclientconf(char *s, char *q) {
   int i, ln;
   char plb[80];
 
@@ -1037,8 +983,7 @@ void irc_getclientconf(s, q) char *s, *q;
   }
 }
 
-void irc_changenick(send) int send;
-{
+void irc_changenick(int send) {
   static char nick[IRC_NICK_LEN + 1];
   static long rseed;
   static int ini;
@@ -1058,8 +1003,7 @@ void irc_checknick() {
   }
 }
 
-void irc_nickchanged(oldnick, newnick) char *oldnick, *newnick;
-{
+void irc_nickchanged(char *oldnick, char *newnick) {
   static char nick[IRC_NICK_LEN + 1];
   int i;
 
@@ -1079,8 +1023,7 @@ void irc_nickchanged(oldnick, newnick) char *oldnick, *newnick;
   }
 }
 
-void irc_msg(nick, q) char *nick, *q;
-{
+void irc_msg(char *nick, char *q) {
   int i, sn;
   char nam[20];
 
@@ -1107,8 +1050,7 @@ void irc_msg(nick, q) char *nick, *q;
   }
 }
 
-void irc_parse(s) char* s;
-{
+void irc_parse(char* s) {
   char *p, *q, nick[IRC_NICK_LEN + 1];
   char plb[80];
   int i, sn, nickerr, colon;

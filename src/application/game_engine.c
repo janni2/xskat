@@ -108,8 +108,7 @@ void do_geben() {
   }
 }
 
-void do_sagen(s, w) int s, w;
-{
+void do_sagen(int s, int w) {
   char str[4];
   tx_typ tt;
   int ln;
@@ -125,8 +124,7 @@ void do_sagen(s, w) int s, w;
   sagte18[s] = 1;
 }
 
-void do_passen(s) int s;
-{
+void do_passen(int s) {
   b_text(s, &textarr[TX_PASSE]);
   inv_box(s, 1, 1);
   stdwait();
@@ -134,8 +132,7 @@ void do_passen(s) int s;
   rem_box(s);
 }
 
-void do_akzept(s) int s;
-{
+void do_akzept(int s) {
   tx_typ tt;
   int ln;
 
@@ -150,8 +147,7 @@ void do_akzept(s) int s;
   sagte18[s] = 1;
 }
 
-void do_msagen(sn, w) int sn, w;
-{
+void do_msagen(int sn, int w) {
   char str[4];
 
   if (lastmsaho[sn] == w) return;
@@ -160,8 +156,7 @@ void do_msagen(sn, w) int sn, w;
   do_msaho(sn, str);
 }
 
-void do_mhoeren(sn) int sn;
-{
+void do_mhoeren(int sn) {
   if (lastmsaho[sn] == 1) return;
   lastmsaho[sn] = 1;
   do_msaho(sn, textarr[TX_JA].t[lang[sn]]);
@@ -238,8 +233,7 @@ void do_reizen() {
   }
 }
 
-void do_grandhand(sn) int sn;
-{
+void do_grandhand(int sn) {
   handsp  = 1;
   trumpf  = 4;
   reizp   = 0;
@@ -571,8 +565,7 @@ void nextgame() {
   }
 }
 
-void save_skat(i) int i;
-{
+void save_skat(int i) {
   if (lower(cards[31], cards[30], 0)) {
     swap(&cards[31], &cards[30]);
   }
@@ -616,8 +609,7 @@ int check_bockevents() {
   return e;
 }
 
-void setsum(clr) int clr;
-{
+void setsum(int clr) {
   int i, j;
 
   splstp = 0;
@@ -638,9 +630,7 @@ void setsum(clr) int clr;
   }
 }
 
-void modsum(sm, gv, p, as, ae, ar, ad) int sm[3][3], gv[3][2], p, *as, *ae, *ar,
-    *ad;
-{
+void modsum(int sm[3][3], int gv[3][2], int p, int *as, int *ae, int *ar, int *ad) {
   int s, e, r, d;
 
   s = splist[p].s;
