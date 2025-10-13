@@ -57,7 +57,7 @@ extern void m_bmr();
 extern void m_bhr();
 extern void m_bramsch();
 extern int unsich_fb();
-extern int comp_sramsch();
+extern int comp_sramsch(int sn);
 extern void ramsch_stich();
 extern void ramsch_result();
 

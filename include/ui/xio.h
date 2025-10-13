@@ -21,8 +21,14 @@
 #ifndef XIO_H
 #define XIO_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#ifdef __cplusplus
+}
+#endif
 
 #include "text.h"
 
@@ -100,83 +106,83 @@ extern int smlc[];
 extern int frm[2][9][2];
 extern int ramp[4][6];
 
-extern void change_gc();
-extern void change_gcbg();
-extern void change_gcxor();
-extern int istrue();
-extern void v_gtextnc();
-extern void v_gtextc();
-extern void v_gtext();
-extern void clr_text();
-extern void b_text();
-extern void do_msaho();
-extern void draw_skat();
-extern void home_skat();
-extern void nimm_stich();
-extern void drop_card();
-extern int query_err();
-extern int closest_col();
-extern unsigned long get_col();
-extern void calc_desk();
-extern void extractnam();
-extern void extractnamln();
-extern void usage();
-extern void invopt();
-extern void nomem();
-extern void finish();
-extern int ioerr();
-extern void exitus();
-extern void startirc();
-extern int getdeffn();
-extern void logit();
-extern int getcode();
-extern void decompgif();
-extern void drawimg();
-extern void create_card();
-extern void xinitwin();
-extern void xinitplayers();
-extern int closecol();
-extern void find_cardcol();
-extern void card_colors();
-extern void xinitres();
-extern void xstoreres();
-extern void read_cards();
-extern void set_conames();
-extern void xinit();
-extern void waitt();
-extern void stdwait();
-extern void backgr();
-extern void putdesk();
-extern void drawcard();
-extern void putcard();
-extern void putback();
-extern void hint_line();
-extern void show_hint();
-extern void putamark();
-extern void putmark();
-extern void remmark();
-extern void movecard();
-extern void homecard();
-extern void givecard();
-extern void initscr();
-extern void spielendscr();
-extern void revolutionsort();
-extern void revolutionscr();
-extern void clr_desk();
-extern void draw_box();
-extern void put_box();
-extern void rem_box();
-extern void inv_box();
-extern void put_fbox();
-extern void rem_fbox();
-extern void inv_fbox();
-extern int card_at();
-extern int hndl_reizen();
-extern int hndl_druecken();
-extern int hndl_tauschen();
-extern int hndl_spielen();
-extern int hndl_nimmstich();
-extern int hndl_button();
-extern void setcurs();
+extern void change_gc(int sn, unsigned long fg, GC* gcp);
+extern void change_gcbg(int sn, unsigned long bg, GC* gcp);
+extern void change_gcxor(int sn, unsigned long fg);
+extern int istrue(char* s);
+extern void v_gtextnc(int sn, int n, int c, int x, int y, int w, char* t);
+extern void v_gtextc(int sn, int c, int x, int y, int w, char* t);
+extern void v_gtext(int sn, int x, int y, int w, char* t);
+extern void clr_text(int sn, int x, int y);
+extern void b_text(int s, tx_typ* str);
+extern void do_msaho(int sn, char* str);
+extern void draw_skat(int sn);
+extern void home_skat(void);
+extern void nimm_stich(void);
+extern void drop_card(int i, int s);
+extern int query_err(Display* d, XErrorEvent* e);
+extern int closest_col(int sn, XColor* xcol);
+extern unsigned long get_col(int sn, char* ucol, char* prog, char* col, char* defcol, unsigned long defpix, XColor* xcol);
+extern void calc_desk(int sn);
+extern void extractnam(int sn, char* str);
+extern void extractnamln(int sn, char* str, int ln);
+extern void usage(void);
+extern void invopt(char* opt);
+extern void nomem(void);
+extern void finish(int sn, int ex);
+extern int ioerr(Display* d);
+extern void exitus(int n);
+extern void startirc(int f);
+extern int getdeffn(char* prog_name, char** pfn, char* res, char* suf);
+extern void logit(void);
+extern int getcode(int* bpos, int csiz, int msk, unsigned char* thegif);
+extern void decompgif(unsigned char* thedata, unsigned char* thepic, int* themap, int cmapsize);
+extern void drawimg(int sn, int c, int f, int w, int x, int y);
+extern void create_card(int sn, int c);
+extern void xinitwin(int sn, int argc, char** argv);
+extern void xinitplayers(void);
+extern int closecol(int x, int* r);
+extern void find_cardcol(unsigned char* bm, int* r, unsigned long* col);
+extern void card_colors(int sn);
+extern void xinitres(int sn);
+extern void xstoreres(void);
+extern void read_cards(void);
+extern void set_conames(void);
+extern void xinit(int argc, char** argv);
+extern void waitt(int t, int f);
+extern void stdwait(void);
+extern void backgr(int sn, int x, int y, int w, int h);
+extern void putdesk(int sn, int x, int y);
+extern void drawcard(int sn, int c, int x, int y);
+extern void putcard(int sn, int i, int x, int y);
+extern void putback(int sn, int x, int y);
+extern void hint_line(int sn, int c, GC* gcp);
+extern void show_hint(int sn, int c, int d);
+extern void putamark(int sn, int s);
+extern void putmark(int s);
+extern void remmark(int f);
+extern void movecard(int nn, int sn[], int x1[], int y1[], int x2[], int y2[]);
+extern void homecard(int s, int n, int m);
+extern void givecard(int s, int n);
+extern void initscr(int sn, int sor);
+extern void spielendscr(void);
+extern void revolutionsort(int sp);
+extern void revolutionscr(void);
+extern void clr_desk(int nsp);
+extern void draw_box(int sn, int x, int y, int w);
+extern void put_box(int s);
+extern void rem_box(int s);
+extern void inv_box(int s, int c, int rev);
+extern void put_fbox(int sn, int t);
+extern void rem_fbox(int sn);
+extern void inv_fbox(int sn, int rev);
+extern int card_at(int sn, int x, int y, int zw);
+extern int hndl_reizen(int sn, int x, int y);
+extern int hndl_druecken(int sn, int x, int y);
+extern int hndl_tauschen(int sn, int x, int y);
+extern int hndl_spielen(int sn, int x, int y);
+extern int hndl_nimmstich(int sn);
+extern int hndl_button(int sn, int x, int y, int opt, int send);
+extern void setcurs(int f);
 
 #endif /* XIO_H */

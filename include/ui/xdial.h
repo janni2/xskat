@@ -21,7 +21,15 @@
 #ifndef XDIAL_H
 #define XDIAL_H
 
+#include <cstdio>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 #include <X11/X.h>
+#ifdef __cplusplus
+}
+#endif
 
 #include "text.h"
 
@@ -1005,89 +1013,89 @@ EXTERN OBJECT diinput[3][5]
 #endif
 ;
 
-extern int ismemb();
-extern void init_di();
-extern void init_dials();
-extern void prverz();
-extern int ob_disabled();
-extern void cleanip();
-extern void cleanirchost();
-extern void cleanname();
-extern void hndl_btevent();
-extern void button_press();
-extern void draw_wedge();
-extern void draw_actbtn();
-extern void draw_selpos();
-extern void new_selpos();
-extern void new_actbtn();
-extern void set_selpos();
-extern void del_selpos();
-extern void manpage();
-extern void polldisps();
-extern void hndl_events();
-extern void getob_xywhbd();
-extern void create_dial();
-extern void findlastex();
-extern void create_di();
-extern void create_diopt();
-extern void remove_dial();
-extern void remove_di();
-extern void draw_3d();
-extern void draw_dial();
-extern void draw_di();
-extern void refresh();
-extern void prspnam();
-extern void di_info();
-extern void di_hand();
-extern void next_grandhand();
-extern void di_grandhand();
-extern void di_term();
-extern void di_ende();
-extern void di_loesch();
-extern void di_ansage();
-extern void di_kontra();
-extern void di_rekontra();
-extern void di_konre();
-extern void di_ktrnext();
-extern void di_dicht();
-extern void di_weiter();
-extern void di_wiederweiter();
-extern void di_klopfen();
-extern void di_schenken();
-extern void di_geschenkt();
-extern void di_wiederschenken();
-extern void di_nichtschenken();
-extern void di_schieben();
-extern int di_verdoppelt();
-extern void di_buben();
-extern void di_spiel();
-extern void list_fun();
-extern void di_delliste();
-extern void di_liste();
-extern int ger_toupper();
-extern void pformat();
-extern void prot_fun();
-extern void im_skat();
-extern void di_proto();
-extern void di_resultdi();
-extern void di_result();
-extern void di_delres();
-extern void di_options();
-extern void di_copyr();
-extern void di_grafik();
-extern void di_strateg();
-extern void di_varianten();
-extern void di_ramschopts();
-extern void di_bockevents();
-extern void di_geschwindigkeit();
-extern void di_mehrspieler();
-extern void di_lanspiel();
-extern void di_eigenertisch();
-extern void di_anderertisch();
-extern void di_warteauf();
-extern void di_irc();
-extern void di_eingabe();
-extern void di_wieder();
-extern void di_input();
+extern int ismemb(Window w, OBJECT* ob);
+extern void init_di(OBJECT* ob);
+extern void init_dials(void);
+extern void prverz(int sn);
+extern int ob_disabled(OBJECT* ob, int i);
+extern void cleanip(int sn);
+extern void cleanirchost(int sn);
+extern void cleanname(int sn);
+extern void hndl_btevent(int sn, int bt);
+extern void button_press(int sn, int bt, OBJECT* ob);
+extern void draw_wedge(Drawable w, int* bp, int sn, int f, int x, int y, int s);
+extern void draw_actbtn(int sn, int f);
+extern void draw_selpos(int sn, int f);
+extern void new_selpos(int sn, int dir);
+extern void new_actbtn(int sn, int dir);
+extern void set_selpos(int sn);
+extern void del_selpos(int sn);
+extern void manpage(char* subj);
+extern void polldisps(void);
+extern void hndl_events(void);
+extern void getob_xywhbd(int sn, OBJECT* ob, int i, int* x, int* y, int* w, int* h, int* bp);
+extern void create_dial(int sn, int x, int y, int dy, OBJECT* ob);
+extern void findlastex(int sn);
+extern void create_di(int sn, OBJECT* ob);
+extern void create_diopt(int sn, OBJECT* ob);
+extern void remove_dial(int sn, OBJECT* ob);
+extern void remove_di(int sn);
+extern void draw_3d(Window w, Pixmap b, int sn, int x1, int y1, int x2, int y2, int rev);
+extern void draw_dial(int sn, int i, OBJECT* ob);
+extern void draw_di(int sn, int idx);
+extern void refresh(void);
+extern void prspnam(char* txt, int sn, int ln);
+extern void di_info(int sn, int th);
+extern void di_hand(void);
+extern void next_grandhand(int sn);
+extern void di_grandhand(int sn);
+extern void di_term(int sn, int s);
+extern void di_ende(int sn);
+extern void di_loesch(int sn);
+extern void di_ansage(void);
+extern void di_kontra(int sn);
+extern void di_rekontra(int sn);
+extern void di_konre(int sn);
+extern void di_ktrnext(int sn, int f);
+extern void di_dicht(void);
+extern void di_weiter(int ini);
+extern void di_wiederweiter(int sn);
+extern void di_klopfen(int sn);
+extern void di_schenken(int sn);
+extern void di_geschenkt(void);
+extern void di_wiederschenken(int sn, int f);
+extern void di_nichtschenken(int sn);
+extern void di_schieben(void);
+extern int di_verdoppelt(int f, int kl);
+extern void di_buben(void);
+extern void di_spiel(void);
+extern void list_fun(int sn);
+extern void di_delliste(void);
+extern void di_liste(int sn, int ini);
+extern int ger_toupper(int c);
+extern void pformat(FILE* f, int spec, char* txt, int fil);
+extern void prot_fun(int sn, int f);
+extern void im_skat(int sn, int ln, char* s, int i);
+extern void di_proto(int sn, int ini, int log);
+extern void di_resultdi(int sn);
+extern void di_result(int be);
+extern void di_delres(int sn);
+extern void di_options(int sn);
+extern void di_copyr(int sn);
+extern void di_grafik(int sn);
+extern void di_strateg(int sn);
+extern void di_varianten(int sn);
+extern void di_ramschopts(int sn);
+extern void di_bockevents(int sn);
+extern void di_geschwindigkeit(int sn);
+extern void di_mehrspieler(int sn);
+extern void di_lanspiel(int sn);
+extern void di_eigenertisch(int sn);
+extern void di_anderertisch(int sn);
+extern void di_warteauf(int sn, int u, int s2, int s3);
+extern void di_irc(int sn);
+extern void di_eingabe(int sn);
+extern void di_wieder(int sn, int f);
+extern void di_input(int sn, int ti, int di, char* buf, int len);
 
 #endif /* XDIAL_H */

@@ -142,10 +142,11 @@ EXTERN unsigned char de_flg[4][8]
 #endif
 ;
 
-EXTERN struct {
+struct map_gif_entry {
   char* name;
   unsigned char** pos;
-} map_gif[45]
+};
+EXTERN struct map_gif_entry map_gif[45]
 #ifdef BITMAPS_C
     =
         {

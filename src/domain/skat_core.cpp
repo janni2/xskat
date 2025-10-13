@@ -771,7 +771,7 @@ int zweihoechste(int ci) {
     trdr = 0;
   }
 
-  for (Suit s = SUIT_KREUZ; s <= SUIT_KARO; s++) {
+  for (int s = SUIT_KREUZ; s <= SUIT_KARO; s++) {
     if (!gespcd[s << 3 | RANK_BUBE]) {
       trdr++;
     }

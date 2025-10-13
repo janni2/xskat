@@ -207,8 +207,7 @@ void change_gcbg(int sn, unsigned long bg, GC* gcp) {
   XChangeGC(dpy[sn], gcp[sn], GCBackground, &gcv);
 }
 
-void change_gcxor(sn, fg) int sn;
-unsigned long fg;
+void change_gcxor(int sn, unsigned long fg)
 { change_gc(sn, fg ^ bgpix[sn], gcxor); }
 
 int istrue(char* s) {
@@ -222,8 +221,7 @@ int istrue(char* s) {
   return h[0] == '0' ? 0 : h[0] == '1' ? 1 : !strcmp(h, "true");
 }
 
-void v_gtextnc(sn, n, c, x, y, w, t) int sn, n, c, x, y, w;
-char* t;
+void v_gtextnc(int sn, int n, int c, int x, int y, int w, char* t)
 {
   int l;
 
@@ -240,15 +238,13 @@ char* t;
   }
 }
 
-void v_gtextc(sn, c, x, y, w, t) int sn, c, x, y, w;
-char* t;
+void v_gtextc(int sn, int c, int x, int y, int w, char* t)
 { v_gtextnc(sn, 1, c, x, y, w, t); }
 
-void v_gtext(sn, x, y, w, t) int sn, x, y, w;
-char* t;
+void v_gtext(int sn, int x, int y, int w, char* t)
 { v_gtextc(sn, 0, x, y, w, t); }
 
-void clr_text(sn, x, y) int sn, x, y;
+void clr_text(int sn, int x, int y)
 {
   x += 4;
   y++;
@@ -260,8 +256,7 @@ void clr_text(sn, x, y) int sn, x, y;
   change_gc(sn, fgpix[sn], gc);
 }
 
-void b_text(s, str) int s;
-tx_typ* str;
+void b_text(int s, tx_typ* str)
 {
   int sn, x;
 
@@ -274,8 +269,7 @@ tx_typ* str;
   }
 }
 
-void do_msaho(sn, str) int sn;
-char* str;
+void do_msaho(int sn, char* str)
 {
   clr_text(sn, desk[sn].pboxx, desk[sn].pboxy);
   v_gtextc(sn, 1, desk[sn].pboxx, desk[sn].pboxy, desk[sn].cardw, str);
@@ -284,7 +278,7 @@ char* str;
            desk[sn].cardw, textarr[TX_PASSE].t[lang[sn]]);
 }
 
-void draw_skat(sn) int sn;
+void draw_skat(int sn)
 {
   putcard(sn, cards[30], desk[sn].skatx, desk[sn].skaty);
   putcard(sn, cards[31], desk[sn].skatx + desk[sn].cardw, desk[sn].skaty);
@@ -310,7 +304,7 @@ void nimm_stich() {
   stichopen = 0;
 }
 
-void drop_card(i, s) int i, s;
+void drop_card(int i, int s)
 {
   int sn, sna[3], x1[3], y1[3], x2[3], y2[3];
   static int l2r[3];
@@ -413,11 +407,7 @@ int closest_col(int sn, XColor* xcol) {
   return 0;
 }
 
-unsigned long get_col(sn, ucol, prog, col, defcol, defpix, xcol)
-int sn;
-char *ucol, *prog, *col, *defcol;
-unsigned long defpix;
-XColor* xcol;
+unsigned long get_col(int sn, char* ucol, char* prog, char* col, char* defcol, unsigned long defpix, XColor* xcol)
 {
   char* spec;
 
@@ -438,7 +428,7 @@ XColor* xcol;
   return defpix;
 }
 
-void calc_desk(sn) int sn;
+void calc_desk(int sn)
 {
   desk[sn].x     = 0;
   desk[sn].y     = 0;
@@ -475,8 +465,7 @@ void calc_desk(sn) int sn;
       desk[sn].skaty + desk[sn].cardh + 13 * desk[sn].f / desk[sn].q;
 }
 
-void extractnam(sn, str) int sn;
-char* str;
+void extractnam(int sn, char* str)
 {
   int ln;
 
@@ -485,16 +474,14 @@ char* str;
   }
 }
 
-void extractnamln(sn, str, ln) int sn;
-char* str;
-int ln;
+void extractnamln(int sn, char* str, int ln)
 {
   char* eos;
   int z, s;
 
   spnames[sn][0][ln][0] = 0;
   spnames[sn][1][ln][0] = 0;
-  if (!str) str = "";
+  if (!str) str = (char*)"";
   if (!(eos = strchr(str, '@')) && !(eos = strchr(str, ':')))
     eos = str + strlen(str);
   for (z = 0; z < 2 && str != eos; z++) {
@@ -535,7 +522,7 @@ After starting the game a mouse click or ESC/F1 will bring up a menu.\n\
 ");
 }
 
-void invopt(opt) char* opt;
+void invopt(char* opt)
 {
   fprintf(stderr, "Invalid option %s\n", opt);
   usage();
@@ -547,7 +534,7 @@ void nomem() {
   exitus(1);
 }
 
-void finish(sn, ex) int sn, ex;
+void finish(int sn, int ex)
 {
   int s;
 
@@ -575,7 +562,7 @@ int ioerr(Display* d) {
   return 0;
 }
 
-void exitus(n) int n;
+void exitus(int n)
 {
   if (irc_telnetpid) {
     kill(irc_telnetpid, SIGHUP);
@@ -583,21 +570,21 @@ void exitus(n) int n;
   exit(n);
 }
 
-void startirc(f) int f;
+void startirc(int f)
 {
   char* argv[100];
   int i, j;
 
   j = 0;
   if (f) {
-    argv[j++] = "xterm";
-    argv[j++] = "-e";
+    argv[j++] = (char*)"xterm";
+    argv[j++] = (char*)"-e";
   }
   for (i = j; i < 90 && i - j < theargc; i++) {
     argv[i] = theargv[i - j];
   }
   if (f) {
-    argv[i++] = "-irc";
+    argv[i++] = (char*)"-irc";
   } else {
     if (irc_telnetpid) {
       kill(irc_telnetpid, SIGHUP);
@@ -616,7 +603,7 @@ int getdeffn(char *prog_name, char **pfn, char *res, char *suf) {
   home = getenv("HOME");
   fn   = XGetDefault(dpy[0], prog_name, res);
   if (fn && !strncmp(fn, "~/", 2)) {
-    if (home && (rfn = malloc(strlen(home) + strlen(fn)))) {
+    if (home && (rfn = (char*)malloc(strlen(home) + strlen(fn)))) {
       strcpy(rfn, home);
       strcat(rfn, fn + 1);
       fn = rfn;
@@ -625,7 +612,7 @@ int getdeffn(char *prog_name, char **pfn, char *res, char *suf) {
   r = 1;
   if (!fn) {
     r = 0;
-    if (home && (fn = malloc(strlen(home) + 3 + strlen(suf)))) {
+    if (home && (fn = (char*)malloc(strlen(home) + 3 + strlen(suf)))) {
       strcpy(fn, home);
       strcat(fn, "/.");
       strcat(fn, suf);
@@ -677,9 +664,7 @@ int getcode(int *bpos, int csiz, int msk, unsigned char* thegif) {
   return c & msk;
 }
 
-void decompgif(thedata, thepic, themap, cmapsize) unsigned char *thedata,
-    *thepic, **themap;
-int* cmapsize;
+void decompgif(unsigned char* thedata, unsigned char* thepic, unsigned char** themap, int* cmapsize)
 {
   unsigned char b, *p;
   int i, bpos, cnt, csiz, isiz, cd, mc, cc, ec;
@@ -733,7 +718,7 @@ int* cmapsize;
   }
 }
 
-void drawimg(sn, c, f, w, x, y) int sn, c, f, w, x, y;
+void drawimg(int sn, int c, int f, int w, int x, int y)
 {
   long i, j, k;
   int l, p, r, g, b, m, s, gr, tc, idx, ld, pd, an;
@@ -961,7 +946,7 @@ void drawimg(sn, c, f, w, x, y) int sn, c, f, w, x, y;
   }
 }
 
-void create_card(sn, c) int sn, c;
+void create_card(int sn, int c)
 {
   int i, j, p, x, y, x1, y1, x2, y2, x3, y3, f, pf, upf, w, ww, hh;
 
@@ -1108,8 +1093,7 @@ void create_card(sn, c) int sn, c;
   change_gcxor(sn, fgpix[sn]);
 }
 
-void xinitwin(sn, argc, argv) int sn, argc;
-char** argv;
+void xinitwin(int sn, int argc, char** argv)
 {
   Pixmap icon, iconmask;
   XClassHint classhint;
@@ -1272,8 +1256,7 @@ int closecol(int x, int *r) {
   return i - (r[i] - x > x - r[i - 1]);
 }
 
-void find_cardcol(bm, r, col) unsigned char* bm;
-int *r, col[6][6][6];
+void find_cardcol(unsigned char* bm, int* r, int col[6][6][6])
 {
   int i, s;
 
@@ -1286,7 +1269,7 @@ int *r, col[6][6][6];
   }
 }
 
-void card_colors(sn) int sn;
+void card_colors(int sn)
 {
   int c, i, j, k, ncol;
   int col[6][6][6];
@@ -1354,7 +1337,7 @@ void card_colors(sn) int sn;
   }
 }
 
-void xinitres(sn) int sn;
+void xinitres(int sn)
 {
   static char stgs[] = "s1";
   char cbuf[8];
@@ -1425,7 +1408,7 @@ void xinitres(sn) int sn;
   i++;
   desk[sn].col = i;
   fgpix[sn] =
-      get_col(sn, fg_col, prog_name, "foreground", NULL, bpix[sn], &fgcol);
+      get_col(sn, fg_col, prog_name, (char*)"foreground", NULL, bpix[sn], &fgcol);
   borw = (long)fgcol.red + fgcol.green + fgcol.blue < 0x1E000L ? wpix[sn]
                                                                : bpix[sn];
   if (gfx3d[sn] < 0) {
@@ -1433,28 +1416,28 @@ void xinitres(sn) int sn;
     gfx3d[sn] = (!res && desk[sn].plan > 1) || (res && istrue(res));
   }
   if (gfx3d[sn]) {
-    bgpix[sn] = get_col(sn, bg_col, prog_name, "3dbackground",
-                        desk[sn].plan > 1  ? "#cccccccccccc"
-                        : borw == wpix[sn] ? "white"
-                                           : "black",
+    bgpix[sn] = get_col(sn, bg_col, prog_name, (char*)"3dbackground",
+                        desk[sn].plan > 1  ? (char*)"#cccccccccccc"
+                        : borw == wpix[sn] ? (char*)"white"
+                                           : (char*)"black",
                         borw, &nocol);
-    btpix[sn] = get_col(sn, bt_col, prog_name, "3dbutton",
-                        desk[sn].plan > 1  ? "#dddddddddddd"
-                        : borw == wpix[sn] ? "white"
-                                           : "black",
+    btpix[sn] = get_col(sn, bt_col, prog_name, (char*)"3dbutton",
+                        desk[sn].plan > 1  ? (char*)"#dddddddddddd"
+                        : borw == wpix[sn] ? (char*)"white"
+                                           : (char*)"black",
                         borw, &nocol);
     w3dpix[sn] =
-        get_col(sn, w3d_col, prog_name, "3dtop", NULL, wpix[sn], &nocol);
+        get_col(sn, w3d_col, prog_name, (char*)"3dtop", NULL, wpix[sn], &nocol);
     b3dpix[sn] =
-        get_col(sn, b3d_col, prog_name, "3dbot", NULL, bpix[sn], &nocol);
+        get_col(sn, b3d_col, prog_name, (char*)"3dbot", NULL, bpix[sn], &nocol);
   } else {
     bgpix[sn] =
-        get_col(sn, bg_col, prog_name, "background", NULL, borw, &nocol);
-    btpix[sn] = get_col(sn, bt_col, prog_name, "button", NULL, borw, &nocol);
+        get_col(sn, bg_col, prog_name, (char*)"background", NULL, borw, &nocol);
+    btpix[sn] = get_col(sn, bt_col, prog_name, (char*)"button", NULL, borw, &nocol);
   }
   mkpix[sn] =
-      get_col(sn, mk_col, prog_name, "mark",
-              desk[sn].plan > 1 ? "#ffff00000000" : "black", bpix[sn], &nocol);
+      get_col(sn, mk_col, prog_name, (char*)"mark",
+              desk[sn].plan > 1 ? (char*)"#ffff00000000" : (char*)"black", bpix[sn], &nocol);
   card_colors(sn);
   if (desk[sn].large < 0) {
     res = XGetDefault(dpy[sn], prog_name, "large");
@@ -1471,7 +1454,7 @@ void xinitres(sn) int sn;
     geom_f[sn] = XParseGeometry(res, &geom_x[sn], &geom_y[sn], &w, &h);
   }
   if (!font_name && !(font_name = XGetDefault(dpy[sn], prog_name, "font"))) {
-    font_name = desk[sn].large ? "10x20" : "9x15";
+    font_name = desk[sn].large ? (char*)"10x20" : (char*)"9x15";
   }
   if (!(dfont[sn] = XLoadQueryFont(dpy[sn], font_name))) {
     fprintf(stderr, "Font %s not found\n", font_name);
@@ -1581,11 +1564,11 @@ void xinitres(sn) int sn;
   }
   if (!sn) {
     if (!game_file) {
-      if (!getdeffn(prog_name, &game_file, "game", "")) {
+      if (!getdeffn(prog_name, &game_file, (char*)"game", (char*)"")) {
         game_file = 0;
       }
     }
-    logdef = !prot_file && getdeffn(prog_name, &prot_file, "log", "xskat.log");
+    logdef = !prot_file && getdeffn(prog_name, &prot_file, (char*)"log", (char*)"xskat.log");
     if (logging < 0) {
       res     = XGetDefault(dpy[sn], prog_name, "dolog");
       logging = (res && istrue(res)) || (!res && logdef);
@@ -1595,7 +1578,7 @@ void xinitres(sn) int sn;
       unformatted = !(res && istrue(res));
     }
     if (!opt_file) {
-      getdeffn(prog_name, &opt_file, "opt", "xskat.opt");
+      getdeffn(prog_name, &opt_file, (char*)"opt", (char*)"xskat.opt");
     }
     if (!ramschset && (res = XGetDefault(dpy[sn], prog_name, "ramsch"))) {
       playramsch = atoi(res);
@@ -1662,11 +1645,11 @@ void xinitres(sn) int sn;
       irc_logappend = res && istrue(res);
     }
     if (!list_file) {
-      getdeffn(prog_name, &list_file, irc_play ? "irclist" : "list",
-               irc_play ? "xskat.irc" : "xskat.lst");
+      getdeffn(prog_name, &list_file, irc_play ? (char*)"irclist" : (char*)"list",
+               irc_play ? (char*)"xskat.irc" : (char*)"xskat.lst");
     }
     if (!cards_file) {
-      getdeffn(prog_name, &cards_file, "cardsfile", "xskat.cards");
+      getdeffn(prog_name, &cards_file, (char*)"cardsfile", (char*)"xskat.cards");
     }
     if (!irc_host &&
         !(irc_host = XGetDefault(dpy[sn], prog_name, "ircserver")) &&
@@ -1684,7 +1667,7 @@ void xinitres(sn) int sn;
       if (irc_pos < 0 || irc_pos > 2) irc_pos = -1;
       if (!irc_telnet &&
           !(irc_telnet = XGetDefault(dpy[sn], prog_name, "irctelnet"))) {
-        irc_telnet = "telnet";
+        irc_telnet = (char*)"telnet";
       }
       if (irc_port < 0 && ((res = XGetDefault(dpy[sn], prog_name, "ircport")) ||
                            (res = getenv("IRCPORT")))) {
@@ -1693,7 +1676,7 @@ void xinitres(sn) int sn;
       if (irc_port < 0) irc_port = 6667;
       if (!irc_channel &&
           !(irc_channel = XGetDefault(dpy[sn], prog_name, "ircchannel"))) {
-        irc_channel = "#xskat";
+        irc_channel = (char*)"#xskat";
       }
       if (!irc_nick &&
           !(irc_nick = XGetDefault(dpy[sn], prog_name, "ircnick")) &&
@@ -1704,7 +1687,7 @@ void xinitres(sn) int sn;
       if (!irc_user &&
           !(irc_user = XGetDefault(dpy[sn], prog_name, "ircuser")) &&
           !(irc_user = getenv("IRCUSER")) && !(irc_user = getenv("LOGNAME"))) {
-        irc_user = "XSkat";
+        irc_user = (char*)"XSkat";
       }
       if (!irc_realname &&
           !(irc_realname = XGetDefault(dpy[sn], prog_name, "ircrealname")) &&
@@ -1714,11 +1697,11 @@ void xinitres(sn) int sn;
           if ((res = strchr(irc_realname, ','))) *res = 0;
         }
         if (!irc_realname || !*irc_realname) {
-          irc_realname = "XSkat player";
+          irc_realname = (char*)"XSkat player";
         }
       }
       if (!irc_logfile) {
-        getdeffn(prog_name, &irc_logfile, "irclog", "xskat.ilg");
+        getdeffn(prog_name, &irc_logfile, (char*)"irclog", (char*)"xskat.ilg");
       }
     }
     if (geber < 0) {
@@ -1787,12 +1770,12 @@ void xstoreres() {
   if (!XGetDefault(dpy[0], prog_name, "font") && font_name) {
     sprintf(buf, "%.99s.%s:%.99s\n", prog_name, "font", font_name);
     XChangeProperty(dpy[0], DefaultRootWindow(dpy[0]), XA_RESOURCE_MANAGER,
-                    XA_STRING, 8, PropModeAppend, buf, strlen(buf));
+                    XA_STRING, 8, PropModeAppend, (const unsigned char*)buf, strlen(buf));
   }
   if (!XGetDefault(dpy[0], prog_name, "title") && title[0]) {
     sprintf(buf, "%.99s.%s:%.99s\n", prog_name, "title", title[0]);
     XChangeProperty(dpy[0], DefaultRootWindow(dpy[0]), XA_RESOURCE_MANAGER,
-                    XA_STRING, 8, PropModeAppend, buf, strlen(buf));
+                    XA_STRING, 8, PropModeAppend, (const unsigned char*)buf, strlen(buf));
   }
   if (!XGetDefault(dpy[0], prog_name, "foreground")) {
     xcol.pixel = fgpix[0];
@@ -1800,7 +1783,7 @@ void xstoreres() {
     sprintf(buf, "%.99s.%s:#%04x%04x%04x\n", prog_name, "foreground", xcol.red,
             xcol.green, xcol.blue);
     XChangeProperty(dpy[0], DefaultRootWindow(dpy[0]), XA_RESOURCE_MANAGER,
-                    XA_STRING, 8, PropModeAppend, buf, strlen(buf));
+                    XA_STRING, 8, PropModeAppend, (const unsigned char*)buf, strlen(buf));
   }
   if (!XGetDefault(dpy[0], prog_name, "background")) {
     xcol.pixel = bgpix[0];
@@ -1808,7 +1791,7 @@ void xstoreres() {
     sprintf(buf, "%.99s.%s:#%04x%04x%04x\n", prog_name, "background", xcol.red,
             xcol.green, xcol.blue);
     XChangeProperty(dpy[0], DefaultRootWindow(dpy[0]), XA_RESOURCE_MANAGER,
-                    XA_STRING, 8, PropModeAppend, buf, strlen(buf));
+                    XA_STRING, 8, PropModeAppend, (const unsigned char*)buf, strlen(buf));
   }
   if (!XGetDefault(dpy[0], prog_name, "mark")) {
     xcol.pixel = mkpix[0];
@@ -1816,78 +1799,78 @@ void xstoreres() {
     sprintf(buf, "%.99s.%s:#%04x%04x%04x\n", prog_name, "mark", xcol.red,
             xcol.green, xcol.blue);
     XChangeProperty(dpy[0], DefaultRootWindow(dpy[0]), XA_RESOURCE_MANAGER,
-                    XA_STRING, 8, PropModeAppend, buf, strlen(buf));
+                    XA_STRING, 8, PropModeAppend, (const unsigned char*)buf, strlen(buf));
   }
   if (!XGetDefault(dpy[0], prog_name, "menubutton")) {
     sprintf(buf, "%.99s.%s:%d\n", prog_name, "menubutton", mbutton[0]);
     XChangeProperty(dpy[0], DefaultRootWindow(dpy[0]), XA_RESOURCE_MANAGER,
-                    XA_STRING, 8, PropModeAppend, buf, strlen(buf));
+                    XA_STRING, 8, PropModeAppend, (const unsigned char*)buf, strlen(buf));
   }
   if (!XGetDefault(dpy[0], prog_name, "keyboard")) {
     sprintf(buf, "%.99s.%s:%d\n", prog_name, "keyboard", keyboard[0]);
     XChangeProperty(dpy[0], DefaultRootWindow(dpy[0]), XA_RESOURCE_MANAGER,
-                    XA_STRING, 8, PropModeAppend, buf, strlen(buf));
+                    XA_STRING, 8, PropModeAppend, (const unsigned char*)buf, strlen(buf));
   }
   if (!XGetDefault(dpy[0], prog_name, "tdelay")) {
     sprintf(buf, "%.99s.%s:%f\n", prog_name, "tdelay", nimmstich[0][0] / 10.0);
     XChangeProperty(dpy[0], DefaultRootWindow(dpy[0]), XA_RESOURCE_MANAGER,
-                    XA_STRING, 8, PropModeAppend, buf, strlen(buf));
+                    XA_STRING, 8, PropModeAppend, (const unsigned char*)buf, strlen(buf));
   }
   if (!XGetDefault(dpy[0], prog_name, "cards")) {
     sprintf(buf, "%.99s.%s:%d\n", prog_name, "cards", blatt[0]);
     XChangeProperty(dpy[0], DefaultRootWindow(dpy[0]), XA_RESOURCE_MANAGER,
-                    XA_STRING, 8, PropModeAppend, buf, strlen(buf));
+                    XA_STRING, 8, PropModeAppend, (const unsigned char*)buf, strlen(buf));
   }
   if (!XGetDefault(dpy[0], prog_name, "large")) {
     sprintf(buf, "%.99s.%s:%d\n", prog_name, "large", desk[0].large);
     XChangeProperty(dpy[0], DefaultRootWindow(dpy[0]), XA_RESOURCE_MANAGER,
-                    XA_STRING, 8, PropModeAppend, buf, strlen(buf));
+                    XA_STRING, 8, PropModeAppend, (const unsigned char*)buf, strlen(buf));
   }
   if (!XGetDefault(dpy[0], prog_name, "down")) {
     sprintf(buf, "%.99s.%s:%d\n", prog_name, "down", !sort1[0]);
     XChangeProperty(dpy[0], DefaultRootWindow(dpy[0]), XA_RESOURCE_MANAGER,
-                    XA_STRING, 8, PropModeAppend, buf, strlen(buf));
+                    XA_STRING, 8, PropModeAppend, (const unsigned char*)buf, strlen(buf));
   }
   if (!XGetDefault(dpy[0], prog_name, "alt")) {
     sprintf(buf, "%.99s.%s:%d\n", prog_name, "alt", alternate[0]);
     XChangeProperty(dpy[0], DefaultRootWindow(dpy[0]), XA_RESOURCE_MANAGER,
-                    XA_STRING, 8, PropModeAppend, buf, strlen(buf));
+                    XA_STRING, 8, PropModeAppend, (const unsigned char*)buf, strlen(buf));
   }
   if (!XGetDefault(dpy[0], prog_name, "briefmsg")) {
     sprintf(buf, "%.99s.%s:%d\n", prog_name, "briefmsg", briefmsg[0]);
     XChangeProperty(dpy[0], DefaultRootWindow(dpy[0]), XA_RESOURCE_MANAGER,
-                    XA_STRING, 8, PropModeAppend, buf, strlen(buf));
+                    XA_STRING, 8, PropModeAppend, (const unsigned char*)buf, strlen(buf));
   }
   if (!XGetDefault(dpy[0], prog_name, "trickl2r")) {
     sprintf(buf, "%.99s.%s:%d\n", prog_name, "trickl2r", trickl2r[0]);
     XChangeProperty(dpy[0], DefaultRootWindow(dpy[0]), XA_RESOURCE_MANAGER,
-                    XA_STRING, 8, PropModeAppend, buf, strlen(buf));
+                    XA_STRING, 8, PropModeAppend, (const unsigned char*)buf, strlen(buf));
   }
   if (!XGetDefault(dpy[0], prog_name, "language")) {
     sprintf(buf, "%.99s.%s:%.99s\n", prog_name, "language", idxlang(lang[0]));
     XChangeProperty(dpy[0], DefaultRootWindow(dpy[0]), XA_RESOURCE_MANAGER,
-                    XA_STRING, 8, PropModeAppend, buf, strlen(buf));
+                    XA_STRING, 8, PropModeAppend, (const unsigned char*)buf, strlen(buf));
   }
   if (!XGetDefault(dpy[0], prog_name, "hint")) {
     sprintf(buf, "%.99s.%s:%d\n", prog_name, "hint", hints[0]);
     XChangeProperty(dpy[0], DefaultRootWindow(dpy[0]), XA_RESOURCE_MANAGER,
-                    XA_STRING, 8, PropModeAppend, buf, strlen(buf));
+                    XA_STRING, 8, PropModeAppend, (const unsigned char*)buf, strlen(buf));
   }
   if (!XGetDefault(dpy[0], prog_name, "shortcut")) {
     sprintf(buf, "%.99s.%s:%d\n", prog_name, "shortcut", abkuerz[0]);
     XChangeProperty(dpy[0], DefaultRootWindow(dpy[0]), XA_RESOURCE_MANAGER,
-                    XA_STRING, 8, PropModeAppend, buf, strlen(buf));
+                    XA_STRING, 8, PropModeAppend, (const unsigned char*)buf, strlen(buf));
   }
   if (!XGetDefault(dpy[0], prog_name, "alias")) {
     sprintf(buf, "%.99s.%s:%.9s %.9s\n", prog_name, "alias", spnames[0][0][0],
             spnames[0][1][0]);
     XChangeProperty(dpy[0], DefaultRootWindow(dpy[0]), XA_RESOURCE_MANAGER,
-                    XA_STRING, 8, PropModeAppend, buf, strlen(buf));
+                    XA_STRING, 8, PropModeAppend, (const unsigned char*)buf, strlen(buf));
   }
   if (!XGetDefault(dpy[0], prog_name, "ready")) {
     sprintf(buf, "%.99s.%s:%d\n", prog_name, "ready", 1);
     XChangeProperty(dpy[0], DefaultRootWindow(dpy[0]), XA_RESOURCE_MANAGER,
-                    XA_STRING, 8, PropModeAppend, buf, strlen(buf));
+                    XA_STRING, 8, PropModeAppend, (const unsigned char*)buf, strlen(buf));
   }
   XCloseDisplay(dpy[0]);
   strcpy(buf, "+");
@@ -1905,7 +1888,7 @@ void read_cards() {
   if (!cards_file) return;
   f = fopen(cards_file, "r");
   if (!f) return;
-  buf = malloc(buflen);
+  buf = (char*)malloc(buflen);
   if (!buf) nomem();
   bufidx = 0;
   for (cd = 0; cd < sizeof(map_gif) / sizeof(map_gif[0]); cd++) {
@@ -1933,7 +1916,7 @@ void read_cards() {
       bufidx = cdst;
       continue;
     }
-    *(map_gif[cd].pos) = buf + cdst;
+    *(map_gif[cd].pos) = (unsigned char*)(buf + cdst);
     ggcards            = 0;
   }
   fclose(f);
@@ -2008,8 +1991,7 @@ void set_conames() {
   }
 }
 
-void xinit(argc, argv) int argc;
-char* argv[];
+void xinit(int argc, char* argv[])
 {
   int ln, sn, i;
   unsigned int w, h;
@@ -2388,7 +2370,7 @@ char* argv[];
   if (!irc_play) save_opt();
 }
 
-void waitt(t, f) int t, f;
+void waitt(int t, int f)
 {
   struct timeval timeout;
   int sn;
@@ -2414,16 +2396,16 @@ void waitt(t, f) int t, f;
 
 void stdwait() { waitt(700, 2); }
 
-void backgr(sn, x, y, w, h) int sn, x, y, w, h;
+void backgr(int sn, int x, int y, int w, int h)
 {
   XFillRectangle(dpy[sn], bck[sn], gcbck[sn], x, y, w, h);
   XFillRectangle(dpy[sn], win[sn], gcbck[sn], x, y, w, h);
 }
 
-void putdesk(sn, x, y) int sn, x, y;
+void putdesk(int sn, int x, int y)
 { backgr(sn, x, y, desk[sn].cardw, desk[sn].cardh); }
 
-void drawcard(sn, c, x, y) int sn, c, x, y;
+void drawcard(int sn, int c, int x, int y)
 {
   XCopyArea(dpy[sn], cardpx[sn][c + 1], win[sn], gc[sn], 0, 0, desk[sn].cardw,
             desk[sn].cardh, x, y);
@@ -2431,7 +2413,7 @@ void drawcard(sn, c, x, y) int sn, c, x, y;
             desk[sn].cardh, x, y);
 }
 
-void putcard(sn, i, x, y) int sn, i, x, y;
+void putcard(int sn, int i, int x, int y)
 {
   if (i < 0)
     putdesk(sn, x, y);
@@ -2439,11 +2421,10 @@ void putcard(sn, i, x, y) int sn, i, x, y;
     drawcard(sn, i, x, y);
 }
 
-void putback(sn, x, y) int sn, x, y;
+void putback(int sn, int x, int y)
 { drawcard(sn, -1, x, y); }
 
-void hint_line(sn, c, gcp) int sn, c;
-GC* gcp;
+void hint_line(int sn, int c, GC* gcp)
 {
   int xyarr[4];
 
@@ -2457,7 +2438,7 @@ GC* gcp;
   XDrawLine(dpy[sn], bck[sn], gc[sn], xyarr[0], xyarr[1], xyarr[2], xyarr[3]);
 }
 
-void show_hint(sn, c, d) int sn, c, d;
+void show_hint(int sn, int c, int d)
 {
   static int lm[3][2];
 
@@ -2474,7 +2455,7 @@ void show_hint(sn, c, d) int sn, c, d;
   }
 }
 
-void putamark(sn, s) int sn, s;
+void putamark(int sn, int s)
 {
   int a, b, xp1, xp2, yp, xyarr[4];
 
@@ -2508,7 +2489,7 @@ void putamark(sn, s) int sn, s;
   change_gc(sn, fgpix[sn], gc);
 }
 
-void putmark(s) int s;
+void putmark(int s)
 {
   int sn;
 
@@ -2517,7 +2498,7 @@ void putmark(s) int s;
   }
 }
 
-void remmark(f) int f;
+void remmark(int f)
 {
   int sn;
 
@@ -2528,7 +2509,7 @@ void remmark(f) int f;
   }
 }
 
-void movecard(nn, sn, x1, y1, x2, y2) int nn, sn[], x1[], y1[], x2[], y2[];
+void movecard(int nn, int sn[], int x1[], int y1[], int x2[], int y2[])
 {
   int dx[3], dy[3], i, j, n = 8;
 
@@ -2552,7 +2533,7 @@ void movecard(nn, sn, x1, y1, x2, y2) int nn, sn[], x1[], y1[], x2[], y2[];
   refresh();
 }
 
-void homecard(s, n, m) int s, n, m;
+void homecard(int s, int n, int m)
 {
   int sn, sna[3], x1[3], y1[3], x2[3], y2[3];
 
@@ -2571,7 +2552,7 @@ void homecard(s, n, m) int s, n, m;
   if (!umdrueck) movecard(numsp, sna, x1, y1, x2, y2);
 }
 
-void givecard(s, n) int s, n;
+void givecard(int s, int n)
 {
   int sn, sna[3], x1[3], y1[3], x2[3], y2[3];
 
@@ -2618,7 +2599,7 @@ void givecard(s, n) int s, n;
   if (!fastdeal) waitt(300, 2);
 }
 
-void initscr(sn, sor) int sn, sor;
+void initscr(int sn, int sor)
 {
   int i, x, y, c0, c1;
 
@@ -2733,7 +2714,7 @@ void spielendscr() {
   di_weiter(1);
 }
 
-void revolutionsort(sp) int sp;
+void revolutionsort(int sp)
 {
   int sn, s, i, x, y1, y2, sav[3];
 
@@ -2801,7 +2782,7 @@ void revolutionscr() {
   phase = REVOLUTION;
 }
 
-void clr_desk(nsp) int nsp;
+void clr_desk(int nsp)
 {
   int sn;
 
@@ -2824,7 +2805,7 @@ void clr_desk(nsp) int nsp;
   }
 }
 
-void draw_box(sn, x, y, w) int sn, x, y, w;
+void draw_box(int sn, int x, int y, int w)
 {
   int xy[4];
 
@@ -2862,7 +2843,7 @@ void draw_box(sn, x, y, w) int sn, x, y, w;
   change_gc(sn, fgpix[sn], gc);
 }
 
-void put_box(s) int s;
+void put_box(int s)
 {
   int sn;
 
@@ -2880,7 +2861,7 @@ void put_box(s) int s;
   }
 }
 
-void rem_box(s) int s;
+void rem_box(int s)
 {
   int sn;
 
@@ -2901,7 +2882,7 @@ void rem_box(s) int s;
   }
 }
 
-void inv_box(s, c, rev) int s, c, rev;
+void inv_box(int s, int c, int rev)
 {
   int sn, x, y, w, h;
 
@@ -2924,7 +2905,7 @@ void inv_box(s, c, rev) int s, c, rev;
   }
 }
 
-void put_fbox(sn, t) int sn, t;
+void put_fbox(int sn, int t)
 {
   draw_box(sn, desk[sn].pboxx + 24 * desk[sn].f / desk[sn].q, desk[sn].pboxy,
            80 * desk[sn].f / desk[sn].q);
@@ -2932,13 +2913,13 @@ void put_fbox(sn, t) int sn, t;
            80 * desk[sn].f / desk[sn].q, textarr[t].t[lang[sn]]);
 }
 
-void rem_fbox(sn) int sn;
+void rem_fbox(int sn)
 {
   backgr(sn, desk[sn].pboxx + 24 * desk[sn].f / desk[sn].q, desk[sn].pboxy - 5,
          80 * desk[sn].f / desk[sn].q, 28 * desk[sn].f / desk[sn].q);
 }
 
-void inv_fbox(sn, rev) int sn, rev;
+void inv_fbox(int sn, int rev)
 {
   int x, y, w, h;
 
@@ -3218,7 +3199,7 @@ int hndl_button(int sn, int x, int y, int opt, int send) {
   return ok;
 }
 
-void setcurs(f) int f;
+void setcurs(int f)
 {
   int x, y, w, sn, snn, newsn = -1;
   char clr[100];

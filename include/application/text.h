@@ -351,12 +351,12 @@ EXTERN char conames[2][2][40];
 EXTERN char usrname[2][40];
 
 extern void init_text();
-extern char* idxlang();
-extern int langidx();
+extern char* idxlang(int i);
+extern int langidx(char* s);
 extern void info_reiz();
 extern int trumpf_idx();
 extern void info_spiel();
-extern void info_stich();
+extern void info_stich(int p, int c);
 extern void clear_info();
 extern void set_names();
 

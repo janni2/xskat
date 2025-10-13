@@ -288,14 +288,10 @@ void irc_pr_start(int val) { irc_pr_sd(textarr[TX_GEBER].t[lang[0]], right(val) 
 
 void irc_pr_s1(int val) { irc_pr_sd(textarr[TX_SPIELSTAERKE].t[lang[0]], val); }
 
-void irc_showrules(aplayramsch, aplaysramsch, aplaykontra, aplaybock,
-                   aresumebock, aspitzezaehlt, arevolution, aklopfen, aschenken,
-                   abockevents, ageber, aalist, astrateg, aoldrules,
-                   arskatloser) int aplayramsch,
-    aplaysramsch, aplaykontra, aplaybock;
-int aresumebock, aspitzezaehlt, arevolution, aklopfen;
-int aschenken, abockevents, ageber, aalist, astrateg;
-int aoldrules, arskatloser;
+void irc_showrules(int aplayramsch, int aplaysramsch, int aplaykontra, int aplaybock,
+                   int aresumebock, int aspitzezaehlt, int arevolution, int aklopfen, int aschenken,
+                   int abockevents, int ageber, int aalist, int astrateg, int aoldrules,
+                   int arskatloser)
 {
   int f = 1;
 
