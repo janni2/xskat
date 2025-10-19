@@ -67,12 +67,11 @@
  * APPLICATION INITIALIZATION AND MAIN GAME LOOP
  * ======================================================================== */
 
-extern "C" int run_sdl_ui(int argc, char* argv[]);
-
 int main(int argc, char* argv[]) {
+    // Check for --sdl flag
     for (int i = 1; i < argc; ++i) {
         if (strcmp(argv[i], "--sdl") == 0) {
-            return run_sdl_ui(argc, argv);
+            return sdl_main(argc, argv);
         }
     }
 

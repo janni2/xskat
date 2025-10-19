@@ -19,6 +19,10 @@ endif()
 # Find required packages
 find_package(X11 REQUIRED)
 find_package(SDL2 REQUIRED)
+find_package(SDL2_image REQUIRED)
+
+# Copy card assets to the build directory so they can be loaded at runtime
+file(COPY resources/cards DESTINATION ${CMAKE_BINARY_DIR}/resources)
 
 # Define source files by layer (layered architecture)
 # Domain Layer: Pure game logic
@@ -46,7 +50,6 @@ set(UI_SOURCES
     src/ui/cards.cpp
     src/ui/xio.cpp            # X11 window management and event handling
     src/ui/xdial.cpp          # Dialog management and user interface
-    src/ui/sdl_ui.cpp
 )
 
 # Main application orchestrator (composition root)
@@ -62,7 +65,8 @@ set(XSKAT_SOURCES
 )
 
 # Create executable
-add_executable(xskat ${XSKAT_SOURCES})
+add_executable(xskat ${XSKAT_SOURCES} src/ui/sdl_ui.cpp)
+
 # Set target properties
 set_target_properties(xskat PROPERTIES
     VERSION ${PROJECT_VERSION}
@@ -70,14 +74,16 @@ set_target_properties(xskat PROPERTIES
 )
 
 # Link libraries
-target_link_libraries(xskat PRIVATE ${X11_LIBRARIES} SDL2::SDL2)
-target_include_directories(xskat PRIVATE 
+target_link_libraries(xskat PRIVATE ${X11_LIBRARIES} SDL2::SDL2 SDL2_image::SDL2_image)
+target_include_directories(xskat PRIVATE
     ${X11_INCLUDE_DIR}
-    ${SDL2_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/include/domain
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/application  
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/application
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ui
+)
+target_include_directories(xskat PRIVATE
+    ${SDL2_INCLUDE_DIRS}
 )
 
 # Compile definitions

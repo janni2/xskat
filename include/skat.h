@@ -269,5 +269,6 @@ extern void do_spielen();
 extern void computer();
 extern void play();
 int main(int argc, char* argv[]);
+int sdl_main(int argc, char* argv[]);
 
 #endif /* SKAT_H */
