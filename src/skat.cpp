@@ -68,6 +68,13 @@
  * ======================================================================== */
 
 int main(int argc, char* argv[]) {
+    // Check for --sdl flag
+    for (int i = 1; i < argc; ++i) {
+        if (strcmp(argv[i], "--sdl") == 0) {
+            return sdl_main(argc, argv);
+        }
+    }
+
     // Initialize random seed for game
     setrnd(&seed[0], savseed = time((time_t*)0));
     
