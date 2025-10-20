@@ -59,7 +59,7 @@ void init_ramsch() {
   for (sn = 0; sn < numsp; sn++) {
     initscr(sn, 1);
   }
-  for (sn = 0; sn < 3; sn++) {
+  for (sn = 0; sn < NUM_PLAYERS; sn++) {
     rstsum[sn] = rstich[sn] = ggdurchm[sn] = 0;
   }
   if (playsramsch || (ramschspiele && klopfen)) {
@@ -271,9 +271,9 @@ void nimm_bube() {
 void moegldrunter(int sc) {
   int pc, f, fb, pcl, le, fr, w1, w2, wc;
 
-  fb = cards[possi[0]] >> 3;
+  fb = cards[possi[0]] >> CARD_SUIT_SHIFT;
   for (pc = 1; pc < possc; pc++) {
-    if (cards[possi[pc]] >> 3 != fb) break;
+    if (cards[possi[pc]] >> CARD_SUIT_SHIFT != fb) break;
   }
   fr = pc != possc;
   f  = 0;
@@ -282,25 +282,25 @@ void moegldrunter(int sc) {
     if (higher(sc, cards[possi[pc]])) {
       if (f) {
         if (fr) {
-          if ((cards[possi[pc]] & 7) == BUBE) {
-            w1 = 30 + (cards[possi[pc]] >> 3);
+          if ((cards[possi[pc]] & CARD_RANK_MASK) == BUBE) {
+            w1 = 30 + (cards[possi[pc]] >> CARD_SUIT_SHIFT);
           } else {
-            w1 = 7 - (cards[possi[pc]] & 7);
-            if (!sicher(cards[possi[pc]] >> 3, &pcl, &le)) {
+            w1 = 7 - (cards[possi[pc]] & CARD_RANK_MASK);
+            if (!sicher(cards[possi[pc]] >> CARD_SUIT_SHIFT, &pcl, &le)) {
               w1 += 10;
             }
           }
-          if ((cards[possi[playcd]] & 7) == BUBE) {
-            w2 = 30 + (cards[possi[playcd]] >> 3);
+          if ((cards[possi[playcd]] & CARD_RANK_MASK) == BUBE) {
+            w2 = 30 + (cards[possi[playcd]] >> CARD_SUIT_SHIFT);
           } else {
-            w2 = 7 - (cards[possi[playcd]] & 7);
-            if (!sicher(cards[possi[playcd]] >> 3, &pcl, &le)) {
+            w2 = 7 - (cards[possi[playcd]] & CARD_RANK_MASK);
+            if (!sicher(cards[possi[playcd]] >> CARD_SUIT_SHIFT, &pcl, &le)) {
               w2 += 10;
             }
           }
         } else {
-          w1 = 7 - (cards[possi[pc]] & 7);
-          w2 = 7 - (cards[possi[playcd]] & 7);
+          w1 = 7 - (cards[possi[pc]] & CARD_RANK_MASK);
+          w2 = 7 - (cards[possi[playcd]] & CARD_RANK_MASK);
         }
         if (w1 > w2) {
           playcd = pc;
@@ -321,7 +321,7 @@ void moegldrunter(int sc) {
 int ggdurchmarsch() {
   int i, j, h, bb, sn;
 
-  if (rstich[0] + rstich[1] + rstich[2] > 1 || (stcd[0] & 7) == SIEBEN ||
+  if (rstich[0] + rstich[1] + rstich[2] > 1 || (stcd[0] & CARD_RANK_MASK) == SIEBEN ||
       (vmh == 2 && stich != 1 && !higher(stcd[0], stcd[1])))
     return 0;
   sn = (ausspl + vmh) % 3;
@@ -333,11 +333,11 @@ int ggdurchmarsch() {
       break;
     }
   }
-  if (((stcd[0] & 7) == BUBE &&
+  if (((stcd[0] & CARD_RANK_MASK) == BUBE &&
        ((hatnfb[left(ausspl)][4] == 1 && hatnfb[right(ausspl)][4] == 1) ||
         (gespcd[0 << 3 | BUBE] == 2 && gespcd[1 << 3 | BUBE] == 2 &&
          gespcd[2 << 3 | BUBE] == 2 && gespcd[3 << 3 | BUBE] == 2))) ||
-      (stcd[0] & 7) < KOENIG) {
+      (stcd[0] & CARD_RANK_MASK) < KOENIG) {
     ggdurchm[sn] = 1;
   }
   if (!ggdurchm[sn]) return 0;
@@ -347,14 +347,14 @@ int ggdurchmarsch() {
   }
   for (i = 0; i < possc; i++) {
     if (!higher(stcd[h], cards[possi[i]])) {
-      if (!j || cardw[cards[possi[i]] & 7] < cardw[cards[possi[j - 1]] & 7]) {
+      if (!j || cardw[cards[possi[i]] & CARD_RANK_MASK] < cardw[cards[possi[j - 1]] & CARD_RANK_MASK]) {
         j = i + 1;
       }
     }
   }
   if (!j) {
     for (i = 0; i < possc; i++) {
-      if (!j || ggdmw[cards[possi[i]] & 7] < ggdmw[cards[possi[j - 1]] & 7]) {
+      if (!j || ggdmw[cards[possi[i]] & CARD_RANK_MASK] < ggdmw[cards[possi[j - 1]] & CARD_RANK_MASK]) {
         j = i + 1;
       }
     }
@@ -373,7 +373,7 @@ void m_bvr() {
     if (!sicher(fb, &pc, &le)) {
       if (f) {
         if (le > lef ||
-            (rswert[cards[possi[pc]] & 7] > rswert[cards[possi[playcd]] & 7] &&
+            (rswert[cards[possi[pc]] & CARD_RANK_MASK] > rswert[cards[possi[playcd]] & CARD_RANK_MASK] &&
              le >= lef)) {
           playcd = pc;
           lef    = le;
@@ -385,7 +385,7 @@ void m_bvr() {
       }
     }
   }
-  if (!f || (cards[possi[playcd]] & 7) <= ZEHN) {
+  if (!f || (cards[possi[playcd]] & CARD_RANK_MASK) <= ZEHN) {
     playcd = 0;
     moeglklein();
   }
@@ -439,7 +439,7 @@ int comp_sramsch(int sn) {
   bb = b[0] = b[1] = b[2] = b[3] = 0;
   for (i = 0; i < 10; i++) {
     c = cards[sn * 10 + i];
-    if ((c & 7) == BUBE) bb++, b[c >> 3] = 1;
+    if ((c & CARD_RANK_MASK) == BUBE) bb++, b[c >> CARD_SUIT_SHIFT] = 1;
   }
   if (ramschspiele && klopfen && !playsramsch) {
     if ((n <= 3 && (!n || bb <= 1)) || (n <= 2 && (!n || bb <= 2))) {
@@ -465,20 +465,20 @@ int comp_sramsch(int sn) {
   if (((vmh && prot2.verdopp[right(ausspl + vmh)] != 1) ||
        (vmh == 2 && prot2.verdopp[right(ausspl + vmh)] == 1 &&
         prot2.verdopp[left(ausspl + vmh)] != 1)) &&
-      (((cards[30] & 7) > ZEHN && (cards[31] & 7) > ZEHN) ||
-       (cards[30] & 7) == SIEBEN || (cards[31] & 7) == SIEBEN) &&
-      ((cards[30] & 7) >= NEUN || (cards[31] & 7) >= NEUN)) {
+      (((cards[30] & CARD_RANK_MASK) > ZEHN && (cards[31] & CARD_RANK_MASK) > ZEHN) ||
+       (cards[30] & CARD_RANK_MASK) == SIEBEN || (cards[31] & CARD_RANK_MASK) == SIEBEN) &&
+      ((cards[30] & CARD_RANK_MASK) >= NEUN || (cards[31] & CARD_RANK_MASK) >= NEUN)) {
     ggdurchm[sn] = 1;
   }
   for (i = 0; i < 2; i++) {
     for (j = 0; j < 10; j++) {
-      if (cardw[cards[10 * sn + j] & 7] > cardw[cards[30 + i] & 7]) {
+      if (cardw[cards[10 * sn + j] & CARD_RANK_MASK] > cardw[cards[30 + i] & CARD_RANK_MASK]) {
         swap(&cards[30 + i], &cards[10 * sn + j]);
       }
     }
-    if ((cards[30 + i] & 7) == BUBE) {
+    if ((cards[30 + i] & CARD_RANK_MASK) == BUBE) {
       for (j = 0; j < 10; j++) {
-        if ((cards[10 * sn + j] & 7) != BUBE) {
+        if ((cards[10 * sn + j] & CARD_RANK_MASK) != BUBE) {
           swap(&cards[30 + i], &cards[10 * sn + j]);
           break;
         }
@@ -491,12 +491,12 @@ int comp_sramsch(int sn) {
   bb = b[0] = b[1] = b[2] = b[3] = 0;
   for (i = 0; i < 12; i++) {
     c = spcards[i];
-    if ((c & 7) != BUBE) {
-      p[c >> 3] += cardw[c & 7];
-      t[c >> 3]++;
-      inhand[c >> 3][c & 7] = 1;
+    if ((c & CARD_RANK_MASK) != BUBE) {
+      p[c >> CARD_SUIT_SHIFT] += cardw[c & CARD_RANK_MASK];
+      t[c >> CARD_SUIT_SHIFT]++;
+      inhand[c >> CARD_SUIT_SHIFT][c & CARD_RANK_MASK] = 1;
     } else
-      bb++, b[c >> 3] = 1;
+      bb++, b[c >> CARD_SUIT_SHIFT] = 1;
   }
   for (fb = 0; fb < 4; fb++) {
     for (i = fb + 1; i < 4; i++) {
@@ -562,15 +562,15 @@ int comp_sramsch(int sn) {
 
 void ramsch_stich() {
   rstsum[ausspl] +=
-      cardw[stcd[0] & 7] + cardw[stcd[1] & 7] + cardw[stcd[2] & 7];
+      cardw[stcd[0] & CARD_RANK_MASK] + cardw[stcd[1] & CARD_RANK_MASK] + cardw[stcd[2] & CARD_RANK_MASK];
   rstich[ausspl] = 1;
   if (stich == 10) {
-    rskatsum = cardw[prot2.skat[1][0] & 7] + cardw[prot2.skat[1][1] & 7];
+    rskatsum = cardw[prot2.skat[1][0] & CARD_RANK_MASK] + cardw[prot2.skat[1][1] & CARD_RANK_MASK];
     if (!rskatloser) {
       rstsum[ausspl] += rskatsum;
     }
   }
-  if ((stcd[0] & 7) == BUBE && (stcd[1] & 7) != BUBE && (stcd[2] & 7) != BUBE) {
+  if ((stcd[0] & CARD_RANK_MASK) == BUBE && (stcd[1] & CARD_RANK_MASK) != BUBE && (stcd[2] & CARD_RANK_MASK) != BUBE) {
     ggdurchm[0] = ggdurchm[1] = ggdurchm[2] = 1;
   }
 }
@@ -633,7 +633,7 @@ int testgrandhand(int sn) {
 
   bb = as = zehn = 0;
   for (i = 0; i < 10; i++) {
-    switch (cards[10 * sn + i] & 7) {
+    switch (cards[10 * sn + i] & CARD_RANK_MASK) {
       case BUBE:
         bb++;
         break;

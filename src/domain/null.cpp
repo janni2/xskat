@@ -48,7 +48,7 @@ void testnull(int sn) {
 
   naussplfb[sn] = -1;
   if (null_dicht(sn, 1, &cards[30], (int*)0, mfb, (int*)0)) {
-    for (i = 0; i < 4 && mfb[i]; i++);
+    for (i = 0; i < NUM_SUITS && mfb[i]; i++);
     if (sn != ausspl || i < 4) {
       f = aussplfb[i < 4 ? i : 0];
       maxrw[sn] = nullw[revolution ? 4 : 3];
@@ -198,9 +198,9 @@ int drunter(int f) {
 int drunterdrue() {
   int i, w, fb;
 
-  fb = stcd[0] >> 3;
+  fb = stcd[0] >> CARD_SUIT_SHIFT;
   i  = -1;
-  for (w = stcd[0] & 7; w >= AS; w = w == NEUN     ? ZEHN
+  for (w = stcd[0] & CARD_RANK_MASK; w >= AS; w = w == NEUN     ? ZEHN
                                      : w == ZEHN   ? BUBE
                                      : w == KOENIG ? AS
                                                    : w - 1) {
@@ -209,9 +209,9 @@ int drunterdrue() {
       continue;
     }
     for (i = 0; i < possc; i++) {
-      if (cards[possi[i]] == (fb << 3 | w)) return i;
+      if (cards[possi[i]] == (fb << CARD_SUIT_SHIFT | w)) return i;
     }
-    if (gespcd[fb << 3 | w] != 2) break;
+    if (gespcd[fb << CARD_SUIT_SHIFT | w] != 2) break;
   }
   return drunter(0);
 }
@@ -225,7 +225,7 @@ void m_nsp() {
     } else {
       playcd = minmaxfb(0, naussplfb[spieler]);
     }
-  } else if (hatnfb[spieler][stcd[0] >> 3]) {
+  } else if (hatnfb[spieler][stcd[0] >> CARD_SUIT_SHIFT]) {
     if (null_dicht(spieler, handsp, &prot2.skat[1][0], &ufb, (int*)0,
                    (int*)0)) {
       playcd = minmax(1);
@@ -237,7 +237,7 @@ void m_nsp() {
 }
 
 void m_nns(int s) {
-  int sga = spieler == geber, ufb = stcd[0] >> 3;
+  int sga = spieler == geber, ufb = stcd[0] >> CARD_SUIT_SHIFT;
 
   if (revolang && spieler != ausspl) {
     playcd = minmax(0);
@@ -246,7 +246,7 @@ void m_nns(int s) {
 
   if (!vmh)
     playcd = n_bedienen();
-  else if (hatnfb[s][stcd[0] >> 3])
+  else if (hatnfb[s][stcd[0] >> CARD_SUIT_SHIFT])
     playcd = n_anwert(ufb);
   else {
     playcd = n_bedienen();
@@ -269,10 +269,10 @@ void m_nns(int s) {
 
 void null_stich() {
   int i;
-  int fb1 = stcd[0] >> 3;
+  int fb1 = stcd[0] >> CARD_SUIT_SHIFT;
 
   for (i = 0; i < 3; i++) {
-    nochinfb[stcd[i] >> 3]--;
+    nochinfb[stcd[i] >> CARD_SUIT_SHIFT]--;
   }
 
   if (ausspl != spieler) {
@@ -311,7 +311,7 @@ void revolutiondist() {
         for (j = 0, k = sn; j < 2 && ct[p] != 10; j++, k = mi) {
           for (i = 0; i < 10 && ct[p] != 10; i++) {
             c = cards[10 * k + i];
-            if (c >> 3 == sfb[fb]) {
+            if (c >> CARD_SUIT_SHIFT == sfb[fb]) {
               swap(&cards[10 * k + i], &cards[10 * p + ct[p]]);
               ct[p]++;
             }
@@ -326,7 +326,7 @@ void revolutiondist() {
   for (j = 0, k = sn; j < 2; j++, k = mi) {
     for (i = 0; i < 10; i++) {
       c = cards[10 * k + i];
-      if (c >> 3 == ufb) {
+      if (c >> CARD_SUIT_SHIFT == ufb) {
         swap(&cards[10 * k + i], &cards[10 * sn + cnt]);
         cnt++;
       }
@@ -335,7 +335,7 @@ void revolutiondist() {
   for (j = 0, k = sn; j < 2; j++, k = mi) {
     for (i = 0; i < 10; i++) {
       c = cards[10 * k + i];
-      cd[c >> 3][cdc[c >> 3]++] = c & 7;
+      cd[c >> CARD_SUIT_SHIFT][cdc[c >> CARD_SUIT_SHIFT]++] = c & CARD_RANK_MASK;
     }
   }
   for (fb = 0; fb < 4; fb++) {
@@ -347,7 +347,7 @@ void revolutiondist() {
     for (j = 0, k = sn; j < 2; j++, k = mi) {
       for (i = 0; i < 10; i++) {
         c = cards[10 * k + i];
-        if (c == (fb << 3 | cd[fb][cdc[fb] - 1])) {
+        if (c == (fb << CARD_SUIT_SHIFT | cd[fb][cdc[fb] - 1])) {
           swap(&cards[10 * k + i], &cards[10 * sn + cnt]);
           cnt++;
           cdc[fb]--;
@@ -375,8 +375,8 @@ int null_dicht(int sn, int handsp, int *skat, int *ufb, int *mfb, int *hfb) {
     for (i = 0; i < 2; i++) {
       c = skat[i];
       if (c >= 0) {
-        f = c >> 3;
-        w = c & 7;
+        f = c >> CARD_SUIT_SHIFT;
+        w = c & CARD_RANK_MASK;
         if (sn >= 0) {
           for (j = 0; j < 32; j++) {
             if (ncd[j] == c) {
@@ -398,8 +398,8 @@ int null_dicht(int sn, int handsp, int *skat, int *ufb, int *mfb, int *hfb) {
       karten[k * 10 + i] = ncd[sp * 10 + i];
       hand[i] = ncd[sp * 10 + i];
       c = hand[i];
-      f = c >> 3;
-      w = c & 7;
+      f = c >> CARD_SUIT_SHIFT;
+      w = c & CARD_RANK_MASK;
     }
 
     for (i = 0; i < 4; i++) {
@@ -410,8 +410,8 @@ int null_dicht(int sn, int handsp, int *skat, int *ufb, int *mfb, int *hfb) {
 
     for (i = 0; i < 10; i++) {
       c = hand[i];
-      f = c >> 3;
-      w = c & 7;
+      f = c >> CARD_SUIT_SHIFT;
+      w = c & CARD_RANK_MASK;
       inhs[f][w] = 1;
     }
 
@@ -423,8 +423,8 @@ int null_dicht(int sn, int handsp, int *skat, int *ufb, int *mfb, int *hfb) {
 
       for (i = 0; i < 10; i++) {
         c = hand[i];
-        f = c >> 3;
-        w = c & 7;
+        f = c >> CARD_SUIT_SHIFT;
+        w = c & CARD_RANK_MASK;
         if (w == AS) {
           if (mfb) mfb[f] = 1;
           ok = 0;

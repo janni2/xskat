@@ -131,7 +131,7 @@ void mischen() {
         for (i = 0; i < CARDS_PER_PLAYER; i++) swap(&cards[SKAT_OFFSET + i], &cards[CARDS_PER_PLAYER + i]);
       }
       gamenr++;
-    } while ((pkoption == 1 || pkoption == 4) && numsp == 1 && !gutesblatt());
+    } while ((pkoption == 1 || pkoption == GRAND_GAME) && numsp == 1 && !gutesblatt());
     if (pkoption > 1) pkoption = 0;
   }
   for (i = 0; i < TOTAL_CARDS; i++) savecards[i] = cards[i];
@@ -190,8 +190,8 @@ void sort(int sn) {
   if (alternate[sn]) {
     hatfb[0] = hatfb[1] = hatfb[2] = hatfb[3] = 0;
     for (i = f; i < f + 10; i++) {
-      if (cards[i] >= 0 && ((cards[i] & 7) != BUBE || sort2[sn])) {
-        hatfb[cards[i] >> 3] = 1;
+      if (cards[i] >= 0 && ((cards[i] & CARD_RANK_MASK) != BUBE || sort2[sn])) {
+        hatfb[cards[i] >> CARD_SUIT_SHIFT] = 1;
       }
     }
     if (!sort2[sn] && trumpf >= 0 && trumpf < 4 && hatfb[trumpf]) {
@@ -227,7 +227,7 @@ void sort(int sn) {
     }
   }
   if (sn == spieler && spitzeang && !sort2[sn]) {
-    sptz = trumpf == 4 ? BUBE : SIEBEN | trumpf << 3;
+    sptz = trumpf == GRAND_GAME ? BUBE : SIEBEN | trumpf << CARD_SUIT_SHIFT;
   } else
     sptz = -2;
   for (i = f; i < f + 9; i++) {
@@ -257,22 +257,22 @@ void calc_rw(int s) {
   b[0] = b[1] = b[2] = b[3] = 0;
   t[0] = t[1] = t[2] = t[3] = 0;
   bb = as = ze = dk = 0;
-  for (i = 0; i < 10; i++) {
+  for (i = 0; i < CARDS_PER_PLAYER; i++) {
     c = cards[10 * s + i];
-    if ((c & 7) == BUBE) {
-      b[c >> 3] = 1;
+    if ((c & CARD_RANK_MASK) == BUBE) {
+      b[c >> CARD_SUIT_SHIFT] = 1;
       bb++;
     } else
-      t[c >> 3]++;
+      t[c >> CARD_SUIT_SHIFT]++;
   }
   tr = 0;
   for (i = 1; i < 4; i++) {
     if (t[i] >= t[tr]) tr = i;
   }
-  for (i = 0; i < 10; i++) {
+  for (i = 0; i < CARDS_PER_PLAYER; i++) {
     c = cards[10 * s + i];
-    if ((c & 7) != BUBE && c >> 3 != tr) {
-      switch (c & 7) {
+    if ((c & CARD_RANK_MASK) != BUBE && c >> CARD_SUIT_SHIFT != tr) {
+      switch (c & CARD_RANK_MASK) {
         case AS:
           as++;
           break;
@@ -280,11 +280,11 @@ void calc_rw(int s) {
           ze++;
           break;
         default:
-          dk += cardw[c & 7];
+          dk += cardw[c & CARD_RANK_MASK];
       }
     }
   }
-  if ((bb + t[tr] == 4 && ((as == 2 && ze >= 2) || (as >= 3))) ||
+  if ((bb + t[tr] == GRAND_GAME && ((as == 2 && ze >= 2) || (as >= 3))) ||
       (bb + t[tr] == 5 && ((dk + 10 * ze >= 39) ||
                            (as >= 1 && ze >= 1 && dk + 10 * ze >= 11 && b[3]) ||
                            (as >= 2 && dk + 10 * ze) || (as >= 3))) ||
@@ -300,17 +300,17 @@ void calc_rw(int s) {
   if (!maxrw[s] &&
       (((b[3] || b[2] || bb == 2) &&
         ((b[3] && b[2] && as >= 2) ||
-         (bb + t[tr] == 4 && as >= 1 && dk + 10 * ze + 11 * as >= 29) ||
+         (bb + t[tr] == GRAND_GAME && as >= 1 && dk + 10 * ze + 11 * as >= 29) ||
          (bb + t[tr] == 5 && dk + 10 * ze + 11 * as >= 19) ||
          (bb + t[tr] == 5 && ze + as > 1) || (bb + t[tr] == 6 && bb > 2) ||
          (bb + t[tr] == 6 && dk + 10 * ze >= 8))) ||
-       (bb + t[tr] == 4 && bb && as > 1) || (bb + t[tr] == 5 && as > 1) ||
+       (bb + t[tr] == GRAND_GAME && bb && as > 1) || (bb + t[tr] == 5 && as > 1) ||
        (bb + t[tr] == 5 && dk + 10 * ze + 11 * as >= 32)))
     maxrw[s] = 18;
   if (!maxrw[s] &&
       (((b[3] || b[2] || bb == 2) && (bb + t[tr] == 6)) ||
-       (bb + t[tr] == 4 && bb > 1 && as) ||
-       (bb + t[tr] == 4 && bb && as && ze && dk) ||
+       (bb + t[tr] == GRAND_GAME && bb > 1 && as) ||
+       (bb + t[tr] == GRAND_GAME && bb && as && ze && dk) ||
        (bb + t[tr] == 5 && bb && as && ze) ||
        (bb + t[tr] == 5 && bb && ze && dk > 4) ||
        (bb + t[tr] == 5 && bb && ze > 1) || (bb + t[tr] == 5 && bb > 1) ||
@@ -338,11 +338,11 @@ void drueck(int f, int n, int *p) {
     if (inhand[f][i]) {
       inhand[f][i] = 0;
       (*p) -= cardw[i];
-      if (!gedr && cards[31] == (f << 3) + i) {
+      if (!gedr && cards[31] == (f << CARD_SUIT_SHIFT) + i) {
         swap(&cards[30], &cards[31]);
       } else {
         for (j = 0; j < 10; j++) {
-          if (cards[spieler * 10 + j] == (f << 3) + i) {
+          if (cards[spieler * 10 + j] == (f << CARD_SUIT_SHIFT) + i) {
             swap(&cards[30 + gedr], &cards[10 * spieler + j]);
             break;
           }
@@ -358,10 +358,10 @@ void truempfe() {
   int i, c;
 
   for (c = 0; c < 2; c++) {
-    if ((cards[30 + c] & 7) == BUBE || cards[30 + c] >> 3 == trumpf) {
-      for (i = 0; i < 10; i++) {
-        if ((cards[10 * spieler + i] & 7) != BUBE &&
-            cards[10 * spieler + i] >> 3 != trumpf) {
+    if ((cards[30 + c] & CARD_RANK_MASK) == BUBE || cards[30 + c] >> CARD_SUIT_SHIFT == trumpf) {
+      for (i = 0; i < CARDS_PER_PLAYER; i++) {
+        if ((cards[10 * spieler + i] & CARD_RANK_MASK) != BUBE &&
+            cards[10 * spieler + i] >> CARD_SUIT_SHIFT != trumpf) {
           swap(&cards[30 + c], &cards[10 * spieler + i]);
           break;
         }
@@ -373,26 +373,26 @@ void truempfe() {
 int tr_voll(int sn, int f) {
   int i, c, t, a, z, n[4], ze[4];
 
-  if (trumpf == -1 || trumpf == 4) return f;
+  if (trumpf == -1 || trumpf == GRAND_GAME) return f;
   t = a = z = 0;
   n[0] = n[1] = n[2] = n[3] = 0;
   ze[0] = ze[1] = ze[2] = ze[3] = 0;
-  for (i = 0; i < 10; i++) {
+  for (i = 0; i < CARDS_PER_PLAYER; i++) {
     c = cards[10 * sn + i];
-    if ((c & 7) == BUBE || c >> 3 == trumpf)
+    if ((c & CARD_RANK_MASK) == BUBE || c >> CARD_SUIT_SHIFT == trumpf)
       t++;
-    else if ((c & 7) == AS)
+    else if ((c & CARD_RANK_MASK) == AS)
       a++;
-    else if ((c & 7) == ZEHN)
-      z++, ze[c >> 3] = 1;
+    else if ((c & CARD_RANK_MASK) == ZEHN)
+      z++, ze[c >> CARD_SUIT_SHIFT] = 1;
     else
-      n[c >> 3]++;
+      n[c >> CARD_SUIT_SHIFT]++;
   }
   if (f) {
     return t > 7 || (t > 6 && a + z);
   }
   return (t > 5 || (t > 4 && a + z) || (t > 3 && a > 2)) &&
-         !(t == 4 && ((ze[0] && !n[0]) || (ze[1] && !n[1]) ||
+         !(t == GRAND_GAME && ((ze[0] && !n[0]) || (ze[1] && !n[1]) ||
                       (ze[2] && !n[2]) || (ze[3] && !n[3])));
 }
 
@@ -418,9 +418,9 @@ int testgrand(int bb, int b[4], int vh) {
   ko = inhand[0][KOENIG] + inhand[1][KOENIG] + inhand[2][KOENIG] +
        inhand[3][KOENIG];
   if (bb == 2 && as > 2 && ze) return bz;
-  if (bb && as > 2 && ze == 4) return bz;
-  if (as == 4 && ze > 3 - bb) return 2;
-  if (as == 4 && ze > 2 - bb) return 1;
+  if (bb && as > 2 && ze == GRAND_GAME) return bz;
+  if (as == GRAND_GAME && ze > 3 - bb) return 2;
+  if (as == GRAND_GAME && ze > 2 - bb) return 1;
   if (bb <= 2 && (!b[3] || bb != 2 || spieler != ausspl)) return 0;
   fl = g3 = g4 = 0;
   for (i = 0; i < 4; i++) {
@@ -441,7 +441,7 @@ int testgrand(int bb, int b[4], int vh) {
     if (ih > 3 && inhand[i][AS] && inhand[i][ZEHN]) g3 = 1;
   }
   if (fl + bb > 5) return bz;
-  if (bb == 4 && g4) return bz;
+  if (bb == GRAND_GAME && g4) return bz;
   if ((bb == 3 && (b[3] || vh) && g3)) return bz;
   return fl + bb > 4 && b[3] && !(bb + as == 5 && !ze && !ko);
 }
@@ -452,10 +452,10 @@ void calc_inhand(int sn) {
   for (i = 0; i < 4; i++) {
     for (c = 0; c < 8; c++) inhand[i][c] = 0;
   }
-  for (i = 0; i < 10; i++) {
+  for (i = 0; i < CARDS_PER_PLAYER; i++) {
     c = cards[10 * sn + i];
     if (c >= 0) {
-      inhand[c >> 3][c & 7] = 1;
+      inhand[c >> CARD_SUIT_SHIFT][c & CARD_RANK_MASK] = 1;
     }
   }
 }
@@ -472,15 +472,15 @@ int testhand() {
   for (i = 0; i < 4; i++) {
     for (c = 0; c < 8; c++) inhand[i][c] = 0;
   }
-  for (i = 0; i < 10; i++) {
+  for (i = 0; i < CARDS_PER_PLAYER; i++) {
     c = spcards[i];
-    if ((c & 7) == BUBE) {
-      b[c >> 3] = 1;
+    if ((c & CARD_RANK_MASK) == BUBE) {
+      b[c >> CARD_SUIT_SHIFT] = 1;
       bb++;
     } else {
-      p[c >> 3] += cardw[c & 7];
-      t[c >> 3]++;
-      inhand[c >> 3][c & 7] = 1;
+      p[c >> CARD_SUIT_SHIFT] += cardw[c & CARD_RANK_MASK];
+      t[c >> CARD_SUIT_SHIFT]++;
+      inhand[c >> CARD_SUIT_SHIFT][c & CARD_RANK_MASK] = 1;
     }
   }
   for (i = 1; i < 4; i++) {
@@ -522,14 +522,14 @@ void karobube() {
   for (s = 0; s < 3; s++) {
     if (s == spieler) continue;
     n = k = 0;
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i < CARDS_PER_PLAYER; i++) {
       c = cards[s * 10 + i];
-      if ((c & 7) == BUBE || c >> 3 == trumpf) {
+      if ((c & CARD_RANK_MASK) == BUBE || c >> CARD_SUIT_SHIFT == trumpf) {
         n++;
-        if ((c & 7) < KOENIG) n = 9;
+        if ((c & CARD_RANK_MASK) < KOENIG) n = 9;
         if (c == BUBE)
           k = 1;
-        else if ((c & 7) == BUBE)
+        else if ((c & CARD_RANK_MASK) == BUBE)
           n = 9;
       }
     }
@@ -560,10 +560,10 @@ int higher(int c1, int c2) {
   int f1, w1, f2, w2;
 
   if (c2 == -1) return 1;
-  f1 = c1 >> 3;
-  w1 = c1 & 7;
-  f2 = c2 >> 3;
-  w2 = c2 & 7;
+  f1 = c1 >> CARD_SUIT_SHIFT;
+  w1 = c1 & CARD_RANK_MASK;
+  f2 = c2 >> CARD_SUIT_SHIFT;
+  w2 = c2 & CARD_RANK_MASK;
   if (trumpf == -1) {
     if (f1 == f2) {
       if (w1 == ZEHN) return w2 > BUBE;
@@ -620,17 +620,17 @@ void calc_result() {
   s[0] = s[1] = s[2] = s[3] = s[4] = s[5] = s[6] = s[7] = 0;
   for (i = 0; i < 12; i++) {
     c = spcards[i];
-    if ((c & 7) == BUBE)
-      b[c >> 3] = 1;
-    else if (c >> 3 == trumpf)
-      s[c & 7] = 1;
+    if ((c & CARD_RANK_MASK) == BUBE)
+      b[c >> CARD_SUIT_SHIFT] = 1;
+    else if (c >> CARD_SUIT_SHIFT == trumpf)
+      s[c & CARD_RANK_MASK] = 1;
   }
   s[BUBE] = s[NEUN];
   s[NEUN] = s[ACHT];
   s[ACHT] = s[SIEBEN];
   f       = 1;
   while (f < 4 && b[3 - f] == b[3]) f++;
-  if (f == 4 && trumpf != 4) {
+  if (f == GRAND_GAME && trumpf != 4) {
     while (f < 11 && s[f - 4] == b[3]) f++;
   }
   f++;
@@ -641,7 +641,7 @@ void calc_result() {
   if (schwang) f++;
   if (ouveang) f++;
   if (spitzeang) f += spitzezaehlt;
-  if (trumpf == 4 && ouveang && oldrules)
+  if (trumpf == GRAND_GAME && ouveang && oldrules)
     spwert = (f - 1) * 36;
   else
     spwert = f * rwert[trumpf];
@@ -678,7 +678,7 @@ void calc_poss(int s) {
   int i, j, k, f1, w1, f2, w2;
 
   possc = 0;
-  for (i = 0; i < 10; i++) {
+  for (i = 0; i < CARDS_PER_PLAYER; i++) {
     if (cards[s * 10 + i] >= 0) {
       for (j = 0; j < possc && cards[s * 10 + i] > cards[possi[j]]; j++);
       for (k = possc; k > j; k--) possi[k] = possi[k - 1];
@@ -687,13 +687,13 @@ void calc_poss(int s) {
     }
   }
   if (vmh) {
-    f1 = stcd[0] >> 3;
-    w1 = stcd[0] & 7;
+    f1 = stcd[0] >> CARD_SUIT_SHIFT;
+    w1 = stcd[0] & CARD_RANK_MASK;
     if (trumpf != -1 && w1 == BUBE) f1 = trumpf;
     i = j = 0;
     do {
-      f2 = cards[possi[i]] >> 3;
-      w2 = cards[possi[i]] & 7;
+      f2 = cards[possi[i]] >> CARD_SUIT_SHIFT;
+      w2 = cards[possi[i]] & CARD_RANK_MASK;
       if (trumpf != -1 && w2 == BUBE) f2 = trumpf;
       if (f1 == f2) possi[j++] = possi[i];
     } while (++i < possc);
@@ -711,15 +711,15 @@ void c_high(int f, int* h) {
   for (i = 0; i < 4; i++) {
     for (j = 0; j < 8; j++) {
       if (j == BUBE) j++;
-      if (gespcd[i << 3 | j] < f) {
-        h[i] = i << 3 | j;
+      if (gespcd[i << CARD_SUIT_SHIFT | j] < f) {
+        h[i] = i << CARD_SUIT_SHIFT | j;
         break;
       }
     }
   }
   for (i = 3; i >= 0; i--) {
-    if (gespcd[i << 3 | BUBE] < f) {
-      h[trumpf] = i << 3 | BUBE;
+    if (gespcd[i << CARD_SUIT_SHIFT | BUBE] < f) {
+      h[trumpf] = i << CARD_SUIT_SHIFT | BUBE;
       break;
     }
   }
@@ -759,8 +759,8 @@ int zweihoechste(int ci) {
   tr = 0;
   for (i = 0; i < possc; i++) {
     int current_card = cards[possi[i]];
-    Suit card_suit = (Suit)(current_card >> 3);
-    Rank card_rank = (Rank)(current_card & 7);
+    Suit card_suit = (Suit)(current_card >> CARD_SUIT_SHIFT);
+    Rank card_rank = (Rank)(current_card & CARD_RANK_MASK);
 
     if (card_rank == RANK_BUBE || (trump_suit < 4 && card_suit == trump_suit)) {
       tr++;
@@ -774,7 +774,7 @@ int zweihoechste(int ci) {
   }
 
   for (int s = SUIT_KREUZ; s <= SUIT_KARO; s++) {
-    if (!gespcd[s << 3 | RANK_BUBE]) {
+    if (!gespcd[s << CARD_SUIT_SHIFT | RANK_BUBE]) {
       trdr++;
     }
   }
