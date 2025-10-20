@@ -427,8 +427,8 @@ void hndl_btevent(int sn, int bt)
       if (!ag && trumpf != -1 && dispiel[11].spec & OB_SELECTED) {
         bb = 0;
         for (i = 0; i < (handsp ? 10 : 12); i++) {
-          c = i >= 10 ? prot2.skat[1][i - 10] : cards[spieler * 10 + i];
-          if (i < 10 && c == (trumpf == 4 ? BUBE : SIEBEN | trumpf << 3)) {
+          c = i >= CARDS_PER_PLAYER ? prot2.skat[1][i - CARDS_PER_PLAYER] : cards[spieler * CARDS_PER_PLAYER + i];
+          if (i < CARDS_PER_PLAYER && c == (trumpf == 4 ? BUBE : SIEBEN | trumpf << 3)) {
             spitzeang = 1;
           }
           if ((c & 7) == BUBE) bb++;
@@ -661,7 +661,7 @@ void hndl_btevent(int sn, int bt)
         di_liste(sn, 0);
         actbtn[sn] = splfirst[sn] ? 62 : 65;
       } else if (bt == 63) {
-        alist[sn] = (alist[sn] + 1) % 3;
+        alist[sn] = (alist[sn] + 1) % NUM_PLAYERS;
         if (!sn) save_opt();
         di_liste(sn, splfirst[sn] + 12 >= splstp);
         actbtn[sn] = 63;
@@ -786,7 +786,7 @@ void hndl_btevent(int sn, int bt)
         if (hints[sn]) {
           hints[sn] = 0;
           if (hintcard[0] != -1) {
-            if (phase == SPIELEN && sn == (ausspl + vmh) % 3) {
+            if (phase == SPIELEN && sn == (ausspl + vmh) % NUM_PLAYERS) {
               show_hint(sn, 0, 0);
             } else if (phase == DRUECKEN && sn == spieler) {
               show_hint(sn, 0, 0);
@@ -799,7 +799,7 @@ void hndl_btevent(int sn, int bt)
         if (!hints[sn]) {
           hints[sn] = 1;
           if (hintcard[0] != -1) {
-            if (phase == SPIELEN && sn == (ausspl + vmh) % 3) {
+            if (phase == SPIELEN && sn == (ausspl + vmh) % NUM_PLAYERS) {
               show_hint(sn, 0, 1);
             } else if (phase == DRUECKEN && sn == spieler) {
               show_hint(sn, 0, 1);
@@ -1215,13 +1215,13 @@ void set_selpos(int sn)
       }
     }
   } else if (phase == SPIELEN) {
-    if (sn == (ausspl + vmh) % 3) {
+    if (sn == (ausspl + vmh) % NUM_PLAYERS) {
       computer();
       if (actdial[sn] || keyboard[sn] != 2) return;
       calc_poss(sn);
       selpos[sn].num = possc;
       i              = 0;
-      for (k = 0; k < 10; k++) {
+      for (k = 0; k < CARDS_PER_PLAYER; k++) {
         for (j = 0; j < possc; j++) {
           if (possi[j] % 10 == k) {
             if (hints[sn] && hintcard[0] == possi[j]) {
@@ -1806,7 +1806,7 @@ void di_info(int sn, int th)
         } else if (phase >= REIZEN && phase <= ANSAGEN && !briefmsg[sn]) {
           v_gtext(sn, x, y, 0,
                   textarr[ausspl == s             ? TX_VORHAND
-                          : (ausspl + 1) % 3 == s ? TX_MITTELHAND
+                          : (ausspl + 1) % NUM_PLAYERS == s ? TX_MITTELHAND
                                                   : TX_HINTERHAND]
                       .t[lang[sn]]);
         }
@@ -2179,7 +2179,7 @@ void di_schieben() {
 
   do {
     if (vmh) save_skat(vmh + 1);
-    sn      = (ausspl + vmh) % 3;
+    sn      = (ausspl + vmh) % NUM_PLAYERS;
     spieler = sn;
     if (iscomp(sn)) {
       if (comp_sramsch(sn)) {
@@ -2265,7 +2265,7 @@ void di_spiel() {
   }
   create_di(spieler, dispiel);
   a[0] = a[1] = a[2] = a[3] = 0;
-  for (i = 0; i < 10; i++) {
+  for (i = 0; i < CARDS_PER_PLAYER; i++) {
     if ((cards[10 * spieler + i] & 7) != BUBE)
       a[cards[10 * spieler + i] >> 3]++;
   }
@@ -2375,7 +2375,7 @@ void di_liste(int sn, int ini)
                ((!irc_play && !sn) ||
                 (irc_play &&
                  (phase == GEBEN || phase == REIZEN ||
-                  (phase == SPIELEN && sn == (ausspl + vmh) % 3)))) &&
+                  (phase == SPIELEN && sn == (ausspl + vmh) % NUM_PLAYERS)))) &&
                ini)
           ? OB_EXIT
           : OB_HIDDEN;
@@ -2439,9 +2439,9 @@ void prot_fun(int sn, FILE* f)
   tr     = trumpf;
   trumpf = prot1.trumpf;
   for (s = 0; s < 3; s++) {
-    for (i = 0; i < 10; i++) stiche[i][s] = prot1.stiche[i][s];
+    for (i = 0; i < CARDS_PER_PLAYER; i++) stiche[i][s] = prot1.stiche[i][s];
     for (i = (protsort[sn] ? 0 : prot1.stichgem); i < 9; i++) {
-      for (j = i + 1; j < 10; j++) {
+      for (j = i + 1; j < CARDS_PER_PLAYER; j++) {
         if (lower(stiche[i][s], stiche[j][s], trumpf == -1)) {
           swap(&stiche[i][s], &stiche[j][s]);
         }
@@ -2449,7 +2449,7 @@ void prot_fun(int sn, FILE* f)
     }
   }
   trumpf = tr;
-  for (i = 0; i < 10; i++) {
+  for (i = 0; i < CARDS_PER_PLAYER; i++) {
     for (s = 0; s < 3; s++) {
       if (protsort[sn]) {
         e = prot1.trumpf != -1 && (stiche[i][s] >> 3 == prot1.trumpf ||
@@ -2973,7 +2973,7 @@ void di_options(int sn)
   dioptions[sn][19].str  = &textarr[splres ? TX_PROTOKOLL : TX_SPIELLISTE];
   dioptions[sn][17].spec = schenken && !schenkstufe && trumpf <= 4 &&
                                    stich == 1 && phase == SPIELEN &&
-                                   sn != spieler && (ausspl + vmh) % 3 == sn
+                                   sn != spieler && (ausspl + vmh) % NUM_PLAYERS == sn
                                ? OB_EXIT
                                : OB_HIDDEN;
   dioptions[sn][18].spec = OB_HIDDEN;

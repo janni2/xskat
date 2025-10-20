@@ -324,7 +324,7 @@ void drop_card(int i, int s)
       x1[sn] = desk[sn].playx + (i % 10) * desk[sn].cardx;
       if (sn == s) y1[sn] = desk[sn].playy;
       putdesk(sn, x1[sn], y1[sn]);
-    } else if (stich == 10) {
+    } else if (stich == CARDS_PER_PLAYER) {
       putdesk(sn, x1[sn], y1[sn]);
       if (s == spieler) spitzeopen = 0;
     } else if (spitzeang &&
@@ -808,7 +808,7 @@ void drawimg(int sn, int c, int f, int w, int x, int y)
   for (i = (desk[sn].large ? 87 : 86 + (f < 0)); i >= 0; i--) {
     s = f < 0 && i > 43 ? 1 : 2;
     k = !i && m ? desk[sn].large ? 88 : 58 : 0;
-    if (!desk[sn].large && !((i + s) % 3)) {
+    if (!desk[sn].large && !((i + s) % NUM_PLAYERS)) {
       for (j = (gr ? 137 : 68); j >= 0; j--) {
         p            = thepic[j][i];
         smlbuf[j][0] = (*themap)[p][0];
@@ -823,7 +823,7 @@ void drawimg(int sn, int c, int f, int w, int x, int y)
     idx = 1 - idx;
     for (j = (gr ? 137 : 68); j >= 0; j--) {
       p = thepic[j][i];
-      if (!desk[sn].large && !((j + 2) % 3)) {
+      if (!desk[sn].large && !((j + 2) % NUM_PLAYERS)) {
         if (j) {
           smcbuf[j - 1][0] = (*themap)[p][0];
           smcbuf[j - 1][1] = (*themap)[p][1];
@@ -2627,18 +2627,18 @@ void initscr(int sn, int sor)
         }
       }
     }
-    for (i = 0; i < 10; i++) {
-      if (c0 >= 0 && c0 == cards[sn * 10 + i]) hintcard[0] = sn * 10 + i;
-      if (c1 >= 0 && c1 == cards[sn * 10 + i]) hintcard[1] = sn * 10 + i;
+    for (i = 0; i < CARDS_PER_PLAYER; i++) {
+      if (c0 >= 0 && c0 == cards[sn * CARDS_PER_PLAYER + i]) hintcard[0] = sn * CARDS_PER_PLAYER + i;
+      if (c1 >= 0 && c1 == cards[sn * CARDS_PER_PLAYER + i]) hintcard[1] = sn * CARDS_PER_PLAYER + i;
       if (hintcard[0] != -1 && !iscomp(sn) && hints[sn]) {
-        if (phase == SPIELEN && sn == (ausspl + vmh) % 3) {
+        if (phase == SPIELEN && sn == (ausspl + vmh) % NUM_PLAYERS) {
           show_hint(sn, 0, 1);
         } else if (phase == DRUECKEN && sn == spieler) {
           show_hint(sn, 0, 1);
           show_hint(sn, 1, 1);
         }
       }
-      putcard(sn, cards[sn * 10 + i], desk[sn].playx + i * desk[sn].cardx,
+      putcard(sn, cards[sn * CARDS_PER_PLAYER + i], desk[sn].playx + i * desk[sn].cardx,
               desk[sn].playy);
     }
   }
@@ -2657,8 +2657,8 @@ void initscr(int sn, int sor)
       }
     } else {
       y = spieler == left(sn) ? desk[sn].com1y : desk[sn].com2y;
-      for (i = 0; i < 10; i++) {
-        putcard(sn, cards[spieler * 10 + i],
+      for (i = 0; i < CARDS_PER_PLAYER; i++) {
+        putcard(sn, cards[spieler * CARDS_PER_PLAYER + i],
                 desk[sn].playx + i * desk[sn].cardx, y);
       }
       x = spieler == left(sn) ? desk[sn].com2x : desk[sn].com1x;
@@ -2697,11 +2697,11 @@ void spielendscr() {
     d = sort1[sn] ? stich - 1 : 0;
     for (i = 0; i < 11 - stich; i++) {
       x = desk[sn].playx + (stich - 1 + 2 * i) * desk[sn].cardx / 2;
-      putcard(sn, cards[sn * 10 + i + d], x, desk[sn].playy);
+      putcard(sn, cards[sn * CARDS_PER_PLAYER + i + d], x, desk[sn].playy);
       s = left(sn);
-      putcard(sn, cards[s * 10 + i + d], x, y1);
+      putcard(sn, cards[s * CARDS_PER_PLAYER + i + d], x, y1);
       s = left(s);
-      putcard(sn, cards[s * 10 + i + d], x, y2);
+      putcard(sn, cards[s * CARDS_PER_PLAYER + i + d], x, y2);
     }
     if (sn != spieler || abkuerz[sn] == 2) {
       x  = desk[sn].skatx + desk[sn].cardx;
@@ -2736,13 +2736,13 @@ void revolutionsort(int sp)
     y1 = desk[sn].com1y;
     y2 = desk[sn].skaty;
     if (left(sn) != spieler) swap(&y1, &y2);
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i < CARDS_PER_PLAYER; i++) {
       x = desk[sn].playx + i * desk[sn].cardx;
-      putcard(sn, cards[sn * 10 + i], x, desk[sn].playy);
+      putcard(sn, cards[sn * CARDS_PER_PLAYER + i], x, desk[sn].playy);
       s = left(sn);
-      if (sp || s != spieler) putcard(sn, cards[s * 10 + i], x, y1);
+      if (sp || s != spieler) putcard(sn, cards[s * CARDS_PER_PLAYER + i], x, y1);
       s = left(s);
-      if (sp || s != spieler) putcard(sn, cards[s * 10 + i], x, y2);
+      if (sp || s != spieler) putcard(sn, cards[s * CARDS_PER_PLAYER + i], x, y2);
     }
   }
 }
@@ -3175,7 +3175,7 @@ int hndl_button(int sn, int x, int y, int opt, int send) {
   } else if (phase == DRUECKEN) {
     if (sn == spieler) ok = hndl_druecken(sn, x, y);
   } else if (phase == SPIELEN) {
-    if (sn == (ausspl + vmh) % 3) ok = hndl_spielen(sn, x, y);
+    if (sn == (ausspl + vmh) % NUM_PLAYERS) ok = hndl_spielen(sn, x, y);
   } else if (phase == NIMMSTICH) {
     if (nimmstich[sn][1]) ok = hndl_nimmstich(sn);
   } else if (phase == REVOLUTION) {
@@ -3228,7 +3228,7 @@ void setcurs(int f)
           ur[sn] = 1;
         }
         if (stich == 2) ur[sn] = 0;
-        if (sn == (ausspl + vmh) % 3) newsn = sn;
+        if (sn == (ausspl + vmh) % NUM_PLAYERS) newsn = sn;
         break;
       case SCHENKEN:
         newsn = schenkply;
