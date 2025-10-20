@@ -143,7 +143,7 @@ EXTERN unsigned char de_flg[4][8]
 ;
 
 struct map_gif_entry {
-  char* name;
+  const char* name;
   unsigned char** pos;
 };
 EXTERN struct map_gif_entry map_gif[45]

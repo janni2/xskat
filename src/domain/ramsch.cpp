@@ -22,10 +22,11 @@
 #include "skat.h"
 #include "ui/xdial.h"  // Added to resolve implicit declarations
 #include "ui/xio.h"
+#include "domain/skat_constants.h"
 
 // Definitions for variables previously in ramsch.h with EXTERN
-int rswert[8]   = {0, 0, 4, 5, 0, 3, 2, 1};
-int ggdmw[8]    = {7, 6, 5, 0, 4, 1, 2, 3};
+int rswert[RANKS_PER_SUIT]   = {0, 0, 4, 5, 0, 3, 2, 1};
+int ggdmw[RANKS_PER_SUIT]    = {7, 6, 5, 0, 4, 1, 2, 3};
 int rstsum[3]   = {0};
 int rstich[3]   = {0};
 int ggdurchm[3] = {0};
@@ -72,30 +73,30 @@ void init_ramsch() {
 int zweibuben() {
   int c0, c1, gespb;
 
-  if (stich != 9 || possc != 2 || ((c0 = cards[possi[0]]) & 7) != BUBE ||
-      ((c1 = cards[possi[1]]) & 7) != BUBE)
+  if (stich != FINAL_TRICK || possc != TWO_CARDS_REMAINING || ((c0 = cards[possi[0]]) & CARD_RANK_MASK) != BUBE ||
+      ((c1 = cards[possi[1]]) & CARD_RANK_MASK) != BUBE)
     return 0;
-  gespb = (gespcd[0 << 3 | BUBE] == 2) + (gespcd[1 << 3 | BUBE] == 2) +
-          (gespcd[2 << 3 | BUBE] == 2) + (gespcd[3 << 3 | BUBE] == 2);
-  if (!vmh || (vmh == 1 && (stcd[0] & 7) != BUBE)) {
-    if ((c0 >> 3) == 3 || (c1 >> 3) == 3) {
-      if ((c0 >> 3) == 0 || (c1 >> 3) == 0) {
+  gespb = (gespcd[0 << CARD_SUIT_SHIFT | BUBE] == ALL_PLAYED) + (gespcd[1 << CARD_SUIT_SHIFT | BUBE] == ALL_PLAYED) +
+          (gespcd[2 << CARD_SUIT_SHIFT | BUBE] == ALL_PLAYED) + (gespcd[3 << CARD_SUIT_SHIFT | BUBE] == ALL_PLAYED);
+  if (!vmh || (vmh == 1 && (stcd[0] & CARD_RANK_MASK) != BUBE)) {
+    if ((c0 >> CARD_SUIT_SHIFT) == 3 || (c1 >> CARD_SUIT_SHIFT) == 3) {
+      if ((c0 >> CARD_SUIT_SHIFT) == 0 || (c1 >> CARD_SUIT_SHIFT) == 0) {
         if (gespb) {
-          playcd = (c1 >> 3) == 0;
+          playcd = (c1 >> CARD_SUIT_SHIFT) == 0;
         } else {
-          playcd = (c1 >> 3) == 3;
+          playcd = (c1 >> CARD_SUIT_SHIFT) == 3;
         }
       } else {
-        playcd = (c0 >> 3) == 3;
+        playcd = (c0 >> CARD_SUIT_SHIFT) == 3;
       }
       return 1;
     }
-    if ((c0 >> 3) == 2 || (c1 >> 3) == 2) {
-      if ((c0 >> 3) == 0 || (c1 >> 3) == 0) {
+    if ((c0 >> CARD_SUIT_SHIFT) == 2 || (c1 >> CARD_SUIT_SHIFT) == 2) {
+      if ((c0 >> CARD_SUIT_SHIFT) == 0 || (c1 >> CARD_SUIT_SHIFT) == 0) {
         if (gespb) {
-          playcd = (c1 >> 3) == 0;
+          playcd = (c1 >> CARD_SUIT_SHIFT) == 0;
         } else {
-          playcd = (c1 >> 3) == 2;
+          playcd = (c1 >> CARD_SUIT_SHIFT) == 2;
         }
       }
       return 1;
@@ -103,41 +104,41 @@ int zweibuben() {
     return 1;
   }
   if (vmh == 1 ||
-      (vmh == 2 && ((stcd[0] & 7) != BUBE) + ((stcd[1] & 7) != BUBE) == 1)) {
-    if ((c0 >> 3) == 3 || (c1 >> 3) == 3) {
-      if ((c0 >> 3) == 0 || (c1 >> 3) == 0) {
+      (vmh == 2 && ((stcd[0] & CARD_RANK_MASK) != BUBE) + ((stcd[1] & CARD_RANK_MASK) != BUBE) == 1)) {
+    if ((c0 >> CARD_SUIT_SHIFT) == 3 || (c1 >> CARD_SUIT_SHIFT) == 3) {
+      if ((c0 >> CARD_SUIT_SHIFT) == 0 || (c1 >> CARD_SUIT_SHIFT) == 0) {
         if (gespb > 1) {
-          playcd = (c1 >> 3) == 0;
+          playcd = (c1 >> CARD_SUIT_SHIFT) == 0;
         } else {
-          playcd = (c1 >> 3) == 3;
+          playcd = (c1 >> CARD_SUIT_SHIFT) == 3;
         }
         return 1;
       }
-      if ((c0 >> 3) == 1 || (c1 >> 3) == 1) {
+      if ((c0 >> CARD_SUIT_SHIFT) == 1 || (c1 >> CARD_SUIT_SHIFT) == 1) {
         if (gespb > 1) {
-          playcd = (c1 >> 3) == 1;
+          playcd = (c1 >> CARD_SUIT_SHIFT) == 1;
         } else {
-          if (stcd[0] == (2 << 3 | BUBE) ||
-              (vmh == 2 && stcd[1] == (2 << 3 | BUBE))) {
-            playcd = (c1 >> 3) == 1;
+          if (stcd[0] == (2 << CARD_SUIT_SHIFT | BUBE) ||
+              (vmh == 2 && stcd[1] == (2 << CARD_SUIT_SHIFT | BUBE))) {
+            playcd = (c1 >> CARD_SUIT_SHIFT) == 1;
           } else {
-            playcd = (c1 >> 3) == 3;
+            playcd = (c1 >> CARD_SUIT_SHIFT) == 3;
           }
         }
         return 1;
       }
       return 1;
     }
-    if ((c0 >> 3) == 2 || (c1 >> 3) == 2) {
-      if ((c0 >> 3) == 0 || (c1 >> 3) == 0) {
+    if ((c0 >> CARD_SUIT_SHIFT) == 2 || (c1 >> CARD_SUIT_SHIFT) == 2) {
+      if ((c0 >> CARD_SUIT_SHIFT) == 0 || (c1 >> CARD_SUIT_SHIFT) == 0) {
         if (gespb > 1) {
-          playcd = (c1 >> 3) == 0;
+          playcd = (c1 >> CARD_SUIT_SHIFT) == 0;
         } else {
-          if (stcd[0] == (1 << 3 | BUBE) ||
-              (vmh == 2 && stcd[1] == (1 << 3 | BUBE))) {
-            playcd = (c1 >> 3) == 0;
+          if (stcd[0] == (1 << CARD_SUIT_SHIFT | BUBE) ||
+              (vmh == 2 && stcd[1] == (1 << CARD_SUIT_SHIFT | BUBE))) {
+            playcd = (c1 >> CARD_SUIT_SHIFT) == 0;
           } else {
-            playcd = (c1 >> 3) == 2;
+            playcd = (c1 >> CARD_SUIT_SHIFT) == 2;
           }
         }
       }
@@ -145,10 +146,10 @@ int zweibuben() {
     }
     return 1;
   }
-  if ((stcd[0] & 7) != BUBE && (stcd[1] & 7) != BUBE) {
-    playcd = (c1 >> 3) == 3 || (c1 >> 3) == 2;
+  if ((stcd[0] & CARD_RANK_MASK) != BUBE && (stcd[1] & CARD_RANK_MASK) != BUBE) {
+    playcd = (c1 >> CARD_SUIT_SHIFT) == 3 || (c1 >> CARD_SUIT_SHIFT) == 2;
   } else {
-    playcd = (c1 >> 3) == 1 || (c1 >> 3) == 0;
+    playcd = (c1 >> CARD_SUIT_SHIFT) == 1 || (c1 >> CARD_SUIT_SHIFT) == 0;
   }
   return 1;
 }
@@ -159,16 +160,16 @@ int bubeanspielen() {
   bb  = -1;
   nbb = 0;
   for (j = 0; j < possc; j++) {
-    if ((cards[possi[j]] & 7) == BUBE) {
+    if ((cards[possi[j]] & CARD_RANK_MASK) == BUBE) {
       nbb++;
-      if (cards[possi[j]] >> 3) {
+      if (cards[possi[j]] >> CARD_SUIT_SHIFT) {
         bb = j;
       }
     }
   }
   if (nbb > 1 || bb < 0) return 0;
-  for (j = 0; j < 4; j++) {
-    if (gespcd[j << 3 | BUBE] == 2) {
+  for (j = 0; j < NUM_SUITS; j++) {
+    if (gespcd[j << CARD_SUIT_SHIFT | BUBE] == ALL_PLAYED) {
       return 0;
     }
   }
@@ -178,7 +179,7 @@ int bubeanspielen() {
 
 int sicher(int fb, int *pc, int *le) {
   int i, j, mkz, akz;
-  int mk[7], ak[7], p[7];
+  int mk[CARD_RANK_MASK], ak[CARD_RANK_MASK], p[CARD_RANK_MASK];
 
   *le = 0;
   if (hatnfb[left(ausspl + vmh)][fb] == 1 &&
@@ -186,11 +187,11 @@ int sicher(int fb, int *pc, int *le) {
     return 1;
   }
   mkz = akz = 0;
-  for (i = 7; i >= 0; i--) {
+  for (i = CARD_RANK_MASK; i >= 0; i--) {
     if (i == BUBE) continue;
-    if (gespcd[fb << 3 | i] != 2) {
+    if (gespcd[fb << CARD_SUIT_SHIFT | i] != ALL_PLAYED) {
       for (j = 0; j < possc; j++) {
-        if (cards[possi[j]] == (fb << 3 | i)) break;
+        if (cards[possi[j]] == (fb << CARD_SUIT_SHIFT | i)) break;
       }
       if (j < possc) {
         mk[mkz] = i;
@@ -205,10 +206,10 @@ int sicher(int fb, int *pc, int *le) {
   }
   if (i < mkz && i < akz) {
     *pc = p[mkz > 1 ? 1 : 0];
-    if ((cards[possi[*pc]] & 7) <= ZEHN) {
+    if ((cards[possi[*pc]] & CARD_RANK_MASK) <= ZEHN) {
       *pc = p[0];
     }
-    if (mkz == 1 && (cards[possi[*pc]] & 7) > ZEHN) {
+    if (mkz == 1 && (cards[possi[*pc]] & CARD_RANK_MASK) > ZEHN) {
       *le = 1;
     }
     return 0;
@@ -220,26 +221,26 @@ void moeglklein() {
   int pc, fb, fp, mgb, mgp;
 
   for (pc = 1; pc < possc; pc++) {
-    fb  = cards[possi[pc]] >> 3;
-    fp  = cards[possi[playcd]] >> 3;
+    fb  = cards[possi[pc]] >> CARD_SUIT_SHIFT;
+    fp  = cards[possi[playcd]] >> CARD_SUIT_SHIFT;
     mgb = (vmh || hatnfb[left(ausspl)][fb] != 1 ||
            hatnfb[right(ausspl)][fb] != 1);
     mgp = (vmh || hatnfb[left(ausspl)][fp] != 1 ||
            hatnfb[right(ausspl)][fp] != 1);
-    if ((cards[possi[playcd]] & 7) == BUBE) {
-      if ((cards[possi[pc]] & 7) == BUBE) {
-        if (cards[possi[pc]] >> 3 > cards[possi[playcd]] >> 3) {
+    if ((cards[possi[playcd]] & CARD_RANK_MASK) == BUBE) {
+      if ((cards[possi[pc]] & CARD_RANK_MASK) == BUBE) {
+        if (cards[possi[pc]] >> CARD_SUIT_SHIFT > cards[possi[playcd]] >> CARD_SUIT_SHIFT) {
           playcd = pc;
         }
       } else if (mgb) {
         playcd = pc;
       }
     } else {
-      if ((cards[possi[pc]] & 7) != BUBE) {
-        if ((((cards[possi[pc]] & 7) > (cards[possi[playcd]] & 7)) &&
-             ((cards[possi[pc]] & 7) != ACHT ||
-              (cards[possi[playcd]] & 7) != DAME || !vmh ||
-              gespcd[(cards[possi[pc]] & ~7) | NEUN] == 2) &&
+      if ((cards[possi[pc]] & CARD_RANK_MASK) != BUBE) {
+        if ((((cards[possi[pc]] & CARD_RANK_MASK) > (cards[possi[playcd]] & CARD_RANK_MASK)) &&
+             ((cards[possi[pc]] & CARD_RANK_MASK) != ACHT ||
+              (cards[possi[playcd]] & CARD_RANK_MASK) != DAME || !vmh ||
+              gespcd[(cards[possi[pc]] & ~CARD_RANK_MASK) | NEUN] == ALL_PLAYED) &&
              mgb) ||
             !mgp) {
           playcd = pc;
@@ -254,13 +255,13 @@ void moeglklein() {
 void nimm_bube() {
   int pc;
 
-  if (stich >= 7 || cardw[stcd[0] & 7] + cardw[stcd[1] & 7] > 4 ||
-      (gespcd[BUBE] != 2 && gespcd[1 << 3 | BUBE] != 2 &&
-       gespcd[2 << 3 | BUBE] != 2 && gespcd[3 << 3 | BUBE] != 2))
+  if (stich >= LATE_GAME_TRICK || cardw[stcd[0] & CARD_RANK_MASK] + cardw[stcd[1] & CARD_RANK_MASK] > MIN_TRICK_POINTS ||
+      (gespcd[BUBE] != ALL_PLAYED && gespcd[1 << CARD_SUIT_SHIFT | BUBE] != ALL_PLAYED &&
+       gespcd[2 << CARD_SUIT_SHIFT | BUBE] != ALL_PLAYED && gespcd[3 << CARD_SUIT_SHIFT | BUBE] != ALL_PLAYED))
     return;
   for (pc = 0; pc < possc; pc++) {
-    if (cards[possi[pc]] == (3 << 3 | BUBE) ||
-        cards[possi[pc]] == (2 << 3 | BUBE)) {
+    if (cards[possi[pc]] == (3 << CARD_SUIT_SHIFT | BUBE) ||
+        cards[possi[pc]] == (2 << CARD_SUIT_SHIFT | BUBE)) {
       playcd = pc;
       return;
     }
@@ -596,12 +597,12 @@ void ramsch_result() {
     maxn++;
   }
   spgew = 0;
-  if (maxn == 3) {
+  if (maxn == NUM_PLAYERS) {
     spieler = spwert = stsum = 0;
   } else {
     spwert = stsum;
     if (maxn == 2) {
-      stsum = 120 - 2 * stsum;
+      stsum = TOTAL_POINTS - 2 * stsum;
       spgew = 1;
       if (rskatloser) {
         spwert += rskatsum;
@@ -614,7 +615,7 @@ void ramsch_result() {
   nspwert = 0;
   switch (rstich[0] + rstich[1] + rstich[2]) {
     case 1:
-      nspwert = spwert = stsum = 120;
+      nspwert = spwert = stsum = TOTAL_POINTS;
       spgew                    = 1;
       mes2                     = 1;
       break;

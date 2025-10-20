@@ -44,7 +44,7 @@ int get_game() {
   if (!game_file) return 0;
   if (!opened) {
     if (!strcmp(game_file, "-")) {
-      game_file = "stdin";
+      game_file = const_cast<char*>("stdin");
       f         = stdin;
     } else {
       f = fopen(game_file, "r");

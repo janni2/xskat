@@ -35,7 +35,7 @@
 #include "xdial.h"
 #include "xio.h"
 
-void irc_log(char* s, int in) {
+void irc_log(const char* s, int in) {
   static FILE* f;
   static int ini, nl;
 
@@ -61,12 +61,12 @@ void irc_log(char* s, int in) {
   }
 }
 
-void irc_out(char* s) {
+void irc_out(const char* s) {
   write(irc_o, s, strlen(s));
-  irc_log(s, 0);
+  irc_log(const_cast<char*>(s), 0);
 }
 
-void irc_print(char* s) {
+void irc_print(const char* s) {
   unsigned char c;
 
   while ((c = *s++)) {
@@ -77,7 +77,7 @@ void irc_print(char* s) {
   fflush(stderr);
 }
 
-void irc_printnl(char* s) {
+void irc_printnl(const char* s) {
   irc_print(s);
   irc_print("\n");
 }
@@ -158,7 +158,7 @@ int irc_xinput(char* s, int l) {
   return 1;
 }
 
-int irc_match(char* cmd, char** s) {
+int irc_match(const char* cmd, char** s) {
   int len;
 
   len = strlen(cmd);
@@ -175,18 +175,18 @@ void irc_sendnick(char* s) {
   irc_out("\n");
 }
 
-void irc_pr_ss(char *s1, char *s2) {
-  irc_print(s1);
-  irc_print(" : ");
-  irc_printnl(s2);
+void irc_pr_ss(const char *s1, const char *s2) {
+  irc_print(const_cast<char*>(s1));
+  irc_print(const_cast<char*>(" : "));
+  irc_printnl(const_cast<char*>(s2));
 }
 
-void irc_pr_bs(char* s) {
+void irc_pr_bs(const char* s) {
   irc_print(" ");
   irc_printnl(s);
 }
 
-void irc_pr_sd(char* s, int d) {
+void irc_pr_sd(const char* s, int d) {
   char buf[20];
 
   sprintf(buf, "%d", d);

@@ -34,7 +34,7 @@
 #define COPYRIGHT "Copyright 2004 © Gunter Gerhardt"
 #define URL "http://www.xskat.de"
 
-static char* ger_text[] = {
+static const char* ger_text[] = {
     "Null",
     "Karo",
     "Herz",
@@ -343,7 +343,7 @@ static char* ger_text[] = {
     " - ändere Regeln (n ist eine Zahl, b ist true/false)",
     "/rules - zeige allen Mitspielern aktuelle Regeln an"};
 
-static char* eng_text[] = {
+static const char* eng_text[] = {
     "Null",
     "Diamond",
     "Heart",
@@ -653,9 +653,9 @@ static char* eng_text[] = {
     "/rules - show the current rules to everyone on your channel"};
 
 static struct {
-  char** arr;
-  char* name[NUM_LANG];
-  char* langpref[5];
+  const char** arr;
+  const char* name[NUM_LANG];
+  const char* langpref[5];
 } textdesc[NUM_LANG] = {
     {ger_text, {"deutsch", "german"},   {"de", "german", 0}},
     {eng_text, {"englisch", "english"}, {"en", 0}          }
@@ -671,7 +671,7 @@ void init_text() {
   }
 }
 
-char* idxlang(int i) {
+const char* idxlang(int i) {
   return textdesc[i].name[0];
 }
 

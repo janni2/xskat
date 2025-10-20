@@ -31,7 +31,7 @@ extern int rndval(long *s, int m);
 extern int rnd(int m);
 
 // Error handling
-extern void synerr(FILE* f, char* s);
+extern void synerr(FILE* f, const char* s);
 // exitus() is declared in ui/xio.h (handles IRC cleanup)
 
 #endif /* DOMAIN_UTILS_H */

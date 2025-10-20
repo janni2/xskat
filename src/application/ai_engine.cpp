@@ -14,54 +14,55 @@
 #include "application/ai_engine.h"
 #include "game_interfaces.h"
 #include "core_utils.h"
+#include "domain/skat_constants.h"
 
 /* ========================================================================
  * COMPUTER AI AND STRATEGY FUNCTIONS
  * ======================================================================== */
 
 int ignorieren() {
-  int mi, fb, i, ih, k[8];
+  int mi, fb, i, ih, k[RANKS_PER_SUIT];
 
   mi = right(ausspl);
-  fb = stcd[0] >> 3;
-  if ((stcd[0] & 7) == BUBE || fb == trumpf || cardw[stcd[0] & 7] ||
+  fb = stcd[0] >> CARD_SUIT_SHIFT;
+  if ((stcd[0] & CARD_RANK_MASK) == BUBE || fb == trumpf || cardw[stcd[0] & CARD_RANK_MASK] ||
       hatnfb[mi][fb] == 1)
     return 0;
   ih = 0;
-  for (i = 0; i < 8; i++) k[i] = 0;
+  for (i = 0; i < RANKS_PER_SUIT; i++) k[i] = 0;
   for (i = 0; i < possc; i++) {
-    if (cards[possi[i]] >> 3 == fb) {
+    if (cards[possi[i]] >> CARD_SUIT_SHIFT == fb) {
       ih++;
-      k[cards[possi[i]] & 7] = 1;
+      k[cards[possi[i]] & CARD_RANK_MASK] = 1;
     }
   }
   k[BUBE] = k[NEUN];
   k[NEUN] = k[ACHT];
   k[ACHT] = k[SIEBEN];
-  if (ih >= 2) {
+  if (ih >= TWO_CARDS_REMAINING) {
     for (i = AS; i <= NEUN && !k[i]; i++) {
-      if (gespcd[fb << 3 | i] != 2) return 0;
+      if (gespcd[fb << CARD_SUIT_SHIFT | i] != ALL_PLAYED) return 0;
     }
     for (i++; i <= ACHT && !k[i]; i++) {
-      if (gespcd[fb << 3 | i] != 2) break;
+      if (gespcd[fb << CARD_SUIT_SHIFT | i] != ALL_PLAYED) break;
     }
     if (k[i]) return 0;
   }
-  if (stich > 7) {
+  if (stich > LATE_GAME_TRICK) {
     for (i = 0; i < possc; i++) {
-      if (cards[possi[i]] >> 3 == fb && (cards[possi[i]] & 7) != BUBE) {
+      if (cards[possi[i]] >> CARD_SUIT_SHIFT == fb && (cards[possi[i]] & CARD_RANK_MASK) != BUBE) {
         if (!higher(stcd[0], cards[possi[i]])) return 0;
       }
     }
   }
-  return ih < 3;
+  return ih < MAX_SUIT_CARDS_TO_IGNORE;
 }
 
 int genugdrin() {
-  return (stcd[0] >> 3 == cards[possi[0]] >> 3 &&
-          (cards[possi[0]] & 7) != BUBE) ||
-         (trumpf != 4 && cardw[stcd[0] & 7] + cardw[stcd[1] & 7] > 0) ||
-         cardw[stcd[0] & 7] + cardw[stcd[1] & 7] > 3 + rnd(1);
+  return (stcd[0] >> CARD_SUIT_SHIFT == cards[possi[0]] >> CARD_SUIT_SHIFT &&
+          (cards[possi[0]] & CARD_RANK_MASK) != BUBE) ||
+         (trumpf != 4 && cardw[stcd[0] & CARD_RANK_MASK] + cardw[stcd[1] & CARD_RANK_MASK] > 0) ||
+         cardw[stcd[0] & CARD_RANK_MASK] + cardw[stcd[1] & CARD_RANK_MASK] > MIN_TRICK_VALUE + rnd(RANDOM_THRESHOLD_1);
 }
 
 int gewinnstich(int f) {
@@ -70,16 +71,16 @@ int gewinnstich(int f) {
   s  = f ? astsum : gstsum;
   sf = 0;
   if (f) {
-    if (schnang || spitzeang || stich < 6 || s > 60) return 0;
+    if (schnang || spitzeang || stich < 6 || s > GAME_WIN_POINTS) return 0;
   } else {
-    if (s > 59) return 0;
-    if (s < 30) {
-      su = cardw[prot2.skat[0][0] & 7] + cardw[prot2.skat[0][1] & 7] +
-           cardw[stcd[0] & 7] + cardw[stcd[1] & 7];
-      for (i = 0; i < 30; i++) {
-        if (cards[i] >= 0) su += cardw[cards[i] & 7];
+    if (s > GAME_WIN_THRESHOLD) return 0;
+    if (s < SCHNEIDER_BOUNDARY) {
+      su = cardw[prot2.skat[0][0] & CARD_RANK_MASK] + cardw[prot2.skat[0][1] & CARD_RANK_MASK] +
+           cardw[stcd[0] & CARD_RANK_MASK] + cardw[stcd[1] & CARD_RANK_MASK];
+      for (i = 0; i < SCHNEIDER_BOUNDARY; i++) {
+        if (cards[i] >= 0) su += cardw[cards[i] & CARD_RANK_MASK];
       }
-      if (su + s < 60) sf = 1;
+      if (su + s < GAME_WIN_POINTS) sf = 1;
     }
   }
   p = !higher(stcd[0], stcd[1]);
@@ -87,13 +88,13 @@ int gewinnstich(int f) {
   for (i = 0; i < possc; i++) {
     ci = cards[possi[i]];
     if (!higher(stcd[p], ci) || g) {
-      if (s + cardw[ci & 7] + cardw[stcd[0] & 7] + cardw[stcd[1] & 7] >
-          59 + f) {
+      if (s + cardw[ci & CARD_RANK_MASK] + cardw[stcd[0] & CARD_RANK_MASK] + cardw[stcd[1] & CARD_RANK_MASK] >
+          GAME_WIN_THRESHOLD + f) {
         playcd = i;
         return 1;
       }
       if (sf &&
-          s + cardw[ci & 7] + cardw[stcd[0] & 7] + cardw[stcd[1] & 7] > 30) {
+          s + cardw[ci & CARD_RANK_MASK] + cardw[stcd[0] & CARD_RANK_MASK] + cardw[stcd[1] & CARD_RANK_MASK] > SCHNEIDER_BOUNDARY) {
         playcd = i;
         return 1;
       }

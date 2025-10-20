@@ -1073,7 +1073,7 @@ extern void list_fun(int sn);
 extern void di_delliste(void);
 extern void di_liste(int sn, int ini);
 extern int ger_toupper(int c);
-extern void pformat(FILE* f, int spec, char* txt, int fil);
+extern void pformat(FILE* f, int spec, const char* txt, int fil);
 extern void prot_fun(int sn, int f);
 extern void im_skat(int sn, int ln, char* s, int i);
 extern void di_proto(int sn, int ini, int log);

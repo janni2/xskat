@@ -19,24 +19,25 @@
 
 #include "domain/null.h"
 #include "domain/skat_game.h"
+#include "domain/skat_constants.h"
 
 // Domain-specific null game state
-int wirftabfb[4] = {0};
-int hattefb[4]   = {0};
-int aussplfb[4]  = {0};
-int nochinfb[4]  = {0};
-int naussplfb[3] = {0};
+int wirftabfb[NUM_SUITS] = {0};
+int hattefb[NUM_SUITS]   = {0};
+int aussplfb[NUM_SUITS]  = {0};
+int nochinfb[NUM_SUITS]  = {0};
+int naussplfb[NUM_PLAYERS] = {0};
 
 void init_null() {
   int i;
 
-  for (i = 0; i < 4; i++) {
+  for (i = 0; i < NUM_SUITS; i++) {
     wirftabfb[i] = 0;
     hattefb[i]   = 0;
     aussplfb[i]  = 0;
-    nochinfb[i]  = 8;
+    nochinfb[i]  = RANKS_PER_SUIT;
   }
-  for (i = 0; i < 3; i++) {
+  for (i = 0; i < NUM_PLAYERS; i++) {
     naussplfb[i] = -1;
   }
 }
@@ -61,25 +62,25 @@ int kleiner_w(int w1, int w2) {
 }
 
 int kleiner(int i, int j) {
-  return kleiner_w(cards[possi[i]] & 7, cards[possi[j]] & 7);
+  return kleiner_w(cards[possi[i]] & CARD_RANK_MASK, cards[possi[j]] & CARD_RANK_MASK);
 }
 
 int hat(int i) {
-  return !hatnfb[spieler][cards[possi[i]] >> 3];
+  return !hatnfb[spieler][cards[possi[i]] >> CARD_SUIT_SHIFT];
 }
 
 int n_anwert(int fb) {
   int i, b = 0, m;
 
   if (hatnfb[spieler][fb]) return 0;
-  for (i = 7; i >= 0; i--) {
-    if (gespcd[fb << 3 | i] != 2) break;
+  for (i = CARD_RANK_MASK; i >= 0; i--) {
+    if (gespcd[fb << CARD_SUIT_SHIFT | i] != ALL_PLAYED) break;
   }
-  if (stich > 1) {
+  if (stich > FIRST_TRICK) {
     m = left(ausspl) != spieler ? left(ausspl) : right(ausspl);
-    if (!hatnfb[m][fb]) b = 64;
+    if (!hatnfb[m][fb]) b = NULL_BONUS_64;
   }
-  return b + (i >= 0 ? (i << 3) + fb + 1 : 0);
+  return b + (i >= 0 ? (i << CARD_SUIT_SHIFT) + fb + 1 : 0);
 }
 
 int n_anspiel() {
@@ -87,8 +88,8 @@ int n_anspiel() {
 
   for (i = 1; i < possc; i++) {
     ci = cards[possi[i]];
-    cf = ci >> 3;
-    cw = ci & 7;
+    cf = ci >> CARD_SUIT_SHIFT;
+    cw = ci & CARD_RANK_MASK;
     if (cw > bw) {
       bw = cw;
       pos = i;
@@ -102,8 +103,8 @@ int n_abwert(int min_fb) {
 
   for (i = 0; i < possc; i++) {
     ci = cards[possi[i]];
-    cf = ci >> 3;
-    cw = ci & 7;
+    cf = ci >> CARD_SUIT_SHIFT;
+    cw = ci & CARD_RANK_MASK;
     if (cf >= min_fb && cw > bw) {
       bw = cw;
       pos = i;
@@ -114,11 +115,11 @@ int n_abwert(int min_fb) {
 
 int n_bedienen() {
   int i, anz = 0, ci, cf, pos = 0;
-  int f = stcd[0] >> 3;
+  int f = stcd[0] >> CARD_SUIT_SHIFT;
 
   for (i = 0; i < possc; i++) {
     ci = cards[possi[i]];
-    cf = ci >> 3;
+    cf = ci >> CARD_SUIT_SHIFT;
     if (cf == f) {
       anz++;
       if (kleiner(i, pos)) pos = i;
@@ -132,8 +133,8 @@ int n_nicht_bed() {
 
   for (i = 0; i < possc; i++) {
     ci = cards[possi[i]];
-    cf = ci >> 3;
-    cw = ci & 7;
+    cf = ci >> CARD_SUIT_SHIFT;
+    cw = ci & CARD_RANK_MASK;
     if (cw > bw) {
       bw = cw;
       pos = i;
@@ -172,8 +173,8 @@ int minmaxfb(int f, int fb) {
   int i, j = -1;
 
   for (i = 0; i < possc; i++) {
-    if ((j < 0 && cards[possi[i]] >> 3 == fb) ||
-        (cards[possi[i]] >> 3 == fb && kleiner(i, j) ^ f))
+    if ((j < 0 && cards[possi[i]] >> CARD_SUIT_SHIFT == fb) ||
+        (cards[possi[i]] >> CARD_SUIT_SHIFT == fb && kleiner(i, j) ^ f))
       j = i;
   }
   return j < 0 ? 0 : j;
