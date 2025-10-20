@@ -153,7 +153,7 @@ void info_stich(int p, int c)
                textarr[(bl ? TX_SCHELLEN : TX_KARO) + (c >> 3)].t[ln]);
         strcat(txt[bl][sn][p][ln], " ");
         strcat(txt[bl][sn][p][ln],
-               textarr[(bl ? TX_ASD : TX_AS) + (c & 7)].t[ln]);
+               textarr[(bl ? TX_ASD : TX_AS) + (c & CARD_RANK_MASK)].t[ln]);
       }
     }
   }
@@ -428,12 +428,12 @@ void hndl_btevent(int sn, int bt)
         bb = 0;
         for (i = 0; i < (handsp ? 10 : 12); i++) {
           c = i >= CARDS_PER_PLAYER ? prot2.skat[1][i - CARDS_PER_PLAYER] : cards[spieler * CARDS_PER_PLAYER + i];
-          if (i < CARDS_PER_PLAYER && c == (trumpf == 4 ? BUBE : SIEBEN | trumpf << 3)) {
+          if (i < CARDS_PER_PLAYER && c == (trumpf == GRAND_GAME ? BUBE : SIEBEN | trumpf << CARD_SUIT_SHIFT)) {
             spitzeang = 1;
           }
-          if ((c & 7) == BUBE) bb++;
+          if ((c & CARD_RANK_MASK) == BUBE) bb++;
         }
-        if (!spitzeang || (bb == 4 && trumpf == 4)) {
+        if (!spitzeang || (bb == GRAND_GAME && trumpf == GRAND_GAME)) {
           dispitze[3].str = &textarr[spitzeang ? TX_SPITZE_F3 : TX_SPITZE_F2];
           create_di(sn, dispitze);
           ag = 1;
@@ -577,7 +577,7 @@ void hndl_btevent(int sn, int bt)
       }
     } else if (ob == digeschenkt || ob == diendeschenken) {
       remove_di(sn);
-      if (bt == 4) {
+      if (bt == GRAND_GAME) {
         schenkstufe++;
         if (schnang && schenkstufe == 2) schenkstufe++;
         if (schenkstufe < 3)
@@ -592,7 +592,7 @@ void hndl_btevent(int sn, int bt)
       }
     } else if (ob == diwiederschenken) {
       remove_di(sn);
-      if (bt == 4) {
+      if (bt == GRAND_GAME) {
         di_nichtschenken(sn);
       } else {
         if (schenknext != -1) {
@@ -944,7 +944,7 @@ void hndl_btevent(int sn, int bt)
         di_lanspiel(sn);
       else if (bt == 3)
         di_irc(sn);
-      else if (bt == 4) {
+      else if (bt == GRAND_GAME) {
         manpage(const_cast<char*>("xskat"));
         dimehrspieler[bt].spec &= ~OB_SELECTED;
         draw_di(sn, bt);
@@ -973,7 +973,7 @@ void hndl_btevent(int sn, int bt)
       } else
         di_warteauf(sn, 0, 0, 0);
     } else if (ob == dianderertisch) {
-      if (bt == 4) {
+      if (bt == GRAND_GAME) {
         di_input(sn, TX_RECHNER_IP, 1, lanip[0], 35);
       } else if (bt == 7) {
         manpage(const_cast<char*>("xhost"));
@@ -2259,14 +2259,14 @@ void di_spiel() {
   dispiel[11].spec = spitzezaehlt && kannspitze ? OB_BUTTON : OB_HIDDEN;
   dispiel[13].spec = revolution ? OB_BUTTON : OB_HIDDEN;
   dispiel[7].next  = revolution ? 6 : -5;
-  for (i = 0; i < 4; i++) {
+  for (i = 0; i < NUM_SUITS; i++) {
     dispiel[2 + i].str =
         &textarr[(blatt[spieler] >= 2 ? TX_SCHELLEN : TX_KARO) + i];
   }
   create_di(spieler, dispiel);
   a[0] = a[1] = a[2] = a[3] = 0;
   for (i = 0; i < CARDS_PER_PLAYER; i++) {
-    if ((cards[10 * spieler + i] & 7) != BUBE)
+    if ((cards[10 * spieler + i] & CARD_RANK_MASK) != BUBE)
       a[cards[10 * spieler + i] >> 3]++;
   }
   j = 3;
@@ -2291,7 +2291,7 @@ void list_fun(int sn)
       cgv[i][j] = sgewoverl[i][j];
     }
     for (j = 0; j < 13; j++) {
-      for (k = 0; k < 4; k++) {
+      for (k = 0; k < NUM_SUITS; k++) {
         for (ln = 0; ln < NUM_LANG; ln++) {
           tt[i][j][k].t[ln] = txt[i][j][k];
         }
@@ -2453,7 +2453,7 @@ void prot_fun(int sn, FILE* f)
     for (s = 0; s < 3; s++) {
       if (protsort[sn]) {
         e = prot1.trumpf != -1 && (stiche[i][s] >> 3 == prot1.trumpf ||
-                                   (stiche[i][s] & 7) == BUBE)
+                                   (stiche[i][s] & CARD_RANK_MASK) == BUBE)
                 ? OB_BOLD
                 : OB_NONE;
       } else {
@@ -2471,7 +2471,7 @@ void prot_fun(int sn, FILE* f)
         if (prot1.stichgem || protsort[sn]) {
           if (prot1.spitze &&
               stiche[i][s] ==
-                  (prot1.trumpf == 4 ? BUBE : SIEBEN | prot1.trumpf << 3)) {
+                  (prot1.trumpf == GRAND_GAME ? BUBE : SIEBEN | prot1.trumpf << CARD_SUIT_SHIFT)) {
             strcpy(txt[sn][i][s][ln], textarr[TX_SPITZE_PROT].t[ln]);
           } else {
             strcpy(txt[sn][i][s][ln],
@@ -2479,7 +2479,7 @@ void prot_fun(int sn, FILE* f)
                            (stiche[i][s] >> 3)]
                        .t[ln]);
             strcat(txt[sn][i][s][ln],
-                   textarr[(blatt[sn] >= 2 ? TX_AD : TX_A) + (stiche[i][s] & 7)]
+                   textarr[(blatt[sn] >= 2 ? TX_AD : TX_A) + (stiche[i][s] & CARD_RANK_MASK)]
                        .t[ln]);
           }
         } else {
@@ -2513,14 +2513,14 @@ void im_skat(int sn, int ln, char* s, int i)
                 .t[ln]);
   strcat(
       s,
-      textarr[(blatt[sn] >= 2 ? TX_AD : TX_A) + (prot1.skat[i][0] & 7)].t[ln]);
+      textarr[(blatt[sn] >= 2 ? TX_AD : TX_A) + (prot1.skat[i][0] & CARD_RANK_MASK)].t[ln]);
   strcat(s, ",");
   strcat(s, textarr[(blatt[sn] >= 2 ? TX_SCHELLEN : TX_KARO) +
                     (prot1.skat[i][1] >> 3)]
                 .t[ln]);
   strcat(
       s,
-      textarr[(blatt[sn] >= 2 ? TX_AD : TX_A) + (prot1.skat[i][1] & 7)].t[ln]);
+      textarr[(blatt[sn] >= 2 ? TX_AD : TX_A) + (prot1.skat[i][1] & CARD_RANK_MASK)].t[ln]);
 }
 
 void di_proto(int sn, int ini, int log)

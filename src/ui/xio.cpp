@@ -328,7 +328,7 @@ void drop_card(int i, int s)
       putdesk(sn, x1[sn], y1[sn]);
       if (s == spieler) spitzeopen = 0;
     } else if (spitzeang &&
-               cards[i] == (trumpf == 4 ? BUBE : SIEBEN | trumpf << 3)) {
+               cards[i] == (trumpf == GRAND_GAME ? BUBE : SIEBEN | trumpf << CARD_SUIT_SHIFT)) {
       putback(sn, x1[sn], y1[sn]);
       spitzeopen = 0;
       sptzmrk    = 1;
@@ -349,7 +349,7 @@ void drop_card(int i, int s)
   stcd[vmh]        = cards[i];
   stichopen        = vmh + 1;
   gespcd[cards[i]] = 2;
-  if ((cards[i] & 7) != BUBE) gespfb[cards[i] >> 3]++;
+  if ((cards[i] & CARD_RANK_MASK) != BUBE) gespfb[cards[i] >> CARD_SUIT_SHIFT]++;
   cards[i] = -1;
   stdwait();
 }
@@ -657,10 +657,10 @@ int getcode(int *bpos, int csiz, int msk, unsigned char* thegif) {
   int pos;
   long c;
 
-  pos = *bpos >> 3;
+  pos = *bpos >> CARD_SUIT_SHIFT;
   c   = thegif[pos] + (thegif[pos + 1] << 8);
   if (csiz >= 8) c += (long)thegif[pos + 2] << 16;
-  c >>= *bpos & 7;
+  c >>= *bpos & CARD_RANK_MASK;
   *bpos += csiz;
   return c & msk;
 }
@@ -675,7 +675,7 @@ void decompgif(unsigned char* thedata, unsigned char* thepic, unsigned char** th
 
   bpos = cnt = pc = lc = 0;
   thedata += 10;
-  *cmapsize = 1 << ((*thedata++ & 7) + 1);
+  *cmapsize = 1 << ((*thedata++ & CARD_RANK_MASK) + 1);
   bmsk      = *cmapsize - 1;
   thedata += 2;
   *themap = thedata;
@@ -953,10 +953,10 @@ void create_card(int sn, int c)
 
   x   = 2;
   y   = 0;
-  f   = c >> 3;
+  f   = c >> CARD_SUIT_SHIFT;
   pf  = blatt[sn] == 1 ? f == 0 ? 4 : f == 2 ? 5 : f : f;
   upf = desk[sn].col > pf && desk[sn].col > 2;
-  w   = c & 7;
+  w   = c & CARD_RANK_MASK;
   XFillRectangle(dpy[sn], cardpx[sn][c + 1], gcbck[sn], 0, 0, desk[sn].cardw,
                  desk[sn].cardh);
   if (((KOENIG <= w && w <= BUBE) || c < 0 || blatt[sn] >= 2)) {
@@ -1262,7 +1262,7 @@ void find_cardcol(unsigned char* bm, int* r, int col[6][6][6])
   int i, s;
 
   bm += 10;
-  s = 1 << ((*bm++ & 7) + 1);
+  s = 1 << ((*bm++ & CARD_RANK_MASK) + 1);
   bm += 2;
   for (i = 0; i < s; i++) {
     col[closecol(bm[0], r)][closecol(bm[1], r)][closecol(bm[2], r)] = 1;
@@ -2669,7 +2669,7 @@ void initscr(int sn, int sor)
   } else if (spitzeang && sn != spieler && spitzeopen) {
     x = spieler == left(sn) ? desk[sn].com1x : desk[sn].com2x;
     y = spieler == left(sn) ? desk[sn].com1y : desk[sn].com2y;
-    putcard(sn, trumpf == 4 ? BUBE : SIEBEN | trumpf << 3, x, y);
+    putcard(sn, trumpf == GRAND_GAME ? BUBE : SIEBEN | trumpf << CARD_SUIT_SHIFT, x, y);
   }
 }
 
@@ -3018,7 +3018,7 @@ int hndl_druecken(int sn, int x, int y) {
   }
   stdwait();
   inv_fbox(spieler, 0);
-  if (trumpf == 5 && (((cards[30] & 7) == BUBE) || ((cards[31] & 7) == BUBE))) {
+  if (trumpf == 5 && (((cards[30] & CARD_RANK_MASK) == BUBE) || ((cards[31] & CARD_RANK_MASK) == BUBE))) {
     di_buben();
     return 1;
   }
@@ -3041,7 +3041,7 @@ int hndl_druecken(int sn, int x, int y) {
   home_skat();
   save_skat(1);
   for (c = 0; c < 2; c++) {
-    stsum += cardw[cards[c + 30] & 7];
+    stsum += cardw[cards[c + 30] & CARD_RANK_MASK];
     gespcd[cards[c + 30]] = 1;
     cards[c + 30]         = -1;
   }
