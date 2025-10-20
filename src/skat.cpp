@@ -38,6 +38,7 @@
 // Layered architecture interfaces
 #include "game_interfaces.h"          // Unified layer interfaces
 #include "core_utils.h"               // Core utility functions
+#include "domain/skat_constants.h"    // Game constants and magic number replacements
 #include "application/file_manager.h" // File I/O and configuration
 #include "application/ai_engine.h"    // AI and computer player logic
 #include "application/game_engine.h"  // Game coordination and flow management
@@ -85,7 +86,7 @@ int main(int argc, char* argv[]) {
 void play() {
     if (!resumebock || !playbock) {
         bockspiele = bockinc = ramschspiele = 0;
-    } else if (playbock != 2) {
+    } else if (playbock != BOCK_WITH_RAMSCH) {
         ramschspiele = 0;
     }
     phase = GEBEN;

@@ -40,6 +40,7 @@
 #include "ui/bitmaps.h"
 #include "application/irc.h"
 #include "domain/ramsch.h"
+#include "domain/skat_constants.h"
 #include "skat.h"
 #include "application/text.h"
 #include "ui/xdial.h"
@@ -298,7 +299,7 @@ void home_skat() {
 void nimm_stich() {
   int sn = ausspl, i;
 
-  for (i = 0; i < 3; i++) {
+  for (i = 0; i < NUM_PLAYERS; i++) {
     homecard(sn, 1, i);
   }
   stichopen = 0;
@@ -309,7 +310,7 @@ void drop_card(int i, int s)
   int sn, sna[3], x1[3], y1[3], x2[3], y2[3];
   static int l2r[3];
 
-  if (stich == 10) backopen[s] = 0;
+  if (stich == CARDS_PER_PLAYER) backopen[s] = 0;
   for (sn = 0; sn < numsp; sn++) {
     sna[sn] = sn;
     if (s == left(sn)) {
@@ -1210,7 +1211,7 @@ void xinitwin(int sn, int argc, char** argv)
 void xinitplayers() {
   int sn;
 
-  for (sn = 1; sn < 3; sn++) {
+  for (sn = 1; sn < NUM_PLAYERS; sn++) {
     disp_name[sn] = disp_name[0];
     dpy[sn]       = dpy[0];
     cmap[sn]      = cmap[0];
@@ -1947,7 +1948,7 @@ void set_conames() {
   for (ln = 0; ln < NUM_LANG; ln++) {
     switch (numsp) {
       case 0:
-        for (sn = 0; sn < 3; sn++) {
+        for (sn = 0; sn < NUM_PLAYERS; sn++) {
           if (!spnames[sn][0][ln][0]) {
             sprintf(spnames[sn][0][ln], "%s%d", textarr[TX_COMPUTER].t[ln],
                     sn + 1);
@@ -2346,7 +2347,7 @@ void xinit(int argc, char* argv[])
     }
     read_opt();
   }
-  for (sn = 0; sn < 3; sn++) {
+  for (sn = 0; sn < NUM_PLAYERS; sn++) {
     if (!lanip[sn][0]) {
       strcpy(lanip[sn], "127.0.0.1");
     }
@@ -2361,7 +2362,7 @@ void xinit(int argc, char* argv[])
   }
   init_dials();
   for (ln = 0; ln < NUM_LANG; ln++) {
-    for (sn = 0; sn < 3; sn++) {
+    for (sn = 0; sn < NUM_PLAYERS; sn++) {
       tspnames[sn][0].t[ln] = spnames[sn][0][ln];
       tspnames[sn][1].t[ln] = spnames[sn][1][ln];
     }

@@ -35,6 +35,7 @@
 
 #include "application/irc.h"
 #include "domain/ramsch.h"
+#include "domain/skat_constants.h"
 #include "skat.h"
 #include "application/text.h"
 #include "ui/xio.h"
@@ -827,7 +828,7 @@ void hndl_btevent(int sn, int bt)
              schenken) *
                 2 +
             oldrules;
-      for (i = 0; i < 3; i++) {
+      for (i = 0; i < NUM_PLAYERS; i++) {
         if (divarianten[sn][3 + i].spec & OB_SELECTED) {
           playramsch = i;
         }
@@ -1007,7 +1008,7 @@ void hndl_btevent(int sn, int bt)
           mbutton[sn] = i;
         }
       }
-      for (i = 0; i < 3; i++) {
+      for (i = 0; i < NUM_PLAYERS; i++) {
         if (digui[sn][10 + i].spec & OB_SELECTED) {
           keyboard[sn] = i;
         }
@@ -1926,7 +1927,7 @@ void di_ansage() {
   ktr     = 0;
   ktrnext = -1;
   if (playkontra) {
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < NUM_PLAYERS; i++) {
       if (i != spieler && (playkontra == 1 || sagte18[i])) {
         if (!ktr) {
           ktr     = 1;
@@ -2282,7 +2283,7 @@ void list_fun(int sn)
   static char txt[3][13][4][10];
   static tx_typ tt[3][13][4];
 
-  for (i = 0; i < 3; i++) {
+  for (i = 0; i < NUM_PLAYERS; i++) {
     for (j = 0; j < 3; j++) {
       curr[i][j] = splsum[i][j];
     }
@@ -2851,12 +2852,12 @@ void di_result(int be)
     else
       strcpy(txt[ln], textarr[TX_BOCK_EREIGNIS].t[ln]);
   }
-  for (i = 0; i < 3; i++) {
+  for (i = 0; i < NUM_PLAYERS; i++) {
     sprintf(const_cast<char*>(diresult[16 + i].str->t[0]), "%d/%d", cgewoverl[i][0],
             cgewoverl[i][1]);
   }
   for (sn = 0; sn < numsp; sn++) {
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < NUM_PLAYERS; i++) {
       sprintf(su[sn][i], "%d", sum[i][alist[sn]]);
       diresult[12 + i].str = &tsu[sn][i];
       for (ln = 0; ln < NUM_LANG; ln++) {
@@ -2949,7 +2950,7 @@ void di_options(int sn)
     dioptions[sn][24].spec = OB_HIDDEN;
   }
   if (!sn) firstgame = 0;
-  for (i = 0; i < 3; i++) {
+  for (i = 0; i < NUM_PLAYERS; i++) {
     if (dioptions[sn][14 + i].str != OB_NONE) {
       dioptions[sn][14 + i].str = &stichstr[blatt[sn] >= 2][sn][i];
     }
@@ -3135,7 +3136,7 @@ void di_geschwindigkeit(int sn)
   }
   prverz(sn);
   dis = irc_play && nimmstich[sn][0] >= 101 ? OB_DISABLED | OB_EXIT : OB_EXIT;
-  for (i = 0; i < 3; i++) {
+  for (i = 0; i < NUM_PLAYERS; i++) {
     for (ln = 0; ln < NUM_LANG; ln++) {
       tkl[i].t[ln] = const_cast<char*>(kl_strings[i]);
       tgr[i].t[ln] = const_cast<char*>(gr_strings[i]);
