@@ -106,44 +106,44 @@ int gewinnstich(int f) {
 int uebernehmen(int p, int h, int n) {
   int i, j, ci, cj, wi, wj, fb, is;
 
-  is = (ausspl + vmh) % 3 == spieler;
+  is = (ausspl + vmh) % NUM_PLAYERS == spieler;
   if (is && vmh == 1 && !hatnfb[left(spieler)][trumpf] &&
-      (stcd[0] >> 3 == trumpf || (stcd[0] & 7) == BUBE ||
-       hatnfb[left(spieler)][stcd[0] >> 3]))
+      (stcd[0] >> CARD_SUIT_SHIFT == trumpf || (stcd[0] & CARD_RANK_MASK) == BUBE ||
+       hatnfb[left(spieler)][stcd[0] >> CARD_SUIT_SHIFT]))
     h = 0;
   j = 0;
-  calc_inhand((ausspl + vmh) % 3);
+  calc_inhand((ausspl + vmh) % NUM_PLAYERS);
   for (i = 0; i < possc; i++) {
     ci = cards[possi[i]];
     if (!higher(stcd[p], ci)) {
       if (j) {
         cj = cards[possi[j - 1]];
-        wi = cardw[ci & 7];
-        wj = cardw[cj & 7];
+        wi = cardw[ci & CARD_RANK_MASK];
+        wj = cardw[cj & CARD_RANK_MASK];
         if (is) {
           if (h) {
             calc_high(1, 1);
-            fb = wj == 2 ? trumpf : cj >> 3;
+            fb = wj == 2 ? trumpf : cj >> CARD_SUIT_SHIFT;
             if (cj == high[fb] && shigh[fb] >= 0 &&
-                !inhand[shigh[fb] >> 3][shigh[fb] & 7]) {
+                !inhand[shigh[fb] >> CARD_SUIT_SHIFT][shigh[fb] & CARD_RANK_MASK]) {
               j = i + 1;
               continue;
             }
-            fb = wi == 2 ? trumpf : ci >> 3;
+            fb = wi == 2 ? trumpf : ci >> CARD_SUIT_SHIFT;
             if (ci == high[fb] && shigh[fb] >= 0 &&
-                !inhand[shigh[fb] >> 3][shigh[fb] & 7])
+                !inhand[shigh[fb] >> CARD_SUIT_SHIFT][shigh[fb] & CARD_RANK_MASK])
               continue;
           }
         }
         if (wi == 10) wi = 12 - h * 2;
         if (wj == 10) wj = 12 - h * 2;
         if (wi == 2 && wj == 2) {
-          if (trumpf == 4 && is) {
-            wi = ci >> 3;
-            wj = cj >> 3;
+          if (trumpf == GRAND_GAME && is) {
+            wi = ci >> CARD_SUIT_SHIFT;
+            wj = cj >> CARD_SUIT_SHIFT;
           } else {
-            wi = cj >> 3;
-            wj = ci >> 3;
+            wi = cj >> CARD_SUIT_SHIFT;
+            wj = ci >> CARD_SUIT_SHIFT;
           }
         } else {
           if (wi == 2) wi = 5 - h * 6;
@@ -154,8 +154,8 @@ int uebernehmen(int p, int h, int n) {
             j = i + 1;
           else {
             if (n) {
-              if ((wi == 4 && ci >> 3 != trumpf) || wi == 10) wi = -1;
-              if ((wj == 4 && cj >> 3 != trumpf) || wj == 10) wj = -1;
+              if ((wi == 4 && ci >> CARD_SUIT_SHIFT != trumpf) || wi == 10) wi = -1;
+              if ((wj == 4 && cj >> CARD_SUIT_SHIFT != trumpf) || wj == 10) wj = -1;
             }
             if ((h || !zweihoechste(cj)) && ((wi < wj) ^ h)) j = i + 1;
           }
@@ -168,11 +168,11 @@ int uebernehmen(int p, int h, int n) {
   }
   if (j) {
     cj = cards[possi[j - 1]];
-    wj = cardw[cj & 7];
+    wj = cardw[cj & CARD_RANK_MASK];
     if (is && vmh == 1 && wj > 4 && !hatnfb[left(spieler)][trumpf] &&
-        (stcd[0] >> 3 == trumpf ||
-         (wj == 10 && !gespcd[(cj & 0x18) | AS] && !inhand[cj >> 3][AS]) ||
-         (stcd[0] & 7) == BUBE || hatnfb[left(spieler)][stcd[0] >> 3]))
+        (stcd[0] >> CARD_SUIT_SHIFT == trumpf ||
+         (wj == 10 && !gespcd[(cj & 0x18) | AS] && !inhand[cj >> CARD_SUIT_SHIFT][AS]) ||
+         (stcd[0] & CARD_RANK_MASK) == BUBE || hatnfb[left(spieler)][stcd[0] >> CARD_SUIT_SHIFT]))
       j = 0;
     else if (!h && wj == 10 && gespcd[(cj & 0x18) | AS] < !is + 1)
       j = 0;
@@ -190,27 +190,27 @@ void schmieren() {
   calc_high(2, 0);
   if (vmh != 2) {
     for (i = 0; i < 4; i++) {
-      if (!(i == trumpf && high[i] != (i << 3 | AS) && possc < 3) &&
+      if (!(i == trumpf && high[i] != (i << CARD_SUIT_SHIFT | AS) && possc < 3) &&
           !hatnfb[spieler][i])
         aw[i] = 2;
     }
   }
   for (i = 1; i < possc; i++) {
-    wi = cardw[(ci = cards[possi[i]]) & 7];
-    wj = cardw[(cj = cards[possi[j]]) & 7];
+    wi = cardw[(ci = cards[possi[i]]) & CARD_RANK_MASK];
+    wj = cardw[(cj = cards[possi[j]]) & CARD_RANK_MASK];
     if (wi == 2)
       wi = -2;
-    else if (ci >> 3 == trumpf && cj >> 3 != trumpf)
+    else if (ci >> CARD_SUIT_SHIFT == trumpf && cj >> CARD_SUIT_SHIFT != trumpf)
       wi = 1;
     else if (wi == 11)
-      wi = aw[ci >> 3];
+      wi = aw[ci >> CARD_SUIT_SHIFT];
     if (wj == 2)
       wj = -2;
-    else if (cj >> 3 == trumpf && ci >> 3 != trumpf)
+    else if (cj >> CARD_SUIT_SHIFT == trumpf && ci >> CARD_SUIT_SHIFT != trumpf)
       wj = 1;
     else if (wj == 11)
-      wj = aw[cj >> 3];
-    if (wi > wj || (vmh == 2 && wi == wj && !wi && (ci & 7) > (cj & 7))) j = i;
+      wj = aw[cj >> CARD_SUIT_SHIFT];
+    if (wi > wj || (vmh == 2 && wi == wj && !wi && (ci & CARD_RANK_MASK) > (cj & CARD_RANK_MASK))) j = i;
   }
   playcd = j;
 }
@@ -218,10 +218,10 @@ void schmieren() {
 int einstechen() {
   int ci;
 
-  if (!cardw[stcd[0] & 7] || !uebernehmen(0, 0, 0)) return 0;
+  if (!cardw[stcd[0] & CARD_RANK_MASK] || !uebernehmen(0, 0, 0)) return 0;
   ci = cards[possi[playcd]];
-  if ((ci & 7) <= ZEHN || (ci & 7) == BUBE) return 0;
-  if (ci >> 3 == trumpf) return 1;
+  if ((ci & CARD_RANK_MASK) <= ZEHN || (ci & CARD_RANK_MASK) == BUBE) return 0;
+  if (ci >> CARD_SUIT_SHIFT == trumpf) return 1;
   return 0;
 }
 
@@ -251,7 +251,7 @@ int niedrighoch(int f) {
 int ueberdoerfer() {
   int i, j;
 
-  if ((trumpf == 4 &&
+  if ((trumpf == GRAND_GAME &&
        (!hatnfb[left(spieler)][trumpf] || !hatnfb[right(spieler)][trumpf])) ||
       sptruempfe > 4)
     return 0;
@@ -282,7 +282,7 @@ int bubeausspielen() {
     c = rnd(1) ? 2 : 1;
   }
   if (c >= 0) {
-    c = c << 3 | BUBE;
+    c = c << CARD_SUIT_SHIFT | BUBE;
     for (i = 0; i < possc; i++) {
       if (cards[possi[i]] == c) {
         playcd = i;
@@ -302,23 +302,23 @@ int trumpfausspielen() {
     if (trumpf != 4 && bubeausspielen()) return 1;
     if (niedrighoch(trumpf)) return 1;
   }
-  if (trumpf == 4 && hatnfb[g1][trumpf] && hatnfb[g2][trumpf]) {
+  if (trumpf == GRAND_GAME && hatnfb[g1][trumpf] && hatnfb[g2][trumpf]) {
     return 0;
   }
   calc_high(1, 0);
   tr = wj = 0;
   j       = -1;
   for (i = 0; i < possc; i++) {
-    if (cards[possi[i]] >> 3 == trumpf || (cards[possi[i]] & 7) == BUBE) {
+    if (cards[possi[i]] >> CARD_SUIT_SHIFT == trumpf || (cards[possi[i]] & CARD_RANK_MASK) == BUBE) {
       tr++;
     }
   }
   trdr = 7 - gespfb[trumpf];
   for (i = 0; i < 4; i++)
-    if (!gespcd[i << 3 | BUBE]) trdr++;
+    if (!gespcd[i << CARD_SUIT_SHIFT | BUBE]) trdr++;
   for (i = 0; i < possc; i++) {
-    if (cards[possi[i]] >> 3 == trumpf || (cards[possi[i]] & 7) == BUBE) {
-      wi = cardw[cards[possi[i]] & 7];
+    if (cards[possi[i]] >> CARD_SUIT_SHIFT == trumpf || (cards[possi[i]] & CARD_RANK_MASK) == BUBE) {
+      wi = cardw[cards[possi[i]] & CARD_RANK_MASK];
       if (wi == 2 && trdr - tr != 1) wi = -1;
       if (j < 0 || wi < wj) {
         j  = i;
@@ -333,12 +333,12 @@ int trumpfausspielen() {
       calc_inhand(spieler);
       for (i = SIEBEN; i >= DAME; i--) {
         if (i == BUBE) continue;
-        if (!gespcd[trumpf << 3 | i] && !inhand[trumpf][i]) {
+        if (!gespcd[trumpf << CARD_SUIT_SHIFT | i] && !inhand[trumpf][i]) {
           for (; i >= KOENIG; i--) {
             if (i == BUBE) continue;
             if (inhand[trumpf][i]) {
               for (k = 0; k < possc; k++) {
-                if (cards[possi[k]] == (trumpf << 3 | i)) {
+                if (cards[possi[k]] == (trumpf << CARD_SUIT_SHIFT | i)) {
                   break;
                 }
               }
@@ -352,17 +352,17 @@ int trumpfausspielen() {
   } else
     trdr = 0;
   for (i = 0; i < 4; i++)
-    if (!gespcd[i << 3 | BUBE]) trdr++;
+    if (!gespcd[i << CARD_SUIT_SHIFT | BUBE]) trdr++;
   if ((tr > 2 && (trumpf != 4 || trdr - tr)) ||
       (tr > 1 && trdr - tr && trdr - tr <= 2)) {
     playcd =
-        k != possc && (trdr - tr == 2 || !cardw[cards[possi[k]] & 7]) ? k : j;
+        k != possc && (trdr - tr == 2 || !cardw[cards[possi[k]] & CARD_RANK_MASK]) ? k : j;
     return 1;
   }
   for (i = 0; i < possc; i++) {
     for (j = 0; j < 4; j++) {
       if (j != trumpf && cards[possi[i]] == high[j]) {
-        if ((cards[possi[i]] & 7) == AS)
+        if ((cards[possi[i]] & CARD_RANK_MASK) == AS)
           playcd = i;
         else
           niedrighoch(j);
@@ -393,57 +393,57 @@ int hochausspielen() {
 void schenke() {
   int i, j, ci, cj, wi, wj, iw, jw, ih[4], ze[4], ko[4], da[4], ne[4];
 
-  if (!vmh && trumpf == 4) {
+  if (!vmh && trumpf == GRAND_GAME) {
     for (i = 0; i < 4; i++) {
       ih[i] = ze[i] = ko[i] = da[i] = ne[i] = 0;
     }
     for (i = 0; i < possc; i++) {
       ci = cards[possi[i]];
-      if ((ci & 7) != BUBE) ih[ci >> 3]++;
-      if ((ci & 7) == ZEHN)
-        ze[ci >> 3] = 1;
-      else if ((ci & 7) == KOENIG)
-        ko[ci >> 3] = 1;
-      else if ((ci & 7) == DAME)
-        da[ci >> 3] = 1;
-      else if ((ci & 7) == NEUN)
-        ne[ci >> 3] = 1;
+      if ((ci & CARD_RANK_MASK) != BUBE) ih[ci >> CARD_SUIT_SHIFT]++;
+      if ((ci & CARD_RANK_MASK) == ZEHN)
+        ze[ci >> CARD_SUIT_SHIFT] = 1;
+      else if ((ci & CARD_RANK_MASK) == KOENIG)
+        ko[ci >> CARD_SUIT_SHIFT] = 1;
+      else if ((ci & CARD_RANK_MASK) == DAME)
+        da[ci >> CARD_SUIT_SHIFT] = 1;
+      else if ((ci & CARD_RANK_MASK) == NEUN)
+        ne[ci >> CARD_SUIT_SHIFT] = 1;
     }
   }
   j = 0;
   for (i = 1; i < possc; i++) {
     ci = cards[possi[i]];
     cj = cards[possi[j]];
-    wi = cardw[iw = (ci & 7)];
-    wj = cardw[jw = (cj & 7)];
+    wi = cardw[iw = (ci & CARD_RANK_MASK)];
+    wj = cardw[jw = (cj & CARD_RANK_MASK)];
     if (wi == 2) wi = 5;
     if (wj == 2) wj = 5;
     if (wi == 5 && wj == 5) {
-      wi = ci >> 3;
-      wj = cj >> 3;
+      wi = ci >> CARD_SUIT_SHIFT;
+      wj = cj >> CARD_SUIT_SHIFT;
     } else {
       if (!wi && !gespcd[(ci & ~7) | AS] && zehnblank(ci) && stich <= 6)
         wi += 4;
       if (!wj && !gespcd[(cj & ~7) | AS] && zehnblank(cj) && stich <= 6)
         wj += 4;
     }
-    if ((ci & 7) == BUBE || ci >> 3 == trumpf) wi += 5;
-    if ((cj & 7) == BUBE || cj >> 3 == trumpf) wj += 5;
+    if ((ci & CARD_RANK_MASK) == BUBE || ci >> CARD_SUIT_SHIFT == trumpf) wi += 5;
+    if ((cj & CARD_RANK_MASK) == BUBE || cj >> CARD_SUIT_SHIFT == trumpf) wj += 5;
     if (wi < wj ||
         (wi == wj &&
          (((vmh || trumpf != 4) && iw >= NEUN && jw >= NEUN && iw > jw) ||
-          (!vmh && trumpf == 4 && ih[ci >> 3] > ih[cj >> 3]))))
+          (!vmh && trumpf == GRAND_GAME && ih[ci >> CARD_SUIT_SHIFT] > ih[cj >> CARD_SUIT_SHIFT]))))
       j = i;
   }
-  if (!vmh && trumpf == 4) {
+  if (!vmh && trumpf == GRAND_GAME) {
     for (i = 1; i < possc; i++) {
       ci = cards[possi[i]];
       cj = cards[possi[j]];
-      wi = cardw[iw = (ci & 7)];
-      wj = cardw[jw = (cj & 7)];
-      if (ci >> 3 == cj >> 3 && ze[ci >> 3] && ko[ci >> 3] && ih[ci >> 3] > 2) {
-        if (((wi == 4 && !da[ci >> 3] && !ne[ci >> 3]) ||
-             (wi == 3 && !ne[ci >> 3]) || iw == NEUN) &&
+      wi = cardw[iw = (ci & CARD_RANK_MASK)];
+      wj = cardw[jw = (cj & CARD_RANK_MASK)];
+      if (ci >> CARD_SUIT_SHIFT == cj >> CARD_SUIT_SHIFT && ze[ci >> CARD_SUIT_SHIFT] && ko[ci >> CARD_SUIT_SHIFT] && ih[ci >> CARD_SUIT_SHIFT] > 2) {
+        if (((wi == 4 && !da[ci >> CARD_SUIT_SHIFT] && !ne[ci >> CARD_SUIT_SHIFT]) ||
+             (wi == 3 && !ne[ci >> CARD_SUIT_SHIFT]) || iw == NEUN) &&
             !wj)
           j = i;
       }
@@ -455,15 +455,15 @@ void schenke() {
 int zehnblank(int ci) {
   int i, f, n, z, a, cj;
 
-  f = ci >> 3;
+  f = ci >> CARD_SUIT_SHIFT;
   n = z = a = 0;
   for (i = 0; i < possc; i++) {
     cj = cards[possi[i]];
-    if ((cj & 7) != BUBE && cj >> 3 == f) {
+    if ((cj & CARD_RANK_MASK) != BUBE && cj >> CARD_SUIT_SHIFT == f) {
       n++;
-      if ((cj & 7) == ZEHN)
+      if ((cj & CARD_RANK_MASK) == ZEHN)
         z = 1;
-      else if ((cj & 7) == AS)
+      else if ((cj & CARD_RANK_MASK) == AS)
         a = 1;
     }
   }
@@ -473,23 +473,23 @@ int zehnblank(int ci) {
 int fabwerfen() {
   int i, fb, ci, n[4];
 
-  fb = stcd[0] >> 3;
+  fb = stcd[0] >> CARD_SUIT_SHIFT;
   if (!hatnfb[spieler][fb] ||
-      (vmh == 2 && cardw[stcd[0] & 7] + cardw[stcd[1] & 7] > 4) ||
-      (vmh == 1 && cardw[stcd[0] & 7] > 0))
+      (vmh == 2 && cardw[stcd[0] & CARD_RANK_MASK] + cardw[stcd[1] & CARD_RANK_MASK] > 4) ||
+      (vmh == 1 && cardw[stcd[0] & CARD_RANK_MASK] > 0))
     return 0;
   n[0] = n[1] = n[2] = n[3] = 0;
   for (i = 0; i < possc; i++) {
     ci = cards[possi[i]];
-    if ((ci & 7) != BUBE && ci >> 3 != trumpf) {
-      n[ci >> 3]++;
+    if ((ci & CARD_RANK_MASK) != BUBE && ci >> CARD_SUIT_SHIFT != trumpf) {
+      n[ci >> CARD_SUIT_SHIFT]++;
     }
   }
   calc_high(1, 0);
   for (i = 0; i < possc; i++) {
     ci = cards[possi[i]];
-    fb = ci >> 3;
-    if ((ci & 7) != BUBE && fb != trumpf && cardw[ci & 7] <= 4 && n[fb] == 1 &&
+    fb = ci >> CARD_SUIT_SHIFT;
+    if ((ci & CARD_RANK_MASK) != BUBE && fb != trumpf && cardw[ci & CARD_RANK_MASK] <= 4 && n[fb] == 1 &&
         ci != high[fb]) {
       playcd = i;
       return 1;
@@ -504,119 +504,119 @@ void abwerfen() {
 
   for (i = 0; i < 4; i++) gsp[i] = ze[i] = as[i] = ih[i] = 0;
   for (i = 0; i < 32; i++) {
-    if ((i & 7) != BUBE && gespcd[i] == 2) gsp[i >> 3]++;
+    if ((i & CARD_RANK_MASK) != BUBE && gespcd[i] == 2) gsp[i >> CARD_SUIT_SHIFT]++;
   }
   for (i = 0; i < possc; i++) {
     ci = cards[possi[i]];
-    if ((ci & 7) != BUBE) ih[ci >> 3]++;
-    if ((ci & 7) == ZEHN)
-      ze[ci >> 3] = 1;
-    else if ((ci & 7) == AS)
-      as[ci >> 3] = 1;
+    if ((ci & CARD_RANK_MASK) != BUBE) ih[ci >> CARD_SUIT_SHIFT]++;
+    if ((ci & CARD_RANK_MASK) == ZEHN)
+      ze[ci >> CARD_SUIT_SHIFT] = 1;
+    else if ((ci & CARD_RANK_MASK) == AS)
+      as[ci >> CARD_SUIT_SHIFT] = 1;
   }
   j = 0;
   for (i = 1; i < possc; i++) {
     ci  = cards[possi[i]];
     cj  = cards[possi[j]];
-    wi  = cardw[ci & 7];
-    wj  = cardw[cj & 7];
+    wi  = cardw[ci & CARD_RANK_MASK];
+    wj  = cardw[cj & CARD_RANK_MASK];
     wio = wi;
     wjo = wj;
     if (wi == 2) wi = 5;
     if (wj == 2) wj = 5;
     if (wi == 5 && wj == 5) {
-      wi = ci >> 3;
-      wj = cj >> 3;
+      wi = ci >> CARD_SUIT_SHIFT;
+      wj = cj >> CARD_SUIT_SHIFT;
     } else {
       if (stich > 7) {
         wi *= 2;
         wj *= 2;
-        if (wi == 10 || ci >> 3 == trumpf) wi += 12;
-        if (wj == 10 || cj >> 3 == trumpf) wj += 12;
-        if (hatnfb[spieler][ci >> 3]) wi -= 7;
-        if (hatnfb[spieler][cj >> 3]) wj -= 7;
+        if (wi == 10 || ci >> CARD_SUIT_SHIFT == trumpf) wi += 12;
+        if (wj == 10 || cj >> CARD_SUIT_SHIFT == trumpf) wj += 12;
+        if (hatnfb[spieler][ci >> CARD_SUIT_SHIFT]) wi -= 7;
+        if (hatnfb[spieler][cj >> CARD_SUIT_SHIFT]) wj -= 7;
       } else {
-        if (wi == 5 || ci >> 3 == trumpf) wi += 5;
-        if (wj == 5 || cj >> 3 == trumpf) wj += 5;
+        if (wi == 5 || ci >> CARD_SUIT_SHIFT == trumpf) wi += 5;
+        if (wj == 5 || cj >> CARD_SUIT_SHIFT == trumpf) wj += 5;
         if (wi < 4 && zehnblank(ci) && stich <= 7) wi += wi ? 2 : 6;
         if (wj < 4 && zehnblank(cj) && stich <= 7) wj += wj ? 2 : 6;
         if (!vmh) {
-          if (trumpf == 4) {
-            if ((ci & 7) != BUBE && hatnfb[spieler][ci >> 3]) wi -= 30;
-            if ((cj & 7) != BUBE && hatnfb[spieler][cj >> 3]) wj -= 30;
+          if (trumpf == GRAND_GAME) {
+            if ((ci & CARD_RANK_MASK) != BUBE && hatnfb[spieler][ci >> CARD_SUIT_SHIFT]) wi -= 30;
+            if ((cj & CARD_RANK_MASK) != BUBE && hatnfb[spieler][cj >> CARD_SUIT_SHIFT]) wj -= 30;
           } else {
             mi  = spieler == left(ausspl) ? 2 : 1;
             wio = wi;
             wjo = wj;
-            if (!hatnfb[spieler][ci >> 3])
+            if (!hatnfb[spieler][ci >> CARD_SUIT_SHIFT])
               wi += 8;
-            else if (hatnfb[spieler][ci >> 3] &&
-                     hatnfb[(ausspl + mi) % 3][ci >> 3] != 1 &&
-                     ih[ci >> 3] + gsp[ci >> 3] > 4 && !as[ci >> 3] &&
+            else if (hatnfb[spieler][ci >> CARD_SUIT_SHIFT] &&
+                     hatnfb[(ausspl + mi) % NUM_PLAYERS][ci >> CARD_SUIT_SHIFT] != 1 &&
+                     ih[ci >> CARD_SUIT_SHIFT] + gsp[ci >> CARD_SUIT_SHIFT] > 4 && !as[ci >> CARD_SUIT_SHIFT] &&
                      gespcd[(ci & ~7) | AS] != 2) {
               wi += 35;
             } else if (wi > 4)
               wi += 8;
-            if (!hatnfb[spieler][cj >> 3])
+            if (!hatnfb[spieler][cj >> CARD_SUIT_SHIFT])
               wj += 8;
-            else if (hatnfb[spieler][cj >> 3] &&
-                     hatnfb[(ausspl + mi) % 3][cj >> 3] != 1 &&
-                     ih[cj >> 3] + gsp[cj >> 3] > 4 && !as[cj >> 3] &&
+            else if (hatnfb[spieler][cj >> CARD_SUIT_SHIFT] &&
+                     hatnfb[(ausspl + mi) % NUM_PLAYERS][cj >> CARD_SUIT_SHIFT] != 1 &&
+                     ih[cj >> CARD_SUIT_SHIFT] + gsp[cj >> CARD_SUIT_SHIFT] > 4 && !as[cj >> CARD_SUIT_SHIFT] &&
                      gespcd[(cj & ~7) | AS] != 2) {
               wj += 35;
             } else if (wj > 4)
               wj += 8;
-            if (mi == 2 && hatnfb[(ausspl + mi) % 3][trumpf] != 1) {
+            if (mi == 2 && hatnfb[(ausspl + mi) % NUM_PLAYERS][trumpf] != 1) {
               h = 0;
-              if (hatnfb[(ausspl + mi) % 3][ci >> 3] == 1 && wio <= 4)
+              if (hatnfb[(ausspl + mi) % NUM_PLAYERS][ci >> CARD_SUIT_SHIFT] == 1 && wio <= 4)
                 wi -= 30, h++;
-              if (hatnfb[(ausspl + mi) % 3][cj >> 3] == 1 && wjo <= 4)
+              if (hatnfb[(ausspl + mi) % NUM_PLAYERS][cj >> CARD_SUIT_SHIFT] == 1 && wjo <= 4)
                 wj -= 30, h++;
               if (h == 2) swap(&wi, &wj);
             }
           }
-          if (wi == wj && stich <= 3 && ci >> 3 != cj >> 3) {
-            if (ih[ci >> 3] < ih[cj >> 3])
+          if (wi == wj && stich <= 3 && ci >> CARD_SUIT_SHIFT != cj >> CARD_SUIT_SHIFT) {
+            if (ih[ci >> CARD_SUIT_SHIFT] < ih[cj >> CARD_SUIT_SHIFT])
               wi--;
-            else if (ih[ci >> 3] > ih[cj >> 3])
+            else if (ih[ci >> CARD_SUIT_SHIFT] > ih[cj >> CARD_SUIT_SHIFT])
               wj--;
-            else if (ih[ci >> 3] == 2) {
-              if (as[ci >> 3]) wi -= spieler == left(ausspl) ? 1 : -1;
-              if (as[cj >> 3]) wj -= spieler == left(ausspl) ? 1 : -1;
+            else if (ih[ci >> CARD_SUIT_SHIFT] == 2) {
+              if (as[ci >> CARD_SUIT_SHIFT]) wi -= spieler == left(ausspl) ? 1 : -1;
+              if (as[cj >> CARD_SUIT_SHIFT]) wj -= spieler == left(ausspl) ? 1 : -1;
             }
-            if (spieler == left(ausspl) || trumpf == 4) swap(&wi, &wj);
+            if (spieler == left(ausspl) || trumpf == GRAND_GAME) swap(&wi, &wj);
           }
         } else {
-          if (possc == 2 && ((stcd[0] & 7) == BUBE || stcd[0] >> 3 == trumpf) &&
+          if (possc == 2 && ((stcd[0] & CARD_RANK_MASK) == BUBE || stcd[0] >> CARD_SUIT_SHIFT == trumpf) &&
               (wio == 2 || wjo == 2) && (wio >= 10 || wjo >= 10)) {
             if (wio >= 10)
               wi = 1, wj = 2;
             else
               wi = 2, wj = 1;
             if (((gespcd[BUBE] == 2 &&
-                  (gespcd[trumpf << 3 | AS] == 2 || wio == 11 || wjo == 11)) ||
-                 ci == BUBE || cj == BUBE || gespcd[2 << 3 | BUBE] != 2 ||
-                 gespcd[3 << 3 | BUBE] != 2) &&
-                !(gespcd[2 << 3 | BUBE] == 2 && gespcd[3 << 3 | BUBE] != 2 &&
+                  (gespcd[trumpf << CARD_SUIT_SHIFT | AS] == 2 || wio == 11 || wjo == 11)) ||
+                 ci == BUBE || cj == BUBE || gespcd[2 << CARD_SUIT_SHIFT | BUBE] != 2 ||
+                 gespcd[3 << CARD_SUIT_SHIFT | BUBE] != 2) &&
+                !(gespcd[2 << CARD_SUIT_SHIFT | BUBE] == 2 && gespcd[3 << CARD_SUIT_SHIFT | BUBE] != 2 &&
                   vmh == 1)) {
               swap(&wi, &wj);
             }
           } else {
-            if ((ci & 7) == BUBE)
+            if ((ci & CARD_RANK_MASK) == BUBE)
               wi += 5;
-            else if (!hatnfb[spieler][ci >> 3] && wi >= 4)
+            else if (!hatnfb[spieler][ci >> CARD_SUIT_SHIFT] && wi >= 4)
               wi += 3;
-            if ((cj & 7) == BUBE)
+            if ((cj & CARD_RANK_MASK) == BUBE)
               wj += 5;
-            else if (!hatnfb[spieler][cj >> 3] && wj >= 4)
+            else if (!hatnfb[spieler][cj >> CARD_SUIT_SHIFT] && wj >= 4)
               wj += 3;
             if (vmh == 1 && spieler != ausspl) {
-              if (wi > 1 && wi < 5 && !wj && !cardw[stcd[0] & 7] &&
-                  hatnfb[spieler][stcd[0] >> 3]) {
+              if (wi > 1 && wi < 5 && !wj && !cardw[stcd[0] & CARD_RANK_MASK] &&
+                  hatnfb[spieler][stcd[0] >> CARD_SUIT_SHIFT]) {
                 wi = 1;
                 wj = 2;
-              } else if (wj > 1 && wj < 5 && !wi && !cardw[stcd[0] & 7] &&
-                         hatnfb[spieler][stcd[0] >> 3]) {
+              } else if (wj > 1 && wj < 5 && !wi && !cardw[stcd[0] & CARD_RANK_MASK] &&
+                         hatnfb[spieler][stcd[0] >> CARD_SUIT_SHIFT]) {
                 wi = 2;
                 wj = 1;
               }
@@ -626,7 +626,7 @@ void abwerfen() {
       }
     }
     if (wi < wj ||
-        (wi == wj && !cardw[ci & 7] && !cardw[cj & 7] && (ci & 7) > (cj & 7)))
+        (wi == wj && !cardw[ci & CARD_RANK_MASK] && !cardw[cj & CARD_RANK_MASK] && (ci & CARD_RANK_MASK) > (cj & CARD_RANK_MASK)))
       j = i;
   }
   playcd = j;
@@ -637,23 +637,23 @@ int buttern() {
 
   se = left(ausspl);
   mi = spieler == ausspl ? right(ausspl) : ausspl;
-  fb = stcd[0] >> 3;
-  if ((stcd[0] & 7) == BUBE) fb = trumpf;
+  fb = stcd[0] >> CARD_SUIT_SHIFT;
+  if ((stcd[0] & CARD_RANK_MASK) == BUBE) fb = trumpf;
   if (stich == 9 && spitzeang) return 1;
   if (!hatnfb[se][fb]) return 0;
   calc_high(2, 0);
   if (spieler == ausspl) {
-    if ((fb == trumpf && gespcd[trumpf << 3 | AS] == 2 &&
-         gespcd[0 << 3 | BUBE] == 2 && gespcd[1 << 3 | BUBE] == 2 &&
-         gespcd[2 << 3 | BUBE] == 2 && gespcd[3 << 3 | BUBE] == 2 && rnd(1)) ||
-        ((stcd[0] & 7) == BUBE && gespcd[2 << 3 | BUBE] == 2 &&
-         gespcd[3 << 3 | BUBE] != 2) ||
+    if ((fb == trumpf && gespcd[trumpf << CARD_SUIT_SHIFT | AS] == 2 &&
+         gespcd[0 << CARD_SUIT_SHIFT | BUBE] == 2 && gespcd[1 << CARD_SUIT_SHIFT | BUBE] == 2 &&
+         gespcd[2 << CARD_SUIT_SHIFT | BUBE] == 2 && gespcd[3 << CARD_SUIT_SHIFT | BUBE] == 2 && rnd(1)) ||
+        ((stcd[0] & CARD_RANK_MASK) == BUBE && gespcd[2 << CARD_SUIT_SHIFT | BUBE] == 2 &&
+         gespcd[3 << CARD_SUIT_SHIFT | BUBE] != 2) ||
         higher(stcd[0], high[fb]) ||
         (hatnfb[mi][fb] == 1 && hatnfb[mi][trumpf] == 1) ||
-        (trumpf == 4 && (stcd[0] & 7) != BUBE &&
-         (gespcd[0 << 3 | BUBE] == 2 || gespcd[1 << 3 | BUBE] == 2 ||
-          gespcd[2 << 3 | BUBE] == 2 || gespcd[3 << 3 | BUBE] == 2)) ||
-        (cardw[stcd[0] & 7] > 4 && rnd(1)))
+        (trumpf == GRAND_GAME && (stcd[0] & CARD_RANK_MASK) != BUBE &&
+         (gespcd[0 << CARD_SUIT_SHIFT | BUBE] == 2 || gespcd[1 << CARD_SUIT_SHIFT | BUBE] == 2 ||
+          gespcd[2 << CARD_SUIT_SHIFT | BUBE] == 2 || gespcd[3 << CARD_SUIT_SHIFT | BUBE] == 2)) ||
+        (cardw[stcd[0] & CARD_RANK_MASK] > 4 && rnd(1)))
       return 0;
     if (butternok) return rnd(1);
     butternok = rnd(1);
@@ -669,12 +669,12 @@ int buttern() {
 int hatas() {
   int f, i, as;
 
-  f  = stcd[0] >> 3;
+  f  = stcd[0] >> CARD_SUIT_SHIFT;
   as = 0;
   for (i = 0; i < possc; i++) {
-    if (cards[possi[i]] == (f << 3 | AS)) as = i + 1;
+    if (cards[possi[i]] == (f << CARD_SUIT_SHIFT | AS)) as = i + 1;
   }
-  if (!as || (stcd[0] & 7) == BUBE || f == trumpf || cardw[stcd[0] & 7] > 4 ||
+  if (!as || (stcd[0] & CARD_RANK_MASK) == BUBE || f == trumpf || cardw[stcd[0] & CARD_RANK_MASK] > 4 ||
       hatnfb[spieler][f])
     return 0;
   playcd = as - 1;
@@ -686,16 +686,16 @@ int schnippeln(int f) {
 
   if (gstsum >= 44 && gstsum < 60) return 0;
   if (stich > 8 && gstsum <= 30) return 0;
-  fb = stcd[0] >> 3;
-  if ((stcd[0] & 7) == BUBE || (stcd[f] & 7) == BUBE || fb == trumpf ||
-      stcd[f] >> 3 == trumpf || (f && fb != stcd[1] >> 3) ||
-      gespcd[fb << 3 | ZEHN] == 2 || gespfb[fb] > 3) {
+  fb = stcd[0] >> CARD_SUIT_SHIFT;
+  if ((stcd[0] & CARD_RANK_MASK) == BUBE || (stcd[f] & CARD_RANK_MASK) == BUBE || fb == trumpf ||
+      stcd[f] >> CARD_SUIT_SHIFT == trumpf || (f && fb != stcd[1] >> CARD_SUIT_SHIFT) ||
+      gespcd[fb << CARD_SUIT_SHIFT | ZEHN] == 2 || gespfb[fb] > 3) {
     return 0;
   }
   as = 0;
   for (i = 0; i < possc; i++) {
-    if (cards[possi[i]] == (fb << 3 | AS)) as = i + 1;
-    if (cards[possi[i]] == (fb << 3 | ZEHN)) return 0;
+    if (cards[possi[i]] == (fb << CARD_SUIT_SHIFT | AS)) as = i + 1;
+    if (cards[possi[i]] == (fb << CARD_SUIT_SHIFT | ZEHN)) return 0;
   }
   if (!as) return 0;
   possi[as - 1] = possi[--possc];
@@ -714,7 +714,7 @@ void nichtspitze() {
   int sp, i;
 
   if (spitzeang) {
-    sp = trumpf == 4 ? BUBE : SIEBEN | trumpf << 3;
+    sp = trumpf == GRAND_GAME ? BUBE : SIEBEN | trumpf << CARD_SUIT_SHIFT;
     for (i = 0; i < possc; i++) {
       if (cards[possi[i]] == sp) {
         possc--;
@@ -733,7 +733,7 @@ int spitzefangen() {
   if (!spitzeang || stich != 9) return 0;
   t = -1;
   for (i = 0; i < possc; i++) {
-    if (((c = cards[possi[i]]) & 7) == BUBE || c >> 3 == trumpf) {
+    if (((c = cards[possi[i]]) & CARD_RANK_MASK) == BUBE || c >> CARD_SUIT_SHIFT == trumpf) {
       if (t != -1) return 0;
       t = i;
     }
@@ -751,11 +751,11 @@ int restbeimir() {
   s[0] = left(spieler);
   s[1] = right(spieler);
   if (!hatnfb[s[0]][trumpf] || !hatnfb[s[1]][trumpf]) {
-    if (trumpf == 4) return 0;
+    if (trumpf == GRAND_GAME) return 0;
     h = -1;
     for (k = 0; k < 10; k++) {
       if ((c = cards[spieler * 10 + k]) >= 0) {
-        if (c >> 3 != trumpf && (c & 7) != BUBE) return 0;
+        if (c >> CARD_SUIT_SHIFT != trumpf && (c & CARD_RANK_MASK) != BUBE) return 0;
         if (h < 0 || !higher(c, cards[spieler * 10 + h])) h = k;
       }
     }
@@ -774,13 +774,13 @@ int restbeimir() {
     for (j = 0; j < 2; j++) {
       for (k = handsp ? -1 : 0; k < 10; k++) {
         if ((c = k < 0 ? prot2.skat[0][j] : cards[s[j] * 10 + k]) >= 0 &&
-            c >> 3 == i && (c & 7) != BUBE && (c & 7) < h)
-          h = c & 7;
+            c >> CARD_SUIT_SHIFT == i && (c & CARD_RANK_MASK) != BUBE && (c & CARD_RANK_MASK) < h)
+          h = c & CARD_RANK_MASK;
       }
     }
     for (k = 0; k < 10; k++) {
-      if ((c = cards[spieler * 10 + k]) >= 0 && c >> 3 == i &&
-          (c & 7) != BUBE && (c & 7) > h)
+      if ((c = cards[spieler * 10 + k]) >= 0 && c >> CARD_SUIT_SHIFT == i &&
+          (c & CARD_RANK_MASK) != BUBE && (c & CARD_RANK_MASK) > h)
         return 0;
     }
   }
@@ -883,10 +883,10 @@ void adjfb(int s, int v) {
   n                                     = handsp && s != spieler ? 12 : 10;
   for (i = 0; i < n; i++) {
     if ((c = i < 10 ? cards[10 * s + i] : prot2.skat[0][i - 10]) >= 0) {
-      if (trumpf != -1 && (c & 7) == BUBE)
+      if (trumpf != -1 && (c & CARD_RANK_MASK) == BUBE)
         fb[trumpf] = 1;
       else
-        fb[c >> 3] = 1;
+        fb[c >> CARD_SUIT_SHIFT] = 1;
     }
   }
   for (i = 0; i < 5; i++) {
@@ -943,13 +943,13 @@ void calc_drueck() {
   }
   for (i = 0; i < 12; i++) {
     c = spcards[i];
-    if ((c & 7) == BUBE) {
-      b[c >> 3] = 1;
+    if ((c & CARD_RANK_MASK) == BUBE) {
+      b[c >> CARD_SUIT_SHIFT] = 1;
       bb++;
     } else {
-      p[c >> 3] += cardw[c & 7];
-      t[c >> 3]++;
-      inhand[c >> 3][c & 7] = 1;
+      p[c >> CARD_SUIT_SHIFT] += cardw[c & CARD_RANK_MASK];
+      t[c >> CARD_SUIT_SHIFT]++;
+      inhand[c >> CARD_SUIT_SHIFT][c & CARD_RANK_MASK] = 1;
     }
   }
   f = 2;
@@ -1025,8 +1025,8 @@ void calc_drueck() {
   if (spitzezaehlt &&
       ((trumpf < 4 && inhand[trumpf][SIEBEN] &&
         ((tr + bb >= 7 && (bb > 1 || !b[0])) || (tr + bb == 6 && bb >= 4))) ||
-       (trumpf == 4 && b[0] && b[3] && bb == 3 && spieler == ausspl))) {
-    sp = trumpf == 4 ? BUBE : SIEBEN | trumpf << 3;
+       (trumpf == GRAND_GAME && b[0] && b[3] && bb == 3 && spieler == ausspl))) {
+    sp = trumpf == GRAND_GAME ? BUBE : SIEBEN | trumpf << CARD_SUIT_SHIFT;
     if (cards[30] != sp && cards[31] != sp) {
       spitzeang = 1;
     }
@@ -1057,7 +1057,7 @@ void do_spielen() {
   }
   if (trumpf == -1 && stich == 1) init_null();
   while (phase == SPIELEN) {
-    s = (ausspl + vmh) % 3;
+    s = (ausspl + vmh) % NUM_PLAYERS;
     if (iscomp(s))
       sp = 0;
     else {

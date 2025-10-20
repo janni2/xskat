@@ -21,6 +21,7 @@
 #include "skat.h"
 #include "application/file_manager.h"
 #include "application/text.h"
+#include "domain/skat_constants.h"
 #include "domain/utils.h"
 #include "ui/xio.h"
 
@@ -149,7 +150,7 @@ void read_opt_srpk(FILE* f) {
   int i, v, va[3];
 
   if (fscanf(f, "s %d %d %d\n", &va[0], &va[1], &va[2]) == 3) {
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < NUM_PLAYERS; i++) {
       if (!stgset[i]) {
         if (va[i] < -4)
           va[i] = -4;
@@ -218,21 +219,21 @@ void read_opt() {
     }
   }
   if (fscanf(f, "d %d %d %d\n", &va[0], &va[1], &va[2]) == 3) {
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < NUM_PLAYERS; i++) {
       if (useoptfile[i] && !downupset[i]) {
         sort1[i] = !!va[i];
       }
     }
   }
   if (fscanf(f, "a %d %d %d\n", &va[0], &va[1], &va[2]) == 3) {
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < NUM_PLAYERS; i++) {
       if (useoptfile[i] && !altseqset[i]) {
         alternate[i] = !!va[i];
       }
     }
   }
   if (fscanf(f, "t %d %d %d\n", &va[0], &va[1], &va[2]) == 3) {
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < NUM_PLAYERS; i++) {
       if (useoptfile[i] && !tdelayset[i]) {
         if (va[i] < 0)
           va[i] = 7;
@@ -243,7 +244,7 @@ void read_opt() {
     }
   }
   if (fscanf(f, "l %d %d %d\n", &va[0], &va[1], &va[2]) == 3) {
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < NUM_PLAYERS; i++) {
       if (useoptfile[i] && !alistset[i]) {
         if (va[i] < 0)
           va[i] = 0;
@@ -254,7 +255,7 @@ void read_opt() {
     }
   }
   if (fscanf(f, "m %d %d %d\n", &va[0], &va[1], &va[2]) == 3) {
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < NUM_PLAYERS; i++) {
       if (useoptfile[i] && !mbuttonset[i]) {
         if (va[i] < 0 || va[i] > 5) va[i] = 0;
         mbutton[i] = va[i];
@@ -287,14 +288,14 @@ void read_opt() {
     }
   }
   if (fscanf(f, "h %d %d %d\n", &va[0], &va[1], &va[2]) == 3) {
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < NUM_PLAYERS; i++) {
       if (useoptfile[i] && !hintsset[i]) {
         hints[i] = !!va[i];
       }
     }
   }
   if (fscanf(f, "b %d %d %d\n", &va[0], &va[1], &va[2]) == 3) {
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < NUM_PLAYERS; i++) {
       if (useoptfile[i] && !blattset[i]) {
         if (va[i] < 0 || va[i] > 3) va[i] = 0;
         blatt[i] = va[i];
@@ -302,7 +303,7 @@ void read_opt() {
     }
   }
   if (fscanf(f, "l %d %d %d\n", &va[0], &va[1], &va[2]) == 3) {
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < NUM_PLAYERS; i++) {
       if (useoptfile[i] && !langset[i]) {
         if (va[i] < 0 || va[i] >= NUM_LANG) va[i] = 0;
         lang[i] = va[i];
@@ -310,7 +311,7 @@ void read_opt() {
     }
   }
   if (fscanf(f, "a %d %d %d\n", &va[0], &va[1], &va[2]) == 3) {
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < NUM_PLAYERS; i++) {
       if (useoptfile[i] && !abkuerzset[i]) {
         if (va[i] < 0 || va[i] > 2) va[i] = 1;
         abkuerz[i] = va[i];
@@ -323,7 +324,7 @@ void read_opt() {
     }
   }
   if (fscanf(f, "k %d %d %d\n", &va[0], &va[1], &va[2]) == 3) {
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < NUM_PLAYERS; i++) {
       if (useoptfile[i] && !keyboardset[i]) {
         if (va[i] < 0 || va[i] > 2) va[i] = 1;
         keyboard[i] = va[i];
@@ -331,14 +332,14 @@ void read_opt() {
     }
   }
   if (fscanf(f, "b %d %d %d\n", &va[0], &va[1], &va[2]) == 3) {
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < NUM_PLAYERS; i++) {
       if (useoptfile[i] && !briefmsgset[i]) {
         briefmsg[i] = !!va[i];
       }
     }
   }
   if (fscanf(f, "l %d %d %d\n", &va[0], &va[1], &va[2]) == 3) {
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < NUM_PLAYERS; i++) {
       if (useoptfile[i] && !trickl2rset[i]) {
         trickl2r[i] = !!va[i];
       }

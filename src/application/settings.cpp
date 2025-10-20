@@ -7,6 +7,7 @@
 */
 
 #include "application/settings.h"
+#include "domain/skat_constants.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -42,7 +43,7 @@ static file_paths_t file_paths;
 
 void settings_init(void) {
     // Initialize default values
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < NUM_PLAYERS; i++) {
         player_settings_init(i);
     }
     game_settings_init();
@@ -172,7 +173,7 @@ void settings_save_to_file(const char *filename) {
     fprintf(file, "playramsch=%d\n", game_settings.playramsch);
     fprintf(file, "playkontra=%d\n", game_settings.playkontra);
     
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < NUM_PLAYERS; i++) {
         fprintf(file, "player%d_strategy=%d\n", i, player_settings[i].strategy);
         fprintf(file, "player%d_hints=%d\n", i, player_settings[i].hints);
         fprintf(file, "player%d_lang=%d\n", i, player_settings[i].lang);
@@ -190,7 +191,7 @@ int settings_validate(void) {
     if (game_settings.numsp < 1 || game_settings.numsp > 3) return 0;
     if (game_settings.numgames < 1) return 0;
     
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < NUM_PLAYERS; i++) {
         if (player_settings[i].strategy < -4 || player_settings[i].strategy > 4) return 0;
         if (player_settings[i].lang < 0 || player_settings[i].lang > 1) return 0;
     }
