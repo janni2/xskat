@@ -7,17 +7,18 @@
 
 #include "domain/utils.h"
 #include "skat.h"
+#include "domain/skat_constants.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
 // Player position utilities
 int left(int s) {
-    return (s + 1) % 3;
+    return (s + LEFT_OFFSET) % NUM_PLAYERS;
 }
 
 int right(int s) {
-    return (s + 2) % 3;
+    return (s + RIGHT_OFFSET) % NUM_PLAYERS;
 }
 
 int iscomp(int s) {
@@ -41,7 +42,7 @@ int rndval(long *s, int m) {
     register long h = *s;
     int i;
 
-    for (i = 0; i < 7; i++)
+    for (i = 0; i < RANDOM_ITERATIONS; i++)
         h = (h << 16) | ((((h << 1) ^ (h << 4)) >> 16) & 0xffff);
     *s = h;
     return h & m;
@@ -52,7 +53,7 @@ int rnd(int m) {
 }
 
 // Error handling
-void synerr(FILE* f, char* s) {
+void synerr(FILE* f, const char* s) {
     int c, l, n;
 
     fprintf(stderr, "Error in file %s", game_file);
@@ -62,7 +63,7 @@ void synerr(FILE* f, char* s) {
         fprintf(stderr, " reading: '%s'\n", s);
         fputs("before:\n", stderr);
         l = 3;
-        n = 200;
+        n = ERROR_READ_BUFFER_SIZE;
         while (l && n) {
             if ((c = fgetc(f)) == EOF)
                 l = 0;

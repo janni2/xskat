@@ -29,7 +29,7 @@
  */
 
 // File operations and error handling
-extern void synerr(FILE* f, char* s);
+extern void synerr(FILE* f, const char* s);
 
 // Configuration management
 extern void read_opt(void);

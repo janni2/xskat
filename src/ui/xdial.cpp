@@ -260,10 +260,10 @@ void prverz(int sn)
   n        = nimmstich[sn][0];
   for (ln = 0; ln < NUM_LANG; ln++) {
     if (n >= 101)
-      sprintf(digeschwindigkeit[sn][3].str->t[ln], "%s",
+      sprintf(const_cast<char*>(digeschwindigkeit[sn][3].str->t[ln]), "%s",
               textarr[TX_MAUS_KLICK].t[ln]);
     else {
-      sprintf(digeschwindigkeit[sn][3].str->t[ln], "%s%d.%d %s",
+      sprintf(const_cast<char*>(digeschwindigkeit[sn][3].str->t[ln]), "%s%d.%d %s",
               n < maxnimm() ? gr : em, n / 10, n % 10,
               textarr[TX_SEKUNDEN].t[ln]);
     }
@@ -1635,7 +1635,7 @@ void draw_dial(int sn, int i, OBJECT* ob)
     if (ob[i].spec & OB_HIDDEN) return;
     sel = ob[i].spec & OB_SELECTED;
     XClearWindow(dpy[sn], ob[i].win);
-    if (ob[i].str != OB_NONE && (l = strlen(str = ob[i].str->t[lang[sn]]))) {
+    if (ob[i].str != OB_NONE && (l = strlen(str = const_cast<char*>(ob[i].str->t[lang[sn]])))) {
       x = y = 0;
       if (ob[i].spec & (OB_BUTTON | OB_EXIT | OB_CENTERED)) {
         x = (ob[i].w * charw[sn] - XTextWidth(dfont[sn], str, l)) / 2;
@@ -2327,7 +2327,7 @@ void list_fun(int sn)
     }
   }
   for (k = 0; k < 3; k++) {
-    sprintf(diliste[sn][59 + k].str->t[0], "%d/%d", cgv[k][0], cgv[k][1]);
+    sprintf(const_cast<char*>(diliste[sn][59 + k].str->t[0]), "%d/%d", cgv[k][0], cgv[k][1]);
   }
 }
 
@@ -2396,7 +2396,7 @@ int ger_toupper(int c) {
   }
 }
 
-void pformat(FILE* f, int spec, char* txt, int fil)
+void pformat(FILE* f, int spec, const char* txt, int fil)
 {
   int i, l;
 
@@ -2852,7 +2852,7 @@ void di_result(int be)
       strcpy(txt[ln], textarr[TX_BOCK_EREIGNIS].t[ln]);
   }
   for (i = 0; i < 3; i++) {
-    sprintf(diresult[16 + i].str->t[0], "%d/%d", cgewoverl[i][0],
+    sprintf(const_cast<char*>(diresult[16 + i].str->t[0]), "%d/%d", cgewoverl[i][0],
             cgewoverl[i][1]);
   }
   for (sn = 0; sn < numsp; sn++) {

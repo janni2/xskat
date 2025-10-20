@@ -31,7 +31,7 @@
 #define NUM_LANG 2
 
 typedef struct {
-  char* t[NUM_LANG];
+  const char* t[NUM_LANG];
 } tx_typ;
 
 enum {
@@ -351,7 +351,7 @@ EXTERN char conames[2][2][40];
 EXTERN char usrname[2][40];
 
 extern void init_text();
-extern char* idxlang(int i);
+extern const char* idxlang(int i);
 extern int langidx(char* s);
 extern void info_reiz();
 extern int trumpf_idx();

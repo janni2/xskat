@@ -25,6 +25,7 @@
 #include "application/game_engine.h"
 #include "application/file_manager.h"
 #include "application/ai_engine.h"
+#include "domain/skat_constants.h"
 
 /* ========================================================================
  * GAME PHASE HANDLERS
@@ -43,17 +44,17 @@ void do_geben() {
   for (sn = 0; sn < numsp; sn++) calc_desk(sn);
   if (!wieder) {
     if (ramschspiele) {
-      if (trumpf == 4)
+      if (trumpf == GRAND_GAME)
         geber = right(geber);
       else
         ramschspiele--;
     } else if (bockspiele) {
       bockspiele--;
-      if (bockspiele % 3 == 0 && playbock == 2) {
-        ramschspiele = 3;
+      if (bockspiele % NUM_PLAYERS == 0 && playbock == 2) {
+        ramschspiele = NUM_PLAYERS;
       }
     }
-    bockspiele += 3 * bockinc;
+    bockspiele += NUM_PLAYERS * bockinc;
     geber = left(geber);
   } else if (!vorhandwn) {
     geber = left(geber + wieder);
@@ -75,7 +76,7 @@ void do_geben() {
   givecard(sager, 2);
   givecard(geber, 2);
   for (sn = 0; sn < numsp; sn++) initscr(sn, 1);
-  for (i = 0; i < 3; i++) {
+  for (i = 0; i < NUM_PLAYERS; i++) {
     lastmsaho[i] = 0;
     sagte18[i]   = 0;
   }
@@ -103,7 +104,7 @@ void do_geben() {
     putmark(hoerer);
     put_box(sager);
     put_box(hoerer);
-    for (sn = numsp; sn < 3; sn++) calc_rw(sn);
+    for (sn = numsp; sn < NUM_PLAYERS; sn++) calc_rw(sn);
     phase = REIZEN;
   }
 }
@@ -235,7 +236,7 @@ void do_reizen() {
 
 void do_grandhand(int sn) {
   handsp  = 1;
-  trumpf  = 4;
+  trumpf  = GRAND_GAME;
   reizp   = 0;
   spieler = sn;
   do_handspiel();
@@ -253,7 +254,7 @@ void do_handspiel() {
     }
     stich = 1;
     fill_st();
-    trumpf = 4;
+    trumpf = GRAND_GAME;
     set_prot();
     save_skat(1);
     prot1  = prot2;
@@ -279,10 +280,10 @@ void do_handspiel() {
   stsum = 0;
   vmh   = 0;
   gedr  = 0;
-  for (i = 0; i < 10; i++) spcards[i] = cards[spieler * 10 + i];
+  for (i = 0; i < CARDS_PER_PLAYER; i++) spcards[i] = cards[spieler * CARDS_PER_PLAYER + i];
   save_skat(0);
-  spcards[10] = cards[30];
-  spcards[11] = cards[31];
+  spcards[CARDS_PER_PLAYER] = cards[SKAT_OFFSET];
+  spcards[CARDS_PER_PLAYER + 1] = cards[SKAT_OFFSET + 1];
   rem_box(sager);
   rem_box(hoerer);
   if (!iscomp(spieler) && !ramschspiele) {
@@ -307,8 +308,8 @@ void do_druecken() {
   drbut             = spieler + 1;
   phase             = DRUECKEN;
   stsum             = 0;
-  gespcd[cards[30]] = 0;
-  gespcd[cards[31]] = 0;
+  gespcd[cards[SKAT_OFFSET]] = 0;
+  gespcd[cards[SKAT_OFFSET + 1]] = 0;
   gedr = handsp = 0;
 }
 
@@ -316,7 +317,7 @@ void do_handok() {
   if (iscomp(spieler) || handsp) {
     home_skat();
     if (iscomp(spieler) && !handsp) calc_drueck();
-    stsum = cardw[cards[30] & 7] + cardw[cards[31] & 7];
+    stsum = cardw[cards[SKAT_OFFSET] & CARD_RANK_MASK] + cardw[cards[SKAT_OFFSET + 1] & CARD_RANK_MASK];
     save_skat(1);
   }
   if (!iscomp(spieler) && !handsp)
@@ -330,11 +331,11 @@ void do_ansagen() {
 
   phase = ANSAGEN;
   bb = kannspitze = 0;
-  for (i = 0; i < (handsp ? 10 : 12); i++) {
-    c = i >= 10 ? prot2.skat[1][i - 10] : cards[spieler * 10 + i];
-    if ((c & 7) == BUBE) bb++;
-    if (i < 10) {
-      if ((c & 7) == SIEBEN) {
+  for (i = 0; i < (handsp ? CARDS_PER_PLAYER : CARDS_IN_INITIAL_DEAL); i++) {
+    c = i >= CARDS_PER_PLAYER ? prot2.skat[1][i - CARDS_PER_PLAYER] : cards[spieler * CARDS_PER_PLAYER + i];
+    if ((c & CARD_RANK_MASK) == BUBE) bb++;
+    if (i < CARDS_PER_PLAYER) {
+      if ((c & CARD_RANK_MASK) == SIEBEN) {
         kannspitze = 1;
         break;
       }
@@ -344,7 +345,7 @@ void do_ansagen() {
     }
   }
   if (kannspitze == 2) {
-    kannspitze = bb != 4;
+    kannspitze = bb != NUM_SUITS;
   }
   if (!iscomp(spieler) && !ramschspiele) {
     di_spiel();
@@ -376,9 +377,9 @@ void spielphase() {
 
   phase      = SPIELEN;
   sptruempfe = 0;
-  for (i = 0; i < 10; i++) {
-    c = cards[spieler * 10 + i];
-    if ((c & 7) == BUBE || c >> 3 == trumpf) sptruempfe++;
+  for (i = 0; i < CARDS_PER_PLAYER; i++) {
+    c = cards[spieler * CARDS_PER_PLAYER + i];
+    if ((c & CARD_RANK_MASK) == BUBE || c >> CARD_SUIT_SHIFT == trumpf) sptruempfe++;
   }
   karobube();
   if (ouveang) {
@@ -387,7 +388,7 @@ void spielphase() {
       calc_desk(sn);
     }
   }
-  for (sn = numsp; sn < 3; sn++) {
+  for (sn = numsp; sn < NUM_PLAYERS; sn++) {
     sort1[sn]     = sort1[0];
     sort2[sn]     = trumpf == -1;
     alternate[sn] = alternate[0];
@@ -415,13 +416,13 @@ void get_next() {
     else
       s = 2;
   }
-  ausspl                   = (ausspl + s) % 3;
+  ausspl                   = (ausspl + s) % NUM_PLAYERS;
   prot2.gemacht[stich - 1] = ausspl;
-  if (spitzeang && stich == 10 && ausspl == spieler &&
-      stcd[s] == (trumpf == 4 ? BUBE : SIEBEN | trumpf << 3)) {
+  if (spitzeang && stich == CARDS_PER_PLAYER && ausspl == spieler &&
+      stcd[s] == (trumpf == GRAND_GAME ? BUBE : SIEBEN | trumpf << CARD_SUIT_SHIFT)) {
     spitzeok = 1;
   }
-  if (trumpf == 5) {
+  if (trumpf == RAMSCH_GAME) {
     ramsch_stich();
     return;
   }
@@ -430,12 +431,12 @@ void get_next() {
   }
   if (spieler == ausspl) {
     if (butternok == 1) butternok = 2;
-    stsum += cardw[stcd[0] & 7] + cardw[stcd[1] & 7] + cardw[stcd[2] & 7];
-    astsum += cardw[stcd[0] & 7] + cardw[stcd[1] & 7] + cardw[stcd[2] & 7];
+    stsum += cardw[stcd[0] & CARD_RANK_MASK] + cardw[stcd[1] & CARD_RANK_MASK] + cardw[stcd[2] & CARD_RANK_MASK];
+    astsum += cardw[stcd[0] & CARD_RANK_MASK] + cardw[stcd[1] & CARD_RANK_MASK] + cardw[stcd[2] & CARD_RANK_MASK];
     nullv = 1;
   } else {
     if (butternok != 2) butternok = 0;
-    gstsum += cardw[stcd[0] & 7] + cardw[stcd[1] & 7] + cardw[stcd[2] & 7];
+    gstsum += cardw[stcd[0] & CARD_RANK_MASK] + cardw[stcd[1] & CARD_RANK_MASK] + cardw[stcd[2] & CARD_RANK_MASK];
     schwz = 0;
   }
 }
@@ -443,7 +444,7 @@ void get_next() {
 void fill_st() {
   int i, j, s, c, sc;
 
-  for (s = 0; s < 3; s++) {
+  for (s = 0; s < NUM_PLAYERS; s++) {
     if (vmh >= 1 && s == ausspl) {
       sc = stcd[0];
     } else if (vmh == 2 && s == left(ausspl)) {
@@ -452,8 +453,8 @@ void fill_st() {
       sc = -1;
     }
     i = stich - 1;
-    for (j = 0; j < 10; j++) {
-      c = cards[10 * s + j];
+    for (j = 0; j < CARDS_PER_PLAYER; j++) {
+      c = cards[CARDS_PER_PLAYER * s + j];
       if (c < 0 && sc >= 0) {
         c  = sc;
         sc = -1;
@@ -486,9 +487,9 @@ void next_stich() {
   vmh = 0;
   stich++;
   nd = 0;
-  if (stich == 11 ||
+  if (stich == TOTAL_TRICKS ||
       (trumpf == -1 &&
-       (nullv || (!ndichtw && stich < 10 &&
+       (nullv || (!ndichtw && stich < CARDS_PER_PLAYER &&
                   (nd = null_dicht(spieler, handsp, &prot2.skat[1][0], (int*)0,
                                    (int*)0, (int*)0)))))) {
     if (nd)
@@ -501,12 +502,12 @@ void next_stich() {
 void finishgame() {
   int i, s;
 
-  if (stich < 11) {
-    if (trumpf < 0 || trumpf > 4 || (schenkstufe && stich == 1))
+  if (stich < TOTAL_TRICKS) {
+    if (trumpf < 0 || trumpf > GRAND_GAME || (schenkstufe && stich == 1))
       fill_st();
     else {
-      while (stich != 11) {
-        s = (ausspl + vmh) % 3;
+      while (stich != TOTAL_TRICKS) {
+        s = (ausspl + vmh) % NUM_PLAYERS;
         calc_poss(s);
         make_best(s);
         i         = possi[playcd];
@@ -566,11 +567,11 @@ void nextgame() {
 }
 
 void save_skat(int i) {
-  if (lower(cards[31], cards[30], 0)) {
-    swap(&cards[31], &cards[30]);
+  if (lower(cards[SKAT_OFFSET + 1], cards[SKAT_OFFSET], 0)) {
+    swap(&cards[SKAT_OFFSET + 1], &cards[SKAT_OFFSET]);
   }
-  prot2.skat[i][0] = cards[30];
-  prot2.skat[i][1] = cards[31];
+  prot2.skat[i][0] = cards[SKAT_OFFSET];
+  prot2.skat[i][1] = cards[SKAT_OFFSET + 1];
 }
 
 int check_bockevents() {
@@ -578,10 +579,10 @@ int check_bockevents() {
 
   e = 0;
   if (bockevents & BOCK_BEI_60) {
-    if (!spgew && stsum == 60 && trumpf >= 0 && trumpf <= 4) e++;
+    if (!spgew && stsum == GAME_WIN_POINTS && trumpf >= 0 && trumpf <= GRAND_GAME) e++;
   }
   if (bockevents & BOCK_BEI_GRANDHAND) {
-    if (spgew && trumpf == 4 && handsp) e++;
+    if (spgew && trumpf == GRAND_GAME && handsp) e++;
   }
   m = 0;
   if (bockevents & BOCK_BEI_KONTRA) {
@@ -590,7 +591,7 @@ int check_bockevents() {
   if (!m && bockevents & BOCK_BEI_RE) {
     if (kontrastufe == 2) e++;
   }
-  for (i = 0; i < 3; i++) {
+  for (i = 0; i < NUM_PLAYERS; i++) {
     ns = sum[i][alist[0]];
     s  = ns < 0 ? -ns : ns;
     if (ns != prevsum[i][alist[0]] &&
@@ -613,9 +614,9 @@ void setsum(int clr) {
   int i, j;
 
   splstp = 0;
-  for (i = 0; i < 3; i++) {
+  for (i = 0; i < NUM_PLAYERS; i++) {
     splfirst[i] = 0;
-    for (j = 0; j < 3; j++) {
+    for (j = 0; j < NUM_PLAYERS; j++) {
       if (clr) {
         sum[i][j] = 0;
         if (j < 2) {

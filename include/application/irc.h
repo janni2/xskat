@@ -63,17 +63,17 @@ EXTERN char irc_defaulthost[]
 #endif
     ;
 
-extern void irc_log();
-extern void irc_out();
-extern void irc_print();
-extern void irc_printnl();
+extern void irc_log(const char* s, int in);
+extern void irc_out(const char* s);
+extern void irc_print(const char* s);
+extern void irc_printnl(const char* s);
 extern char* irc_getline();
 extern int irc_xinput(char* s, int l);
-extern int irc_match();
+extern int irc_match(const char* cmd, char** s);
 extern void irc_sendnick();
-extern void irc_pr_ss();
-extern void irc_pr_bs();
-extern void irc_pr_sd();
+extern void irc_pr_ss(const char* s1, const char* s2);
+extern void irc_pr_bs(const char* s);
+extern void irc_pr_sd(const char* s, int d);
 extern void irc_pr_ramsch();
 extern void irc_pr_sramsch();
 extern void irc_pr_rskatloser();

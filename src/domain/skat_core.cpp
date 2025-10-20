@@ -44,6 +44,7 @@
 
 // Domain layer includes
 #include "domain/skat_core.h"
+#include "domain/skat_constants.h"
 #include "domain/utils.h"
 #include "domain/null.h"
 #include "domain/ramsch.h"
@@ -61,26 +62,26 @@
 
 int gutesblatt() {
   int i, c, tr, bb, bs, as, ze;
-  int t[4];
+  int t[NUM_SUITS];
 
   t[0] = t[1] = t[2] = t[3] = 0;
   bb = bs = as = ze = 0;
-  for (i = 0; i < 12; i++) {
-    c = cards[i < 10 ? i : 20 + i];
-    if ((c & 7) == BUBE) {
+  for (i = 0; i < CARDS_IN_INITIAL_DEAL; i++) {
+    c = cards[i < CARDS_PER_PLAYER ? i : SKAT_OFFSET + i];
+    if ((c & CARD_RANK_MASK) == BUBE) {
       bb++;
-      if (i > 9) bs++;
+      if (i > HAND_SIZE_MINUS_ONE) bs++;
     } else
-      t[c >> 3]++;
+      t[c >> CARD_SUIT_SHIFT]++;
   }
   tr = 0;
-  for (i = 1; i < 4; i++) {
+  for (i = 1; i < NUM_SUITS; i++) {
     if (t[i] >= t[tr]) tr = i;
   }
-  for (i = 0; i < 12; i++) {
-    c = cards[i < 10 ? i : 20 + i];
-    if ((c & 7) != BUBE && c >> 3 != tr) {
-      switch (c & 7) {
+  for (i = 0; i < CARDS_IN_INITIAL_DEAL; i++) {
+    c = cards[i < CARDS_PER_PLAYER ? i : SKAT_OFFSET + i];
+    if ((c & CARD_RANK_MASK) != BUBE && c >> CARD_SUIT_SHIFT != tr) {
+      switch (c & CARD_RANK_MASK) {
         case AS:
           as++;
           break;
@@ -91,7 +92,8 @@ int gutesblatt() {
     }
   }
   tr += bb;
-  return (tr > 5 || (tr == 5 && as + ze > 1) || (bb > 2 && as > 1)) && bs;
+  return (tr > MIN_TRUMPS_MODERATE || (tr == MIN_TRUMPS_MODERATE && as + ze > 1) ||
+          (bb > MIN_JACKS_FOR_RISK && as > 1)) && bs;
 }
 
 /* ========================================================================
@@ -100,44 +102,44 @@ int gutesblatt() {
 
 void mischen() {
   int i, j;
-  static int savecards[32];
+  static int savecards[TOTAL_CARDS];
 
   if (wieder) {
-    for (i = 0; i < 32; i++) cards[i] = savecards[i];
+    for (i = 0; i < TOTAL_CARDS; i++) cards[i] = savecards[i];
     if (wieder == 1) {
-      if (vorhandwn) rotateby = (rotateby + 3) % 3 - 1;
-      for (i = 0; i < 10; i++) swap(&cards[i], &cards[10 + i]);
-      for (i = 0; i < 10; i++) swap(&cards[10 + i], &cards[20 + i]);
-    } else if (wieder == 3) {
-      if (vorhandwn) rotateby = (rotateby + 2) % 3 - 1;
-      for (i = 0; i < 10; i++) swap(&cards[i], &cards[20 + i]);
-      for (i = 0; i < 10; i++) swap(&cards[20 + i], &cards[10 + i]);
+      if (vorhandwn) rotateby = (rotateby + NUM_PLAYERS) % NUM_PLAYERS - 1;
+      for (i = 0; i < CARDS_PER_PLAYER; i++) swap(&cards[i], &cards[CARDS_PER_PLAYER + i]);
+      for (i = 0; i < CARDS_PER_PLAYER; i++) swap(&cards[CARDS_PER_PLAYER + i], &cards[SKAT_OFFSET + i]);
+    } else if (wieder == NUM_PLAYERS) {
+      if (vorhandwn) rotateby = (rotateby + RIGHT_OFFSET) % NUM_PLAYERS - 1;
+      for (i = 0; i < CARDS_PER_PLAYER; i++) swap(&cards[i], &cards[SKAT_OFFSET + i]);
+      for (i = 0; i < CARDS_PER_PLAYER; i++) swap(&cards[SKAT_OFFSET + i], &cards[CARDS_PER_PLAYER + i]);
     }
     wieder = 0;
   } else if (!get_game()) {
     do {
-      for (i = 0; i < 32; i++) cards[i] = i;
-      for (i = 0; i < 32; i++) swap(&cards[i], &cards[rndval(&seed[0], 31)]);
-      for (i = 0; i < 10; i++) swap(&cards[geber * 10 + i], &cards[i]);
-      for (i = 0; i < 10; i++)
-        swap(&cards[hoerer * 10 + i], &cards[geber == 1 ? i : 10 + i]);
+      for (i = 0; i < TOTAL_CARDS; i++) cards[i] = i;
+      for (i = 0; i < TOTAL_CARDS; i++) swap(&cards[i], &cards[rndval(&seed[0], MAX_CARD_INDEX)]);
+      for (i = 0; i < CARDS_PER_PLAYER; i++) swap(&cards[geber * CARDS_PER_PLAYER + i], &cards[i]);
+      for (i = 0; i < CARDS_PER_PLAYER; i++)
+        swap(&cards[hoerer * CARDS_PER_PLAYER + i], &cards[geber == 1 ? i : CARDS_PER_PLAYER + i]);
       if (rotateby < 0) {
-        for (i = 0; i < 10; i++) swap(&cards[i], &cards[10 + i]);
-        for (i = 0; i < 10; i++) swap(&cards[10 + i], &cards[20 + i]);
+        for (i = 0; i < CARDS_PER_PLAYER; i++) swap(&cards[i], &cards[CARDS_PER_PLAYER + i]);
+        for (i = 0; i < CARDS_PER_PLAYER; i++) swap(&cards[CARDS_PER_PLAYER + i], &cards[SKAT_OFFSET + i]);
       } else if (rotateby > 0) {
-        for (i = 0; i < 10; i++) swap(&cards[i], &cards[20 + i]);
-        for (i = 0; i < 10; i++) swap(&cards[20 + i], &cards[10 + i]);
+        for (i = 0; i < CARDS_PER_PLAYER; i++) swap(&cards[i], &cards[SKAT_OFFSET + i]);
+        for (i = 0; i < CARDS_PER_PLAYER; i++) swap(&cards[SKAT_OFFSET + i], &cards[CARDS_PER_PLAYER + i]);
       }
       gamenr++;
     } while ((pkoption == 1 || pkoption == 4) && numsp == 1 && !gutesblatt());
     if (pkoption > 1) pkoption = 0;
   }
-  for (i = 0; i < 32; i++) savecards[i] = cards[i];
+  for (i = 0; i < TOTAL_CARDS; i++) savecards[i] = cards[i];
   setrnd(&seed[1], seed[0]);
-  for (i = 0; i < 32; i++) gespcd[i] = 0;
-  for (i = 0; i < 4; i++) gespfb[i] = 0;
+  for (i = 0; i < TOTAL_CARDS; i++) gespcd[i] = 0;
+  for (i = 0; i < NUM_SUITS; i++) gespfb[i] = 0;
   butternok = 0;
-  for (i = 0; i < 3; i++) {
+  for (i = 0; i < NUM_PLAYERS; i++) {
     for (j = 0; j < 5; j++) hatnfb[i][j] = 0;
   }
   gstsum = 0;
@@ -153,10 +155,10 @@ int lower(int c1, int c2, int n) {
 
   if (c1 < 0) return 1;
   if (c2 < 0) return 0;
-  f1 = c1 >> 3;
-  f2 = c2 >> 3;
-  w1 = c1 & 7;
-  w2 = c2 & 7;
+  f1 = c1 >> CARD_SUIT_SHIFT;
+  f2 = c2 >> CARD_SUIT_SHIFT;
+  w1 = c1 & CARD_RANK_MASK;
+  w2 = c2 & CARD_RANK_MASK;
   if (n) {
     if (sortw[f1] < sortw[f2]) return 1;
     if (sortw[f1] > sortw[f2]) return 0;

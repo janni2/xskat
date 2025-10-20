@@ -177,7 +177,7 @@ extern void swap(int *i, int *j);
 extern void setrnd(long *s, long v);
 extern int rndval(long *s, int m);
 extern int rnd(int m);
-extern void synerr(FILE* f, char* s);
+extern void synerr(FILE* f, const char* s);
 extern int get_game();
 extern int gutesblatt();
 extern void mischen();

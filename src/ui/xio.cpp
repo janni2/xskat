@@ -221,7 +221,7 @@ int istrue(char* s) {
   return h[0] == '0' ? 0 : h[0] == '1' ? 1 : !strcmp(h, "true");
 }
 
-void v_gtextnc(int sn, int n, int c, int x, int y, int w, char* t)
+void v_gtextnc(int sn, int n, int c, int x, int y, int w, const char* t)
 {
   int l;
 
@@ -238,10 +238,10 @@ void v_gtextnc(int sn, int n, int c, int x, int y, int w, char* t)
   }
 }
 
-void v_gtextc(int sn, int c, int x, int y, int w, char* t)
+void v_gtextc(int sn, int c, int x, int y, int w, const char* t)
 { v_gtextnc(sn, 1, c, x, y, w, t); }
 
-void v_gtext(int sn, int x, int y, int w, char* t)
+void v_gtext(int sn, int x, int y, int w, const char* t)
 { v_gtextc(sn, 0, x, y, w, t); }
 
 void clr_text(int sn, int x, int y)
@@ -269,13 +269,13 @@ void b_text(int s, tx_typ* str)
   }
 }
 
-void do_msaho(int sn, char* str)
+void do_msaho(int sn, const char* str)
 {
   clr_text(sn, desk[sn].pboxx, desk[sn].pboxy);
-  v_gtextc(sn, 1, desk[sn].pboxx, desk[sn].pboxy, desk[sn].cardw, str);
+  v_gtextc(sn, 1, desk[sn].pboxx, desk[sn].pboxy, desk[sn].cardw, const_cast<char*>(str));
   clr_text(sn, desk[sn].pboxx + desk[sn].cardw, desk[sn].pboxy);
   v_gtextc(sn, 1, desk[sn].pboxx + desk[sn].cardw, desk[sn].pboxy,
-           desk[sn].cardw, textarr[TX_PASSE].t[lang[sn]]);
+           desk[sn].cardw, const_cast<char*>(textarr[TX_PASSE].t[lang[sn]]));
 }
 
 void draw_skat(int sn)
